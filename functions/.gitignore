@@ -8,5 +8,5 @@ typings/
 # Node.js dependency directory
 node_modules/
 
-
+test-serviceAccount.json
 **/*.log
