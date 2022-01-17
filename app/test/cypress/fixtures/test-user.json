@@ -1,0 +1,6 @@
+{
+  "uid": "test-user",
+  "name": "Test User",
+  "email": "test@user.com.au",
+  "role": "viewer"
+}

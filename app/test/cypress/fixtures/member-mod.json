@@ -1,0 +1,18 @@
+{
+  "label": "A Different Modifier",
+  "desc": "A member modifier different to the default",
+  "style": {
+    "background": "#ffffff",
+    "backgroundOverride": false,
+    "color": "#000000",
+    "colorOverride": false,
+    "outline": "#ffffff",
+    "outlineOverride": false,
+    "prepend": false,
+    "shape": "not-round",
+    "shapeOverride": false,
+    "underline": false,
+    "underlineOverride": false
+  },
+  "type": "mod"
+}

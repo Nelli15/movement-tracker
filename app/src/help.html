@@ -1,0 +1,486 @@
+<q-item clickable>
+                  <q-item-section avatar>
+                    <q-icon name="img:icons/file-tree.svg"/>
+                  </q-item-section>
+                  <q-item-section class="text-h6">
+                    Movements
+                  </q-item-section>
+                  <q-menu anchor="top left" self="top right">
+                    <q-card style="max-width:400px">
+                      <q-card-section class="text-h6" style="padding-bottom:0px;">
+                        Movements
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        The movement forms the center of the Movement Tracker App, create one to get started.
+                        <q-expansion-item
+                          expand-separator
+                          label="Create a Movement"
+                          header-class="text-subtitle1"
+                          dense
+                          group="movementgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              To create a movement, head to the <a href="https://pwa.movementtracker.app/dashboard">Dashboard</a> and either click the <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">add</i></div></div> in the left toolbar or right click and select <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">add</i>New</div></div>. The new movement will appear with the name 'Untitled Movement'.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        <q-expansion-item
+                          expand-separator
+                          label="Copy"
+                          header-class="text-subtitle1"
+                          dense
+                          group="movementgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              There are two ways to copy a movement.<br>
+                               - Copy<br>
+                               - Carbon Copy<br>
+                               <br>
+                               Copy makes a partial copy of the movement. Anyone with access to a movement is able to copy it.<br>
+                               <b>Including:</b> <br>
+                               - Name<br>
+                               - Color<br>
+                               - Roles<br>
+                               - Modifiers<br>
+                               <b>Excluding:</b> <br>
+                               - Members<br>
+                               - Statistics<br>
+                               - Snapshots<br>
+                               - Access<br>
+                               <br>
+                               Carbon Copy makes a copy of the movement in it's entirety. Only Super Editors and Owners are able to Carbon Copy a movement.<br>
+                               <b>Including:</b> <br>
+                               - Name<br>
+                               - Color<br>
+                               - Roles<br>
+                               - Modifiers<br>
+                               - Members<br>
+                               - Statistics<br>
+                               - Snapshots<br>
+                               <b>Excluding:</b> <br>
+                               - Access<br>
+                               <br>
+                               To copy a movement navigate to the <a href="https://pwa.movementtracker.app/dashboard">Dashboard</a> and right click the movement, select either <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">content_copy</i> Copy</div></div> or <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">content_copy</i>Carbon Copy</div></div>. The new movement will appear as 'Copy of &lt;Movement Name&gt;'.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        <q-expansion-item
+                          expand-separator
+                          label="Settings"
+                          header-class="text-subtitle1"
+                          dense
+                          group="movementgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              There are 5 main settings that can be changed in a movement.<br>
+                              - Name<br>
+                              - Color<br>
+                              - Roles<br>
+                              - Modifiers<br>
+                              - Access
+
+                              To rename or color of the movement, right click the movement on the <a href="https://pwa.movementtracker.app/dashboard">Dashboard</a>. For other options see Roles, Modifiers, and Access.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section>
+                        <q-expansion-item
+                          expand-separator
+                          label="Delete a Movement"
+                          header-class="text-subtitle1"
+                          dense
+                          group="movementgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              A movement can only be deleted by an owner of the movement, so be careful who you make an owner of your movement. Right click the movement on the <a href="https://pwa.movementtracker.app/dashboard">Dashboard</a> and select <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">delete</i>Delete</div></div> to delete the movement. <b>This cannot be undone!</b>
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                    </q-card>
+                  </q-menu>
+                </q-item>
+                  <!-- Members -->
+                <q-item clickable>
+                  <q-item-section avatar>
+                    <q-icon name="person"/>
+                  </q-item-section>
+                  <q-item-section class="text-h6">
+                    Members
+                  </q-item-section>
+                  <q-menu anchor="top left" self="top right">
+                    <q-card style="max-width:400px">
+                      <q-card-section class="text-h6" style="padding-bottom:0px;">
+                        Members
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        Movements are populated by tree's of members, members can be styled, copied, moved & be a child of another member.
+                        <q-expansion-item
+                          expand-separator
+                          label="Add a Member"
+                          header-class="text-subtitle1"
+                          dense
+                          group="membergroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              To add a member, head to a movement and either click the <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">person_add</i></div></div> in the left toolbar or right click and select <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">person_add</i>New</div></div>. Once you fill in the members details the new member will appear under the selected parent. The '--First Member in Tree--' parent will make them a root member of the tree.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        <q-expansion-item
+                          expand-separator
+                          label="Edit a Member"
+                          header-class="text-subtitle1"
+                          dense
+                          group="membergroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              There are 5 main details that can be changed in a member.<br>
+                              - Name<br>
+                              - Role<br>
+                              - Modifiers<br>
+                              - Parent<br>
+                              - Notes
+
+                              To edit a member, right click the member and select <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">edit</i>Edit</div></div> to change the members name, roles and modifers. To change the parent of the memeber, see Move a Member.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        <q-expansion-item
+                          expand-separator
+                          label="Copy a Member"
+                          header-class="text-subtitle1"
+                          dense
+                          group="membergroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              Copy a member by right clicking it <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">person</i></div></div>and selecting <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">content_copy</i>Copy</div></div>. The copied member will appear below the member that you copied.
+                            </q-card-section>
+                          </q-card><div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">person</i></div></div>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        <q-expansion-item
+                          expand-separator
+                          label="Move a Member"
+                          header-class="text-subtitle1"
+                          dense
+                          group="membergroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              Move a member by right clicking it and selecting <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="mdi mdi-folder-move"></i>Move</div></div>. The moved member will appear below the selected parent.
+
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section>
+                        <q-expansion-item
+                          expand-separator
+                          label="Delete a Member"
+                          header-class="text-subtitle1"
+                          dense
+                          group="membergroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              A member can only be deleted by Super Editors and Owners. To delete a member, right click the member and select <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">delete</i>Delete</div></div>. <b>This cannot be undone!</b> If you are an Editor you can move the member to the --No Parent-- section instead.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                    </q-card>
+                  </q-menu>
+                </q-item>
+                  <!-- Roles -->
+                <q-item clickable>
+                  <q-item-section avatar>
+                    <q-icon name="style"/>
+                  </q-item-section>
+                  <q-item-section class="text-h6">
+                    Roles
+                  </q-item-section>
+                  <q-menu anchor="top left" self="top right">
+                    <q-card style="max-width:400px">
+                      <q-card-section class="text-h6" style="padding-bottom:0px;">
+                        Roles
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        Each member has a role within a movement. Roles define the default styling applied to a member, including:<br>
+                        - Background Color<br>
+                        - Text Color<br>
+                        - Border Color<br>
+                        - Underline<br>
+                        - Shape<br>
+                        <br>
+                        Roles are only available within the movement that they are created in. If you wish to copy all of the roles from one movement, see Copy a Movement.
+                        <q-expansion-item
+                          expand-separator
+                          label="Add a Role"
+                          header-class="text-subtitle1"
+                          dense
+                          group="rolesgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              Only Super Editors and Owners can change roles. To add a role, head to the movement settings page <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">settings</i></div></div>right click and select <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">add</i>Add Role</div></div>. The new role will appear with the name 'Untitled Style'.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        <q-expansion-item
+                          expand-separator
+                          label="Edit a Role"
+                          header-class="text-subtitle1"
+                          dense
+                          group="rolesgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              There are 7 main options that can be applied to a role.<br>
+                              - Label<br>
+                              - Description<br>
+                              - Background Color<br>
+                              - Text Color<br>
+                              - Border Color<br>
+                              - Underline<br>
+                              - Shape<br>
+
+                              To edit a role navigate to the movement settings page <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">settings</i></div></div>, click the Role tab, click the element in the role that you wish to change and a popup will come up. Once you have changed the style, press 'Enter'. To edit a roles label or description right click and select <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">edit</i>Edit</div></div>.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        <q-expansion-item
+                          expand-separator
+                          label="Assign a Role to a Member"
+                          header-class="text-subtitle1"
+                          dense
+                          group="rolesgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              Each member is required to have one and only one role. You assign a role to a member when you create the member<div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">person</i></div></div> and you can change the role assigned by right clicking the member <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">person</i></div></div>, clicking <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">edit</i>Edit</div></div>, and selecting the role.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section>
+                        <q-expansion-item
+                          expand-separator
+                          label="Delete a Role"
+                          header-class="text-subtitle1"
+                          dense
+                          group="rolesgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              A role can only be deleted when it is not in use. To delete a role, navigate to the movement settings page <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">settings</i></div></div> and press the delete <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:var(--q-color-negative) !important;color:white;"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">delete</i></div></div> button in the row of the role to delete. <b>This cannot be undone!</b>
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                    </q-card>
+                  </q-menu>
+                </q-item>
+                  <!-- Modifiers -->
+                <q-item clickable>
+                  <q-item-section avatar>
+                    <q-icon name="o_style"/>
+                  </q-item-section>
+                  <q-item-section class="text-h6">
+                    Modifiers (Optional)
+                  </q-item-section>
+                  <q-menu anchor="top left" self="top right">
+                    <q-card style="max-width:400px">
+                      <q-card-section class="text-h6" style="padding-bottom:0px;">
+                        Modifiers (Optional)
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        Editors have the ability to assign modifiers to members but not change them. Assigning modifiers to members is optional. Modifiers override the styling of the role applied to a member, as such we recommend only including 1 or 2 style changes in a modifier. Styles that modifiers can override include:<br>
+                        - Background Color<br>
+                        - Text Color<br>
+                        - Border Color<br>
+                        - Underline<br>
+                        - Shape<br>
+                        - Icon<br>
+                        - Icon Location<br>
+                        <br>
+                        Modifers are only available within the movement that they are created in. If you wish to copy all of the modifiers from one movement, see Copy a Movement.
+                        <q-expansion-item
+                          expand-separator
+                          label="Add a Modifier"
+                          header-class="text-subtitle1"
+                          dense
+                          group="modifiersgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              Only Super Editors and Owners can change modifiers. To add a modifier, head to the movement settings page <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">settings</i></div></div> right click and select <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">add</i>Add Modifier</div></div>. The new modifier will appear with the name 'Untitled Style'.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        <q-expansion-item
+                          expand-separator
+                          label="Edit a Modifier"
+                          header-class="text-subtitle1"
+                          dense
+                          group="modifiersgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              Only Super Editors and Owners can change modifiers.There are 9 main options that can be applied to a modifier.<br>
+                              - Label<br>
+                              - Description<br>
+                              - Background Color<br>
+                              - Text Color<br>
+                              - Border Color<br>
+                              - Underline<br>
+                              - Shape (Rectangle or Round)<br>
+                              - Icon<br>
+                              - Icon Location
+
+                              To edit a modifier, navigate to the movement settings page <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">settings</i></div></div>, click the Modifier tab, make sure you enable the style override using the tickbox next to the style before editing the style, click the element in the modifier that you wish to change and a popup will come up. Once you have changed the style, press 'Enter'.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        <q-expansion-item
+                          expand-separator
+                          label="Assign a Modifier to a Member"
+                          header-class="text-subtitle1"
+                          dense
+                          group="modifiersgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              Modifiers are optional. You can assign a modifier to a member when you create the member <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">person</i></div></div> and you can change the modifiers assigned by right clicking the member <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">person</i></div></div>, clicking <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">edit</i>Edit</div></div>, and selecting the modifier. Remove the modifier by clicking the <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">close</i></div></div> button on the modifier.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section>
+                        <q-expansion-item
+                          expand-separator
+                          label="Delete a Modifier"
+                          header-class="text-subtitle1"
+                          dense
+                          group="modifiersgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              A modifier can only be deleted when it is not in use. To delete a modifier, navigate to the movement settings page <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">settings</i></div></div> and press the delete button <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:var(--q-color-negative) !important;color:white;"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">delete</i></div></div> in the row of the modifier to delete. <b>This cannot be undone!</b>
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                    </q-card>
+                  </q-menu>
+                </q-item>
+                  <!-- Sharing and Permissions -->
+                <q-item clickable>
+                  <q-item-section avatar>
+                    <q-icon name="people"/>
+                  </q-item-section>
+                  <q-item-section class="text-h6">
+                    Sharing & Permissions
+                  </q-item-section>
+                  <q-menu anchor="top left" self="top right">
+                    <q-card style="max-width:400px">
+                      <q-card-section class="text-h6" style="padding-bottom:0px;">
+                        Sharing & Permissions
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        Only Super Editors and Owners can change sharing permissions.
+                        Sharing and Permissions allows you to share the movement with others and allow others to help keep the movement up to date.
+                        <q-expansion-item
+                          expand-separator
+                          label="Share"
+                          header-class="text-subtitle1"
+                          dense
+                          group="permissionsgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              To share the movement select the <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">people</i></div></div> button in the header of a movement page. You can then invite somebody by typing their email and selecting the level of permission that their should have. (See Manage Access)
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section style="padding-bottom:0px;">
+                        <q-expansion-item
+                          expand-separator
+                          label="Manage Access"
+                          header-class="text-subtitle1"
+                          dense
+                          group="permissionsgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              There are 4 levels of permissions as detailed below:<br>
+                              - <b>Viewers</b> can only view the tree, member details, movement legend, and movement summary.<br>
+                              - <b>Editors</b> can do everything that a Viewer can do and also edit the tree, including: adding, editing, copying, and moving members.<br>
+                              - <b>Super Editors</b> can do everything that an Editor can do and also edit the roles and modifiers. They can also delete members, change sharing permissions of those who aren't Owners, and take snapshots. The main thing they can't do is delete the Movement.<br>
+                              - <b>Owners</b> can do everything! The main difference between a Super Editor and an Owner is that the Owner can delete the movement and a Super Editor cannot. We recommend never making others an Owner.
+
+                              To movement access, head to the movement settings page.<div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">people</i></div></div>
+                              <b>Invite Users</b><br>
+                              To invite a new user to the movement, simply enter their email into the email field, select the permission level and click send.
+                              To invite multiple users, simply seperate their emails by commas ','. <br>
+                              <b>Requests</b><br>
+                              Requests appear when someone has navigated to the URL of the movement with insufficient permissions to access it, the user is then asked if they would like to request access. Once a request is in the reqests section of the access page, a Super Editor or Owner can accept and provide a suitable level of access or deny the request.<br>
+                              <b>Managing Permissions</b><br>
+                              Once a user has been give permissions a Super Editor or Owner of greater or equal permission can change a users permissions. A Super Editor is able to grant at most a Super Editors level of access.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                      <q-card-section>
+                        <q-expansion-item
+                          expand-separator
+                          label="Stop Sharing"
+                          header-class="text-subtitle1"
+                          dense
+                          group="permissionsgroup"
+                        >
+                          <q-card>
+                            <q-card-section style="padding-top:0px;">
+                              To stop sharing a movement simply click the <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:var(--q-color-negative) !important;color:white;"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">delete</i></div></div> button next to the user you wish to remove.<br>
+                               <b>Note.</b> Sometimes the user retains a copy of the movement info in their cache for a day or two after they are deleted. They will not however be able to make changes.
+                            </q-card-section>
+                          </q-card>
+                        </q-expansion-item>
+                      </q-card-section>
+                    </q-card>
+                  </q-menu>
+                </q-item>
+
+
+Take a Snapshot
+
+There are three main ways to take a snapshot of a movement.<br>
+ - Go to the <a href="https://pwa.movementtracker.app/dashboard">Dashboard</a>, right click the movement and click <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">add_a_photo</i>Take Snapshot</div></div>.<br>
+ - Go to a movement page, right click the background and click <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">add_a_photo</i>Take Snapshot</div></div>.<br>
+ - Go to a movement page, click on the <div class="q-chip row inline no-wrap items-center shadow-2 q-chip--dense not-round" no-caps="" style="background-color:white"><div class="q-chip__content col row no-wrap items-center q-anchor--skip"><i class="material-icons">add_a_photo</i></div></div> in the left toolbar.

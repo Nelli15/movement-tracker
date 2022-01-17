@@ -1,0 +1,317 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function getUserRole(movId)
+    {
+    	return get(/databases/$(database)/documents/movements/$(movId)/users/$(request.auth.uid)).data.role
+    }
+    function getUserPermissions(movId) {
+      return exists(/databases/$(database)/documents/movements/$(movId)/user-role-definitions/$(getUserRole(movId))) ? get(/databases/$(database)/documents/movements/$(movId)/user-role-definitions/$(getUserRole(movId))).data.rules : {
+      "snapshots_view": false,
+      "snapshots_update": false,
+      "events_create": false,
+      "members_create": false,
+      "members_export": false,
+      "members_edit": false,
+      "members_delete": false,
+      "members_view": false,
+      "subTrees_add": false,
+      "subTrees_remove": false,
+      "movement_edit": false,
+      "movement_copy": false,
+      "movement_carbonCopy": false,
+      "movement_delete": false,
+      "trends_view": false,
+      "trends_movementGraphs_create": false,
+      "trends_movementGraphs_delete": false,
+      "trends_movementGraphs_view": false,
+      "access_view": false,
+      "access_users_revoke": false,
+      "access_users_invite": false,
+      "access_userRoles_create": false,
+      "access_userRoles_delete": false,
+      "access_userRoles_edit": false,
+      "trees_create": false,
+      "trees_export": false,
+      "trees_delete": false,
+      "trees_view": false,
+      "settings_view": false,
+      "settings_calc_view": false,
+      "settings_calc_create": false,
+      "settings_calc_edit": false,
+      "settings_calc_delete": false,
+      "settings_complex_view": false,
+      "settings_complex_create": false,
+      "settings_complex_delete": false,
+      "settings_complex_edit": false,
+      "settings_mods_view": false,
+      "settings_mods_create": false,
+      "settings_mods_delete": false,
+      "settings_mods_edit": false,
+      "settings_roles_view": false,
+      "settings_roles_create": false,
+      "settings_roles_delete": false,
+      "settings_roles_edit": false
+    }
+    }
+    function isOwner(movId) {
+      return getUserRole(movId) == 'owner'
+    }
+  	match /movements/{movId} {
+    	allow read: if exists(/databases/$(database)/documents/movements/$(movId)/users/$(request.auth.uid))
+      allow update: if isOwner(movId)
+      allow update: if getUserPermissions(movId).movement_edit
+      allow create: if request.auth.token != null
+      allow delete: if isOwner(movId)
+      allow delete: if getUserPermissions(movId).movement_delete
+      
+      
+      
+      match /styles/{styleId} {
+        allow read: if isOwner(movId)
+        allow update: if isOwner(movId)
+        allow create: if isOwner(movId)
+        allow delete: if isOwner(movId)
+
+        allow read: if resource.data.type == 'role' && getUserPermissions(movId).settings_roles_view
+        allow create: if request.resource.data.type == 'role' && getUserPermissions(movId).settings_roles_create
+        allow update: if resource.data.type == 'role' && request.resource.data.type == 'role' && getUserPermissions(movId).settings_roles_edit
+        allow delete: if resource.data.type == 'role' && getUserPermissions(movId).settings_roles_delete
+
+        allow read: if resource.data.type == 'mod' && getUserPermissions(movId).settings_mods_view
+        allow create: if request.resource.data.type == 'mod' && getUserPermissions(movId).settings_mods_create
+        allow update: if resource.data.type == 'mod' && request.resource.data.type == 'mod' && getUserPermissions(movId).settings_mods_edit
+        allow delete: if resource.data.type == 'mod' && getUserPermissions(movId).settings_mods_delete
+
+        allow read: if resource.data.type == 'complex' && getUserPermissions(movId).settings_complex_view
+        allow create: if request.resource.data.type == 'complex' && getUserPermissions(movId).settings_complex_create
+        allow update: if resource.data.type == 'complex' && request.resource.data.type == 'complex' && getUserPermissions(movId).settings_complex_edit
+        allow delete: if resource.data.type == 'complex' && getUserPermissions(movId).settings_complex_delete
+
+        allow read: if resource.data.type == 'calc' && getUserPermissions(movId).settings_calc_view
+        allow create: if request.resource.data.type == 'calc' && getUserPermissions(movId).settings_calc_create
+        allow update: if resource.data.type == 'calc' && request.resource.data.type == 'calc' && getUserPermissions(movId).settings_calc_edit
+        allow delete: if resource.data.type == 'calc' && getUserPermissions(movId).settings_calc_delete
+      }
+
+      match /lists/{listId} {
+        allow read: if exists(/databases/$(database)/documents/movements/$(movId)/users/$(request.auth.uid))
+      }
+
+      match /trees/{treeId} {
+        allow read: if isOwner(movId)
+        allow update: if isOwner(movId)
+        allow create: if isOwner(movId)
+        allow delete: if isOwner(movId)
+
+        allow read: if getUserPermissions(movId).trees_view
+        allow create: if getUserPermissions(movId).trees_create
+        allow update: if getUserPermissions(movId).trees_create
+        allow delete: if getUserPermissions(movId).trees_delete
+
+        match /components/{compId} {
+          allow read: if isOwner(movId)
+          allow update: if isOwner(movId)
+          allow create: if isOwner(movId)
+          allow read: if getUserPermissions(movId).trees_view
+          allow create: if getUserPermissions(movId).members_edit
+          allow update: if getUserPermissions(movId).members_edit
+          //   allow delete: if getUserPermissions(movId).
+        }
+      }
+      
+      match /snapshots/{snapshotId} {
+        allow read: if isOwner(movId)
+        allow update: if isOwner(movId)
+        allow create: if isOwner(movId)
+        allow read: if getUserPermissions(movId).snapshots_view
+        allow create: if getUserPermissions(movId).snapshots_update
+        allow update: if getUserPermissions(movId).snapshots_update
+
+        match /styles/{styleId} {
+          allow read: if getUserPermissions(movId).snapshots_view
+          allow read: if isOwner(movId)
+        }
+
+        match /lists/{listId} {
+          allow read: if getUserPermissions(movId).snapshots_view
+          allow read: if isOwner(movId)
+        }
+
+        match /trees/{treeId} {
+          allow read: if getUserPermissions(movId).snapshots_view
+          allow read: if isOwner(movId)
+
+          match /components/{compId} {
+            allow read: if getUserPermissions(movId).snapshots_view
+            allow read: if isOwner(movId)
+          }
+        }
+        match /members/{memberId} {
+          allow read: if getUserPermissions(movId).snapshots_view
+          allow read: if isOwner(movId)
+        }
+      }
+      
+      match /members/{memberId} {
+        allow read: if isOwner(movId)
+        allow update: if isOwner(movId)
+        allow create: if isOwner(movId)
+        allow delete: if isOwner(movId)
+        allow read: if getUserPermissions(movId).members_view
+        allow create: if getUserPermissions(movId).members_create
+        allow update: if getUserPermissions(movId).members_edit
+        allow delete: if getUserPermissions(movId).members_delete
+        
+      }
+
+      // match /trend-data/{memberId} {
+      //   allow read: if getUserPermissions(movId).trends_view
+      //   allow list: if getUserPermissions(movId).trends_view
+      //   allow read: if isOwner(movId)
+      // allow list: if isOwner(movId)
+      // }
+      
+      match /users/{uid} {
+        allow read: if uid == request.auth.uid
+        allow read: if isOwner(movId)
+        allow read: if getUserPermissions(movId).access_view
+
+        allow create: if isOwner(movId) && uid != request.auth.uid
+        allow create: if getUserPermissions(movId).access_users_invite && uid != request.auth.uid
+
+
+        allow update: if isOwner(movId) && uid != request.auth.uid
+        allow update: if getUserPermissions(movId).access_users_invite
+          && uid != request.auth.uid
+        allow update: if uid == request.auth.uid
+          && resource.data.role == request.resource.data.role
+          && resource.data.email == request.resource.data.email
+
+          // delete if the user is an owner and not editing themself
+        allow delete: if isOwner(movId) && uid != request.auth.uid
+
+          // delete if the user has permission to
+        allow delete: if getUserPermissions(movId).access_users_revoke
+          && resource.data.role != 'owner'
+
+        // allow delete: if getUserPermissions(movId).access_users_revoke
+        //   && !(uid == request.auth.uid) && resource.data.role != getUserRole(movId)
+        allow delete: if uid == request.auth.uid && getUserRole(movId) != 'owner'
+        
+        match /graphs/{graphId} {
+        	allow read: if uid == request.auth.uid && exists(/databases/$(database)/documents/movements/$(movId)/users/$(request.auth.uid))
+        	allow write: if uid == request.auth.uid && exists(/databases/$(database)/documents/movements/$(movId)/users/$(request.auth.uid))
+        }
+      }
+
+      match /user-role-definitions/{role} {
+        allow read: if isOwner(movId)
+        allow create: if isOwner(movId) && role != 'owner'
+        allow update: if isOwner(movId) && role != 'owner'
+        allow delete: if isOwner(movId) && role != 'owner'
+        allow read: if getUserPermissions(movId).access_view
+        allow create: if getUserPermissions(movId).access_create && role != 'owner'
+        allow update: if getUserPermissions(movId).access_edit && role != 'owner' && role != getUserRole(movId)
+        allow delete: if getUserPermissions(movId).access_delete && role != 'owner'
+      }
+      
+      match /graphs/{graphId} {
+        allow read: if isOwner(movId)
+        allow update: if isOwner(movId)
+        allow create: if isOwner(movId)
+        allow delete: if isOwner(movId)
+        allow read: if getUserPermissions(movId).trends_movementGraphs_view
+        allow create: if getUserPermissions(movId).trends_movementGraphs_create
+        allow update: if getUserPermissions(movId).trends_movementGraphs_update
+        allow delete: if getUserPermissions(movId).trends_movementGraphs_delete
+      }
+      
+      match /invites/{email} {
+        allow read: if email == request.auth.token.email
+        allow read: if isOwner(movId)
+        allow read: if getUserPermissions(movId).access_view
+        
+
+        allow create: if isOwner(movId)
+        allow create: if getUserPermissions(movId).access_users_invite
+          && request.resource.data.email == email
+
+        allow update: if isOwner(movId)
+        allow update: if getUserPermissions(movId).access_users_invite
+          && request.resource.data.email == email
+        
+        allow delete: if email == request.auth.token.email
+        allow delete: if isOwner(movId)
+        allow delete: if getUserPermissions(movId).access_users_invite
+      }
+      
+      match /requests/{email} {
+        allow read: if email == request.auth.token.email
+        allow read: if isOwner(movId)
+        allow read: if getUserPermissions(movId).access_view
+        
+        allow create: if (email == request.auth.token.email) && request.resource.data.email == email
+          && exists(/databases/$(database)/documents/movements/$(movId))
+        
+        allow update: if isOwner(movId)
+        allow update: if getUserPermissions(movId).access_users_invite
+        && request.resource.data.email == email
+        
+        //allow delete if user is owner
+        allow delete: if isOwner(movId)
+        //allow delete request if user has permission
+        allow delete: if getUserPermissions(movId).access_users_invite
+        //allow delete if user is the one who made the request
+        allow delete: if email == request.auth.token.email
+      }
+
+      // match /events/{eventId} {
+      //   allow read: if isOwner(movId)
+      //   allow update: if isOwner(movId)
+      //   allow create: if isOwner(movId)
+      //   allow delete: if isOwner(movId)
+      //   allow read: if getUserPermissions(movId).events
+      //   allow create: if getUserPermissions(movId).events || false
+      //   allow update: if getUserPermissions(movId).events || false
+      //   allow delete: if getUserPermissions(movId).events || false
+        
+      // }
+      
+    }
+
+    match /app-users/{uid} {
+      // allow read: if uid == request.auth.uid
+      allow read: if uid == request.auth.uid
+      allow update: if uid == request.auth.uid
+      allow create: if uid == request.auth.uid
+      allow delete: if uid == request.auth.uid
+        
+    	match /notifications/{movId} {
+        allow read: if uid == request.auth.uid
+        allow update: if uid == request.auth.uid
+        allow create: if getUserPermissions(movId).access_users_invite
+        allow delete: if uid == request.auth.uid || getUserPermissions(movId).access_users_invite
+    	}
+    }
+    match /users-pending/{email} {
+      allow read: if email == request.auth.token.email
+      allow update: if email == request.auth.token.email
+      allow create: if email == request.auth.token.email
+      allow delete: if email == request.auth.token.email
+    }
+    match /version-info/{versionNum} {
+    	allow read: if true
+      allow write: if false
+    }
+    match /help/{topic} {
+    	allow read: if true
+      allow write: if false
+    }
+    match /{path=**}/users/{uid}
+    {
+      allow list: if request.auth.uid == resource.data.uid
+    }
+  }
+}

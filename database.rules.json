@@ -1,0 +1,21 @@
+{
+  "rules": {
+    "movements": {
+      "$movId": {
+        "trends": {
+          "$styleId": {
+            "$treeId": {
+              ".read": "root.child('movements').child($movId).child('users').child(auth.uid).child('role').val() == 'owner' || root.child('movements').child($movId).child('user-role-definitions').child(root.child('movements').child($movId).child('users').child(auth.uid).child('role').val()).child('rules').child('trends_view').val() === true",
+              ".indexOn": ["date"],
+              "value": { ".validate": "newData.isNumber()" },
+              "date": { ".validate": "newData.isNumber()" },
+              "snapId": { ".validate": "newData.isString()" },
+              "treeId": { ".validate": "newData.isString()" },
+              "styleId": { ".validate": "newData.isString()" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

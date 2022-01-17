@@ -1,0 +1,210 @@
+const admin = require("../../../utils/test-admin");
+const environment = require("../../../environments/environment.test.js");
+const context = {
+  admin,
+  environment,
+};
+
+const Func = require("../onDelete.js");
+const db = admin.firestore();
+
+const movCol = db.collection(environment.schema.movements);
+
+describe("style: onDelete", () => {
+  let func;
+  let funcContext;
+  let movDoc;
+  let change;
+
+  describe("delete", () => {
+    beforeEach(async () => {
+      func = Func(context);
+
+      movDoc = db.collection(environment.schema.movements).doc("test-movement");
+      await movDoc.set({
+        name: "test name",
+        id: "test-movement",
+        last_modified: "",
+      });
+      change = {
+        before: await movDoc.collection("styles").doc("styleId").get(),
+        after: await movDoc.collection("styles").doc("styleId").get(),
+      };
+
+      await movDoc.collection("components").doc("stats").set({});
+      funcContext = {
+        params: {
+          movId: "test-movement",
+        },
+      };
+    });
+
+    it.skip("removes the style from the role sort criteria of each relevant user", async () => {
+      // const date = admin.firestore.Timestamp.fromDate(new Date())
+      // console.log(change)
+      await movDoc.set({
+        name: "test name",
+        id: "test-movement",
+        last_modified: "",
+      });
+      await movDoc
+        .collection("snapshots")
+        .doc("now")
+        .set({
+          members: {
+            testMember1: {
+              name: "test-member",
+              id: "testMember1",
+              role: "styleId",
+              mods: [],
+              notes: "test-note",
+              parent: "root",
+              display: {
+                label: "test-member",
+                background: "#ffaaaa",
+                color: "#000000",
+                outline: "#ffaaaa",
+                underline: false,
+                shape: "not-round",
+              },
+              deleteable: true,
+            },
+          },
+          stats: {},
+          tree: [],
+          noParents: [],
+        });
+      await movDoc
+        .collection("styles")
+        .doc("styleId")
+        .set({
+          label: "old test style",
+          type: "base",
+          style: {
+            color: "#000000",
+            underline: false,
+            outline: "#ffaaaa",
+            round: false,
+            background: "#ffaaaa",
+          },
+        });
+      change.after = await movDoc.collection("styles").doc("styleId").get();
+
+      await movDoc
+        .collection("styles")
+        .doc("styleId")
+        .set({
+          label: "test style",
+          type: "base",
+          style: {
+            color: "#00000f",
+            underline: false,
+            outline: "#ffaafa",
+            shape: "round",
+            background: "#ffbaaa",
+          },
+        });
+      change.after = await movDoc.collection("styles").doc("styleId").get();
+      await func(change, funcContext);
+      const doc = await movDoc.collection("snapshots").doc("now").get();
+      const output = doc.data();
+      // console.log(output.members)
+      expect(output.members).toEqual({
+        testMember1: {
+          name: "test-member",
+          id: "testMember1",
+          role: "styleId",
+          mods: [],
+          notes: "test-note",
+          parent: "root",
+          display: {
+            label: "test-member",
+            color: "#00000f",
+            underline: false,
+            outline: "#ffaafa",
+            shape: "round",
+            background: "#ffbaaa",
+          },
+          deleteable: true,
+        },
+      });
+    });
+
+    it.skip("removes the related stat from now snapshot", async () => {
+      // const date = admin.firestore.Timestamp.fromDate(new Date())
+      // console.log(change)
+      await movDoc.set({
+        name: "test name",
+        id: "test-movement",
+        last_modified: "",
+      });
+      await movDoc
+        .collection("snapshots")
+        .doc("now")
+        .set({
+          members: {},
+          stats: {
+            styleId: {
+              label: "old test style",
+              type: "base",
+              style: {
+                color: "#000000",
+                underline: false,
+                outline: "#ffaaaa",
+                round: false,
+                background: "#ffaaaa",
+              },
+            },
+          },
+          tree: [],
+          noParents: [],
+        });
+      await movDoc
+        .collection("styles")
+        .doc("styleId")
+        .set({
+          label: "old test style",
+          type: "base",
+          style: {
+            color: "#000000",
+            underline: false,
+            outline: "#ffaaaa",
+            round: false,
+            background: "#ffaaaa",
+          },
+        });
+      change.before = await movDoc.collection("styles").doc("styleId").get();
+
+      await func(change.before, funcContext);
+      const doc = await movDoc.collection("snapshots").doc("now").get();
+      const output = doc.data();
+      expect(output.stats).toEqual({});
+    });
+
+    it.skip("", async () => {
+      const date = admin.firestore.Timestamp.fromDate(new Date());
+      // console.log(change)
+      await movDoc.collection("styles").doc("styleId").set({
+        label: "test style",
+      });
+      change.after = await movDoc.collection("styles").doc("styleId").get();
+      const response = await func(change, funcContext);
+      const doc = await movDoc.get();
+      const output = doc.data();
+      expect(output.last_modified._seconds).toBeGreaterThanOrEqual(
+        date._seconds
+      );
+    });
+
+    it.todo("should remove the stat from the components/stats doc");
+
+    it.todo(
+      "should remove the stat from all users who are using it to order their trees"
+    );
+
+    afterAll(async () => {
+      // delete all data from db
+      movDoc.delete();
+    });
+  });
+});

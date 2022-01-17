@@ -1,0 +1,67 @@
+const admin = require('../../../utils/test-admin')
+const environment = require('../../../environments/environment.test.js')
+const context = {
+  admin,
+  environment
+}
+
+const Func = require('../updateTrees.js')
+const db = admin.firestore()
+
+const movCol = db.collection(environment.schema.movements)
+
+describe('movements: updateTrees', () => {
+  let func
+  let funcContext
+  let data
+  let MovDoc
+
+  beforeEach(async () => {
+    func = Func(context)
+    funcContext = {
+      auth: {
+        uid: 'testUserId',
+        token: {
+          name: 'test user',
+          email: 'test@user.com'
+        }
+      }
+    }
+  })
+
+  it.skip('should update the last updated value in the movement', async () => {
+    const date = admin.firestore.Timestamp.fromDate(new Date())
+
+    const response = await func(data, funcContext)
+    const doc = await db
+      .collection(environment.schema.movements)
+      .doc(response.movId)
+      .get()
+    const output = doc.data()
+    expect(output.last_modified._seconds).toBeGreaterThanOrEqual(date._seconds)
+  })
+
+  it.todo('should add a child under a parent')
+
+  it.todo('should add a shadow child under an alt parent')
+
+  it.todo('should add all children under a child')
+
+  it.todo('should add all children under a shadow member')
+
+  afterAll(async () => {
+    // delete all data from db
+    // await nowRef.delete()
+    // console.log(movDoc)
+    // if (movDoc) await movDoc.delete()
+    const col = await movCol.get()
+    col.forEach(doc => {
+      doc.ref.delete()
+    })
+    // console.log(await movCol.listDocuments())
+    // const movements = await movCol.listDocuments()
+    // console.log(movements)
+    //
+    // await styleRef.delete()
+  })
+})

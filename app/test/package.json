@@ -1,0 +1,12 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test.js",
+  "scripts": {},
+  "author": "Nick Ellis",
+  "license": "ISC",
+  "devDependencies": {
+    "@firebase/testing": "^0.20.9"
+  }
+}

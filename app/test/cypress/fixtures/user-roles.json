@@ -1,0 +1,414 @@
+{
+  "roles": [
+    {
+      "role": "viewer",
+      "card": {
+        "buttons": [
+          {
+            "label": "View Movement",
+            "to": "/movement/test"
+          },
+          {
+            "label": "View Members",
+            "to": "/movement/test/members"
+          },
+          {
+            "label": "View Snapshots",
+            "to": "/movement/test/snapshots"
+          },
+          {
+            "label": "View Trends",
+            "to": "/movement/test/trends"
+          }
+        ]
+      },
+      "menu": {
+        "options": [
+          {
+            "label": "Open",
+            "icon": "'img:icons/file-tree.svg'",
+            "to": "/movement/test",
+            "separate": true
+          },
+          {
+            "label": "New",
+            "icon": "matAdd",
+            "click": true,
+            "separate": true
+          },
+          {
+            "label": "Copy",
+            "icon": "matContentCopy",
+            "click": true,
+            "tooltip": "Copy Movement Stucture"
+          },
+          {
+            "label": "Show",
+            "alt-label": "Hide",
+            "icon": "matVisibility",
+            "alt-icon": "matVisibilityOff",
+            "click": true,
+            "separate": true
+          },
+          {
+            "label": "Leave Movement",
+            "icon": "matDelete",
+            "click": true
+          }
+        ]
+      }
+    },
+    {
+      "role": "editor",
+      "card": {
+        "buttons": [
+          {
+            "label": "View Movement",
+            "to": "/movement/test"
+          },
+          {
+            "label": "View Members",
+            "to": "/movement/test/members"
+          },
+          {
+            "label": "View Snapshots",
+            "to": "/movement/test/snapshots"
+          },
+          {
+            "label": "View Trends",
+            "to": "/movement/test/trends"
+          }
+        ]
+      },
+      "menu": {
+        "options": [
+          {
+            "label": "Open",
+            "icon": "mdiFileTree",
+            "to": "/movement/test",
+            "separate": true
+          },
+          {
+            "label": "New",
+            "icon": "matAdd",
+            "click": true,
+            "separate": true
+          },
+          {
+            "label": "Copy",
+            "icon": "matContentCopy",
+            "click": true,
+            "tooltip": "Copy Movement Stucture"
+          },
+          {
+            "label": "Show",
+            "alt-label": "Hide",
+            "icon": "matVisibility",
+            "alt-icon": "matVisibilityOff",
+            "click": true,
+            "separate": true
+          },
+          {
+            "label": "Leave Movement",
+            "icon": "matDelete",
+            "click": true
+          }
+        ]
+      }
+    },
+    {
+      "role": "super editor",
+      "card": {
+        "buttons": [
+          {
+            "label": "View Movement",
+            "to": "/movement/test"
+          },
+          {
+            "label": "View Members",
+            "to": "/movement/test/members"
+          },
+          {
+            "label": "View Snapshots",
+            "to": "/movement/test/snapshots"
+          },
+          {
+            "label": "View Trends",
+            "to": "/movement/test/trends"
+          },
+          {
+            "label": "View Movement Settings",
+            "to": "/movement/test/settings"
+          },
+          {
+            "label": "Who can see this?",
+            "ariaLabel": "Sharing Settings",
+            "to": "/movement/test/access"
+          }
+        ]
+      },
+      "menu": {
+        "options": [
+          {
+            "label": "Open",
+            "icon": "mdiFileTree",
+            "to": "/movement/test",
+            "separate": true
+          },
+          {
+            "label": "New",
+            "icon": "matAdd",
+            "click": true,
+            "separate": true
+          },
+          {
+            "label": "Rename",
+            "icon": "matEdit",
+            "platform": {
+              "mobile": {
+                "click": true
+              }
+            },
+            "child": {
+              "props": {
+                "localMovement": "this.localMovement"
+              }
+            }
+          },
+          {
+            "label": "Change Color",
+            "icon": "matColorLens",
+            "platform": {
+              "mobile": {
+                "click": true
+              }
+            },
+            "child": {
+              "props": {
+                "localMovement": "this.localMovement"
+              }
+            }
+          },
+          {
+            "label": "Update Snapshot",
+            "click": true
+          },
+          {
+            "label": "Copy",
+            "icon": "matContentCopy",
+            "click": true,
+            "tooltip": "Copy Movement Stucture"
+          },
+          {
+            "label": "Carbon Copy",
+            "icon": "matContentCopy",
+            "click": true,
+            "tooltip": "Copy Movement in it\"s entirinty"
+          },
+          {
+            "label": "Show",
+            "alt-label": "Hide",
+            "icon": "matVisibility",
+            "alt-icon": "matVisibilityOff",
+            "click": true,
+            "separate": true
+          },
+          {
+            "label": "Settings",
+            "icon": "matSettings",
+            "to": "/movement/test/settings"
+          },
+          {
+            "label": "Access",
+            "icon": "matPeople",
+            "to": "/movement/test/access",
+            "separate": true
+          },
+          {
+            "label": "Leave Movement",
+            "icon": "matDelete",
+            "click": true
+          }
+        ]
+      }
+    },
+    {
+      "role": "owner",
+      "card": {
+        "buttons": [
+          {
+            "label": "View Movement",
+            "to": "/movement/test"
+          },
+          {
+            "label": "View Members",
+            "to": "/movement/test/members"
+          },
+          {
+            "label": "View Snapshots",
+            "to": "/movement/test/snapshots"
+          },
+          {
+            "label": "View Trends",
+            "to": "/movement/test/trends"
+          },
+          {
+            "label": "View Movement Settings",
+            "to": "/movement/test/settings"
+          },
+          {
+            "label": "Who can see this?",
+            "ariaLabel": "Sharing Settings",
+            "to": "/movement/test/access"
+          }
+        ]
+      },
+      "menu": {
+        "options": [
+          {
+            "label": "Open",
+            "icon": "mdiFileTree",
+            "to": "/movement/test",
+            "separate": true
+          },
+          {
+            "label": "New",
+            "icon": "matAdd",
+            "click": true,
+            "separate": true
+          },
+          {
+            "label": "Rename",
+            "icon": "matEdit",
+            "platform": {
+              "mobile": {
+                "click": true
+              }
+            },
+            "child": {
+              "props": {
+                "localMovement": "this.localMovement"
+              }
+            }
+          },
+          {
+            "label": "Change Color",
+            "icon": "matColorLens",
+            "platform": {
+              "mobile": {
+                "click": true
+              }
+            },
+            "child": {
+              "props": {
+                "localMovement": "this.localMovement"
+              }
+            }
+          },
+          {
+            "label": "Update Snapshot",
+            "click": true
+          },
+          {
+            "label": "Copy",
+            "icon": "matContentCopy",
+            "click": true,
+            "tooltip": "Copy Movement Stucture"
+          },
+          {
+            "label": "Carbon Copy",
+            "icon": "matContentCopy",
+            "click": true,
+            "tooltip": "Copy Movement in it\"s entirinty"
+          },
+          {
+            "label": "Show",
+            "alt-label": "Hide",
+            "icon": "matVisibility",
+            "alt-icon": "matVisibilityOff",
+            "click": true,
+            "separate": true
+          },
+          {
+            "label": "Settings",
+            "icon": "matSettings",
+            "to": "/movement/test/settings"
+          },
+          {
+            "label": "Access",
+            "icon": "matPeople",
+            "to": "/movement/test/access",
+            "separate": true
+          },
+          {
+            "label": "Delete",
+            "icon": "matDeleteForever",
+            "click": true
+          }
+        ]
+      }
+    },
+    {
+      "role": "overseer",
+      "card": {
+        "buttons": [
+          {
+            "label": "View Movement",
+            "to": "/movement/test"
+          },
+          {
+            "label": "View Members",
+            "to": "/movement/test/members"
+          },
+          {
+            "label": "View Snapshots",
+            "to": "/movement/test/snapshots"
+          },
+          {
+            "label": "View Trends",
+            "to": "/movement/test/trends"
+          }
+        ]
+      },
+      "menu": {
+        "options": [
+          {
+            "label": "Open",
+            "icon": "mdiFileTree",
+            "to": "/movement/test",
+            "separate": true
+          },
+          {
+            "label": "New",
+            "icon": "matAdd",
+            "click": true,
+            "separate": true
+          },
+          {
+            "label": "Update Snapshot",
+            "click": true
+          },
+          {
+            "label": "Copy",
+            "icon": "matContentCopy",
+            "click": true,
+            "tooltip": "Copy Movement Stucture"
+          },
+          {
+            "label": "Show",
+            "alt-label": "Hide",
+            "icon": "matVisibility",
+            "alt-icon": "matVisibilityOff",
+            "click": true,
+            "separate": true
+          },
+          {
+            "label": "Leave Movement",
+            "icon": "matDelete",
+            "click": true
+          }
+        ]
+      }
+    }
+  ]
+}

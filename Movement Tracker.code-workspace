@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"eslint.format.enable": true,
+        "editor.detectIndentation": false,
+        "editor.tabSize": 2,
+        "compile-hero.disable-compile-files-on-did-save-code": true,
+        "mochaExplorer.files": "**/*_mocha.spec.js",
+        "mocha-snippets.glob": "**/*_mocha.spec.js"
+	}
+}
