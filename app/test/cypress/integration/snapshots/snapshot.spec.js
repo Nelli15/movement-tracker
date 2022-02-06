@@ -91,11 +91,66 @@ describe('snapshot page tests', () => {
       cy.dataCy('"member-example-member"').should('exist')
       cy.dataCy('"member-example-parent-member"').should('not.exist')
     });
-
-    it.skip('should sort trees', () => {
-      
-    });
   });
+
+  describe('should sort members', () => {
+    beforeEach(() => {
+      cy.navToMovPage('members')
+      cy.get('[data-cy="member-example-member"]', {timeout: 90000}).should('exist')
+      for(let name of ['member a', 'member b', 'member c']) {
+        cy.dataCy('create-member').click()
+        cy.dataCy('"add-member-comp"').within(()=>{
+          // name
+          cy.contains('Name').type(name)
+          // submit
+          cy.contains('Create').click()
+        })
+        cy.checkNotify('Member Created')
+      }
+      cy.dataCy('"update-snap-movement"').click()
+      // .contains('add-a-photo')
+      cy.dataCy('"submit"').click()
+      cy.checkNotify('Snapshot Updated')
+      cy.navToMovPage('snapshots')
+      cy.get('[data-cy="snapshots-table"]', {timestamp: 10000})
+      cy.get('[data-cy="snap-link"]', {timestamp: 60000}).should('exist').click()
+      cy.get('[data-cy="member-example-member"]', {timeout: 90000}).should('exist')
+      cy.dataCy('filter-members').click()
+      cy.dataCy('"filter-comp"').should('exist').and('be.visible')
+    })
+
+    it('should sort trees by Name', () => {
+      cy.dataCy('"filter-comp"').within(() => {
+        cy.contains('Sort Members').click()
+      })
+    
+      cy.get('.q-menu').last().contains('Name').click()
+      cy.get('.q-tree').within(() => {
+        let testList = ['Example Member', 'Example Member with Parent', 'member a', 'member b', 'member c']
+        cy.get('.q-btn__content').each((el, ind, list) => {
+          cy.wrap(el).should('include.text', testList[ind])
+        })
+        cy.get('.q-btn__content').should('have.length', testList.length)
+      });
+      
+
+    });
+    it.skip('should sort trees by Role', () => {
+      cy.dataCy('"filter-comp"').within(() => {
+        cy.contains('Sort Members').click()
+      })
+    
+      cy.get('.q-menu').last().contains('Role').click()
+      cy.get('.q-tree').within(() => {
+        let testList = ['Example Member', 'Example Member with Parent', 'member a', 'member b', 'member c']
+        cy.get('.q-btn__content').each((el, ind, list) => {
+          cy.wrap(el).should('include.text', testList[ind])
+        })
+      });
+      cy.get('.q-tree').should('have.length', testList.length)
+
+    });
+  })
 
   describe('trees', () => {
     it('should select tree', () => {

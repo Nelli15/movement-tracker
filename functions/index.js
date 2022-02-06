@@ -1,6 +1,16 @@
-const admin = require('firebase-admin')
 
-var serviceAccount = require('./serviceAccount.json')
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+
+const environment = require("./src/environments/environment.js");
+
+var serviceAccount = require('./../serviceAccount.json')
+
+// if(process.env.prod) {
+// serviceAccount = require('./../serviceAccount.json')
+// } else {
+//   serviceAccount = require('./../serviceAccount-test.json')
+// }
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -9,5 +19,9 @@ if (!admin.apps.length) {
   })
 }
 
-exports.movementtracker = require('./src/movementtracker')
+exports.mt = require('./src/movementtracker')
 // exports.organisations = require('./src/organisations')
+const context = {
+  admin,
+  environment
+};

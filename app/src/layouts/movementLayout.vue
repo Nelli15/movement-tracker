@@ -185,43 +185,43 @@
 </template>
 
 <script>
-import { logEvent, getAnalytics } from "firebase/analytics";
-import { getAuth, onAuthStateChanged, signOut } from "@firebase/auth";
-import { defineAsyncComponent, ref, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useStore } from "vuex";
-import { useQuasar } from "quasar";
+import { logEvent, getAnalytics } from 'firebase/analytics';
+import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
+import { defineAsyncComponent, ref, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+import { useQuasar } from 'quasar';
 
 export default {
-  name: "movementLayout",
+  name: 'movementLayout',
   setup() {
     const q = useQuasar();
     const route = useRoute();
     const router = useRouter();
     const store = useStore();
-    const logo_url = ref("/app-logo-128x128.png");
-    const user = computed(() => store.getters["auth/user"]);
+    const logo_url = ref('/app-logo-128x128.png');
+    const user = computed(() => store.getters['auth/user']);
     const movement = computed(() => store.state.movement.movement);
     if (navigator.standalone) {
       // console.log('Launched: Installed (iOS)')
-    } else if (matchMedia("(display-mode: standalone)").matches) {
+    } else if (matchMedia('(display-mode: standalone)').matches) {
       // console.log('Launched: Installed')
     } else {
       // console.log('Launched: Browser Tab')
       if (q.platform.is.ios && q.platform.is.safari) {
-        Notify.create({
+        q.notify({
           message:
             'Movement Tracker works best when installed! Just tap <img src="/icons/Navigation_Action_2x_white.png" height="15px"></img> then "Add to Homescreen"',
           html: true,
           timeout: 10000,
-          color: "primary",
+          color: 'primary',
         });
       } else if (q.platform.is.ios && !q.platform.is.safari) {
-        Notify.create({
+        q.notify({
           message:
-            "Movement Tracker works best when installed! Open Movement Tracker in Safari to install the app.",
+            'Movement Tracker works best when installed! Open Movement Tracker in Safari to install the app.',
           timeout: 10000,
-          color: "primary",
+          color: 'primary',
           // actions: [{
           //   label: 'Install',
           //   icon: 'system_update',
@@ -240,16 +240,16 @@ export default {
     function logout() {
       signOut(getAuth())
         .then(() => {
-          router.push("/login");
+          router.push('/login');
           return true;
         })
         .catch((err) => {
           if (process.env.DEV)
-            logEvent(getAnalytics(), "exception", {
+            logEvent(getAnalytics(), 'exception', {
               description: err,
               fatal: false,
             });
-          console.error(new Error("Oops, something went wrong: " + err));
+          console.error(new Error('Oops, something went wrong: ' + err));
         });
     }
 
@@ -260,32 +260,32 @@ export default {
       // console.log(permissions);
       let links = [
         {
-          label: "Home",
-          icon: "home",
-          tooltip: "Home",
-          to: "/home",
+          label: 'Home',
+          icon: 'home',
+          tooltip: 'Home',
+          to: '/home',
           permission: true,
-          "data-cy": "home-link",
+          'data-cy': 'home-link',
         },
         {
-          label: "Movement Members",
-          icon: "img:icons/file-tree-white.svg",
-          tooltip: "View Members",
+          label: 'Movement Members',
+          icon: 'img:icons/file-tree-white.svg',
+          tooltip: 'View Members',
           to: `/movement/${movement.value.id}/members`,
           permission: permissions.value
             ? permissions.value.members_view
             : false,
-          "data-cy": "members-link",
+          'data-cy': 'members-link',
         },
         {
-          label: "Movement Snapshots",
-          icon: "photo_library",
-          tooltip: "View Snapshots",
+          label: 'Movement Snapshots',
+          icon: 'photo_library',
+          tooltip: 'View Snapshots',
           to: `/movement/${movement.value.id}/snapshots`,
           permission: permissions.value
             ? permissions.value.snapshots_view
             : false,
-          "data-cy": "snapshots-link",
+          'data-cy': 'snapshots-link',
         },
         // {
         //   label: "Movement Trends",
@@ -308,22 +308,22 @@ export default {
         //   "data-cy": "events-link",
         // },
         {
-          label: "Movement Settings",
-          icon: "settings",
-          tooltip: "Movement Settings",
+          label: 'Movement Settings',
+          icon: 'settings',
+          tooltip: 'Movement Settings',
           to: `/movement/${movement.value.id}/settings`,
           permission: permissions.value
             ? permissions.value.settings_view
             : false,
-          "data-cy": "settings-link",
+          'data-cy': 'settings-link',
         },
         {
-          label: "Sharing and Access",
-          icon: "people",
-          tooltip: "Who has access",
+          label: 'Sharing and Access',
+          icon: 'people',
+          tooltip: 'Who has access',
           to: `/movement/${movement.value.id}/access`,
           permission: permissions.value ? permissions.value.access_view : false,
-          "data-cy": "access-link",
+          'data-cy': 'access-link',
         },
       ];
       // console.log(links);
@@ -342,14 +342,14 @@ export default {
     // <noscript> tags
     noscript: {
       default:
-        "This app only works on browsers with Javascript enabled. Please enable Javascript and refresh the page to continue.",
+        'This app only works on browsers with Javascript enabled. Please enable Javascript and refresh the page to continue.',
     },
   },
   preFetch({ store, redirect, currentRoute }) {
     onAuthStateChanged(getAuth(), (user) => {
       if (user) {
         // if (store.state.movements.movements.length <= 0) {
-        store.dispatch("movement/fetchMovement", {
+        store.dispatch('movement/fetchMovement', {
           uid: user.uid,
           movId: currentRoute.params.movId,
         });
@@ -429,14 +429,14 @@ export default {
     });
   },
   components: {
-    "mt-help-fab": defineAsyncComponent(() =>
-      import("../components/mt-help-fab.vue")
+    'mt-help-fab': defineAsyncComponent(() =>
+      import('../components/mt-help-fab.vue')
     ),
-    "mt-splashscreen": defineAsyncComponent(() =>
-      import("../components/mt-splashscreen.vue")
+    'mt-splashscreen': defineAsyncComponent(() =>
+      import('../components/mt-splashscreen.vue')
     ),
-    "mt-online-status": defineAsyncComponent(() =>
-      import("../components/mt-online-status.vue")
+    'mt-online-status': defineAsyncComponent(() =>
+      import('../components/mt-online-status.vue')
     ),
   },
 };

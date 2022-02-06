@@ -10,6 +10,9 @@
     <q-scroll-area style="height: calc(100vh - 50px); max-width: 100%">
       <div style="padding-left: 56px; min-height: 90vh" data-cy="background">
         <MovBanner :readOnly="true" :snapshot="snapshot" />
+        <div class="print-only text-center">
+          {{ tab === 'trees' ? visibleTree.label : '' }}
+        </div>
         <q-tabs
           v-model="tab"
           dense
@@ -18,6 +21,7 @@
           inline-label
           align="left"
           data-cy="member-tabs"
+          class="print-hide"
         >
           <q-tab
             name="trees"
@@ -40,7 +44,7 @@
               option-value="id"
             >
               <template v-slot:selected>
-                <div class="text-black">
+                <div :style="`color:${color}`">
                   {{ visibleTree ? visibleTree.label : '' }}
                 </div>
               </template>
@@ -62,6 +66,7 @@
               :roles="roles"
               :mods="mods"
               :tree="treeSorted"
+              storeModule="snapshot"
             />
           </q-tab-panel>
           <q-tab-panel name="list" class="q-pa-none">

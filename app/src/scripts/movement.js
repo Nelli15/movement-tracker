@@ -12,7 +12,7 @@ export function copy (id) {
   // console.log(id)
   var copyMovement = httpsCallable(
     getFunctions(),
-    'movementtracker-movements-copy'
+    'mt-movements-copy'
   )
   copyMovement({ movId: id })
     .then(() => {
@@ -46,7 +46,7 @@ export function carbonCopy (id) {
   // console.log(id)
   var carbonCopyMovement = httpsCallable(
     getFunctions(),
-    'movementtracker-movements-carbonCopy'
+    'mt-movements-carbonCopy'
   )
   carbonCopyMovement({ movId: id })
     .then(() => {
@@ -107,7 +107,7 @@ export function changeColor (id, newColor) {
 export async function create () {
   var createMovement = httpsCallable(
     getFunctions(),
-    'movementtracker-movements-create'
+    'mt-movements-create'
   )
   return createMovement()
     .then(res => {

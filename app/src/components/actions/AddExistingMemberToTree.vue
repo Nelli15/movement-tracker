@@ -6,13 +6,28 @@
           <q-select
             v-model="existing"
             label="Member"
-            :options="memberList"
+            :options="
+              memberListFiltered.sort((a, b) => {
+                let x = a.name.toLowerCase();
+                let y = b.name.toLowerCase();
+                if (x < y) {
+                  return -1;
+                }
+                if (x > y) {
+                  return 1;
+                }
+                return 0;
+              })
+            "
             option-label="name"
             option-value="id"
             option-dense
             emit-value
             map-options
             :color="q.dark.isActive ? 'blue-2' : ''"
+            @filter="filterMembers"
+            use-input
+            input-debounce="0"
           />
         </q-item-section>
       </q-item>
@@ -41,23 +56,24 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
-import { useQuasar } from "quasar";
+import { mapGetters, mapState } from 'vuex';
+import { useQuasar } from 'quasar';
 import {
   getFirestore,
   updateDoc,
   setDoc,
   doc,
   arrayUnion,
-} from "@firebase/firestore";
+} from '@firebase/firestore';
 
 export default {
-  name: "AddExistingMemberToTree",
-  props: ["parent", "treeId"],
+  name: 'AddExistingMemberToTree',
+  props: ['parent', 'treeId'],
   data() {
     return {
-      existing: "",
+      existing: '',
       shadow: false,
+      memberListFiltered: [],
     };
   },
   setup() {
@@ -98,19 +114,31 @@ export default {
           .then(() => true)
           .catch((err) => {
             // if (process.env.PROD) logEvent(getAnalytics(), 'exception', { description: err, fatal: false })
-            console.error(new Error("Oops, something went wrong: " + err));
+            console.error(new Error('Oops, something went wrong: ' + err));
             return false;
           });
       } catch (err) {
         // if (process.env.PROD) logEvent(getAnalytics(), 'exception', { description: err, fatal: false })
-        console.error(new Error("Oops, something went wrong: " + err));
+        console.error(new Error('Oops, something went wrong: ' + err));
         return false;
       }
     },
+    filterMembers(val, update) {
+      update(() => {
+        if (val === '') {
+          this.memberListFiltered = this.memberList;
+        } else {
+          const needle = val.toLowerCase();
+          this.memberListFiltered = this.memberList.filter((v) => {
+            return v.name.toLowerCase().indexOf(needle) > -1;
+          });
+        }
+      });
+    },
   },
   computed: {
-    ...mapGetters("movement", ["memberList"]),
-    ...mapState("movement", ["movement"]),
+    ...mapGetters('movement', ['memberList']),
+    ...mapState('movement', ['movement']),
   },
 };
 </script>

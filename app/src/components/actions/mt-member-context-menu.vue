@@ -56,15 +56,15 @@
 </template>
 
 <script>
-import { copy } from "./../../scripts/member.js";
-import { getFirestore, setDoc, doc, deleteField } from "@firebase/firestore";
-import { defineAsyncComponent, ref, computed, watch } from "vue";
-import { useStore } from "vuex";
-import { useQuasar } from "quasar";
-import { useRoute } from "vue-router";
+import { copy } from './../../scripts/member.js';
+import { getFirestore, setDoc, doc, deleteField } from '@firebase/firestore';
+import { defineAsyncComponent, ref, computed, watch } from 'vue';
+import { useStore } from 'vuex';
+import { useQuasar } from 'quasar';
+import { useRoute } from 'vue-router';
 
 export default {
-  name: "mt-member-context-menu",
+  name: 'mt-member-context-menu',
   props: {
     member: {
       children: [],
@@ -79,9 +79,9 @@ export default {
     const q = useQuasar();
     const store = useStore();
     const route = useRoute();
-    const localMember = ref({});
+    const l_member = ref({});
     function copyMember() {
-      return copy(localMember.value.id, route.params.movId, this);
+      return copy(l_member.value.id, route.params.movId, this);
     }
     function getClickMethod($event, opt) {
       for (var platform in opt.platform) {
@@ -96,15 +96,15 @@ export default {
     const options = computed(() => {
       const allOpts = [
         {
-          label: "Select",
-          icon: "check",
-          click: () => emit("selected", localMember.value.id),
+          label: 'Select',
+          icon: 'check',
+          click: () => emit('selected', l_member.value.id),
           separate: true,
           hideIf: !(permissions.value.members_edit && !props.readOnly),
         },
         {
-          label: "New",
-          icon: "person_add",
+          label: 'New',
+          icon: 'person_add',
           hideIf:
             !(permissions.value.members_create && !props.readOnly) ||
             props.shadow ||
@@ -113,20 +113,20 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                $refs["New-menu"][0].show();
+                $refs['New-menu'][0].show();
               },
             },
           },
           child: {
             component: defineAsyncComponent(() =>
-              import("./mt-add-member.vue")
+              import('./mt-add-member.vue')
             ),
-            props: { parent: localMember.value.id, treeOpt: props.treeOpt },
+            props: { parent: l_member.value.id, treeOpt: props.treeOpt },
           },
         },
         {
-          label: "Existing",
-          icon: "person_add",
+          label: 'Existing',
+          icon: 'person_add',
           hideIf:
             !(permissions.value.members_edit && !props.readOnly) ||
             !props.treeOpt ||
@@ -136,25 +136,25 @@ export default {
             mobile: {
               click: ($event) => {
                 // console.log($refs["Existing-menu"][0]);
-                $refs["Existing-menu"][0].show();
+                $refs['Existing-menu'][0].show();
               },
             },
           },
           child: {
             component: defineAsyncComponent(() =>
-              import("./AddExistingMemberToTree.vue")
+              import('./AddExistingMemberToTree.vue')
             ),
             props: {
-              parent: localMember.value.id,
+              parent: l_member.value.id,
               treeId: props.treeOpt && props.treeOpt.id,
             },
           },
         },
         {
-          label: "Add sub-tree",
+          label: 'Add sub-tree',
           icon: q.dark.isActive
-            ? "img:icons/file-tree-white.svg"
-            : "img:icons/file-tree.svg",
+            ? 'img:icons/file-tree-white.svg'
+            : 'img:icons/file-tree.svg',
           hideIf:
             !(permissions.value.subTrees_add && !props.readOnly) ||
             !props.treeOpt ||
@@ -165,34 +165,34 @@ export default {
             mobile: {
               click: ($event) => {
                 // console.log($refs["Existing-menu"][0]);
-                $refs["Add sub-tree"][0].show();
+                $refs['Add sub-tree'][0].show();
               },
             },
           },
           child: {
-            component: defineAsyncComponent(() => import("./AddSubTree.vue")),
+            component: defineAsyncComponent(() => import('./AddSubTree.vue')),
             props: {
-              parent: localMember.value.id,
+              parent: l_member.value.id,
               treeId: props.treeOpt && props.treeOpt.id,
             },
           },
         },
         {
-          label: "Go to Tree",
+          label: 'Go to Tree',
           icon: q.dark.isActive
-            ? "img:icons/file-tree-white.svg"
-            : "img:icons/file-tree.svg",
+            ? 'img:icons/file-tree-white.svg'
+            : 'img:icons/file-tree.svg',
           hideIf: !props.treeOpt || !(props.node && props.node.subTree),
           separate: true,
           click: () => {
-            emit("changeTree", props.node.subTree);
+            emit('changeTree', props.node.subTree);
           },
         },
         {
-          label: "Add to Tree",
+          label: 'Add to Tree',
           icon: q.dark.isActive
-            ? "img:icons/file-tree-white.svg"
-            : "img:icons/file-tree.svg",
+            ? 'img:icons/file-tree-white.svg'
+            : 'img:icons/file-tree.svg',
           hideIf: !(
             permissions.value.members_edit &&
             !props.readOnly &&
@@ -202,39 +202,39 @@ export default {
             mobile: {
               click: ($event) => {
                 // console.log($refs["Existing-menu"][0]);
-                $refs["Add to Tree-menu"][0].show();
+                $refs['Add to Tree-menu'][0].show();
               },
             },
           },
           child: {
             component: defineAsyncComponent(() =>
-              import("./AddMemberToTree.vue")
+              import('./AddMemberToTree.vue')
             ),
             props: {
-              member: localMember.value,
+              member: l_member.value,
             },
           },
         },
         {
-          label: "View",
+          label: 'View',
           icon: `person`,
           platform: {
             mobile: {
               click: ($event) => {
-                $refs["View-menu"][0].show();
+                $refs['View-menu'][0].show();
               },
             },
           },
           child: {
             component: defineAsyncComponent(() =>
-              import("./mt-member-view-menu.vue")
+              import('./mt-member-view-menu.vue')
             ),
-            props: { localMember: localMember.value },
+            props: { l_member: l_member.value },
           },
         },
         {
-          label: "Edit",
-          icon: "edit",
+          label: 'Edit',
+          icon: 'edit',
           hideIf:
             !(permissions.value.members_edit && !props.readOnly) ||
             !props.treeOpt ||
@@ -242,16 +242,16 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                $refs["Edit-menu"][0].show();
+                $refs['Edit-menu'][0].show();
               },
             },
           },
           child: {
             component: defineAsyncComponent(() =>
-              import("./mt-edit-member.vue")
+              import('./mt-edit-member.vue')
             ),
             props: {
-              member: localMember.value,
+              member: l_member.value,
               node: props.node,
               treeOpt: props.treeOpt,
               shadow: props.shadow,
@@ -259,10 +259,10 @@ export default {
           },
         },
         {
-          label: "Move",
+          label: 'Move',
           icon: q.dark.isActive
-            ? "img:icons/outline_person_move_white.svg"
-            : "img:icons/outline_person_move_black.svg",
+            ? 'img:icons/outline_person_move_white.svg'
+            : 'img:icons/outline_person_move_black.svg',
           hideIf:
             !(permissions.value.members_edit && !props.readOnly) ||
             !props.treeOpt ||
@@ -270,17 +270,17 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                $refs["Move-menu"][0].show();
+                $refs['Move-menu'][0].show();
               },
             },
           },
           child: {
             component: defineAsyncComponent(() =>
-              import("./MoveMemberInTree.vue")
+              import('./MoveMemberInTree.vue')
             ),
             props: {
               movement: movement,
-              member: localMember.value,
+              member: l_member.value,
               treeOpt: props.treeOpt,
               shadow: props.shadow,
               currentParent: props.node ? props.node.parent : null,
@@ -288,32 +288,32 @@ export default {
           },
         },
         {
-          label: "Copy",
-          icon: "content_copy",
+          label: 'Copy',
+          icon: 'content_copy',
           hideIf: !(permissions.value.members_edit && !props.readOnly),
           click: copyMember,
         },
         {
-          label: "Notes",
-          icon: "notes",
+          label: 'Notes',
+          icon: 'notes',
           separate: true,
           hideIf: !(permissions.value.members_edit && !props.readOnly),
           platform: {
             mobile: {
               click: ($event) => {
-                $refs["Notes-menu"][0].show();
+                $refs['Notes-menu'][0].show();
               },
             },
           },
           child: {
-            component: defineAsyncComponent(() => import("./MemberNotes.vue")),
-            props: { member: localMember.value },
-            events: { save: () => this.$refs["Notes-menu"].hide() },
+            component: defineAsyncComponent(() => import('./MemberNotes.vue')),
+            props: { member: l_member.value },
+            events: { save: () => this.$refs['Notes-menu'].hide() },
           },
         },
         {
-          label: "Remove from Tree",
-          icon: "person_remove",
+          label: 'Remove from Tree',
+          icon: 'person_remove',
           hideIf:
             !permissions.value.members_edit ||
             !props.treeOpt ||
@@ -325,7 +325,7 @@ export default {
                   getFirestore(),
                   `/movements/${movement.value.id}/trees/${props.treeOpt.id}/components/parents`
                 ),
-                { [localMember.value.id]: deleteField() },
+                { [l_member.value.id]: deleteField() },
                 { merge: true }
               );
             }
@@ -333,8 +333,8 @@ export default {
           },
         },
         {
-          label: "Remove Tree",
-          icon: "person_remove",
+          label: 'Remove Tree',
+          icon: 'person_remove',
           hideIf:
             !permissions.value.subTrees_remove ||
             !props.treeOpt ||
@@ -359,9 +359,9 @@ export default {
             !props.treeOpt ||
             (props.node && props.node.subTree),
           component: {
-            component: defineAsyncComponent(() => import("./DeleteMember.vue")),
+            component: defineAsyncComponent(() => import('./DeleteMember.vue')),
             props: {
-              member: localMember.value,
+              member: l_member.value,
               deleteable: props.deleteable,
               readOnly: props.readOnly,
             },
@@ -382,12 +382,12 @@ export default {
     watch(
       props.member,
       (newVal, oldVal) => {
-        // console.log('member changed', localMember.value, member)
-        localMember.value = { ...newVal };
+        // console.log('member changed', l_member.value, member)
+        l_member.value = { ...newVal };
       },
       { immediate: true, deep: true }
     );
-    return { q, localMember, movement, options, getClickMethod };
+    return { q, l_member, movement, options, getClickMethod };
   },
 };
 </script>

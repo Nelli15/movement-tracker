@@ -17,7 +17,7 @@ export function closeDrawers (state, payload) {
 export function setHighlighted (state, payload) {
   if (state.highlight.current !== payload.id) {
     // console.log(payload)
-    state.highlight = { ...payload.members, ...payload.noParentMembers }
+    // state.highlight = { ...payload.members, ...payload.noParentMembers }
     state.highlight.current = payload.id
   } else {
     state.highlight = {}

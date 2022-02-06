@@ -33,13 +33,13 @@
                   popup-content-style="width: 100px"
                 >
                   <template v-slot:option="scope">
-                    <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+                    <q-item v-bind="scope.itemProps">
                       <q-item-section>
                         <q-item-label v-html="scope.opt.label" />
                         <q-item-label caption>{{
-                          typeof scope.opt.desc === "string" &&
-                          scope.opt.desc > ""
-                            ? scope.opt.desc.substring(0, 100).concat("...")
+                          typeof scope.opt.desc === 'string' &&
+                          scope.opt.desc > ''
+                            ? scope.opt.desc.substring(0, 100).concat('...')
                             : scope.opt.desc
                         }}</q-item-label>
                       </q-item-section>
@@ -67,13 +67,13 @@
                 popup-content-style="width: 100px"
               >
                 <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+                  <q-item v-bind="scope.itemProps">
                     <q-item-section>
                       <q-item-label v-html="scope.opt.label" />
                       <q-item-label caption>{{
-                        typeof scope.opt.desc === "string" &&
-                        scope.opt.desc > ""
-                          ? scope.opt.desc.substring(0, 100).concat("...")
+                        typeof scope.opt.desc === 'string' &&
+                        scope.opt.desc > ''
+                          ? scope.opt.desc.substring(0, 100).concat('...')
                           : scope.opt.desc
                       }}</q-item-label>
                     </q-item-section>
@@ -214,8 +214,8 @@
             >Please confirm that you want to edit
             {{
               membersSelected.length > 1
-                ? membersSelected.length + " members"
-                : membersSelected.length + " member"
+                ? membersSelected.length + ' members'
+                : membersSelected.length + ' member'
             }}.</span
           >
         </q-card-section>
@@ -240,8 +240,8 @@
             >Please confirm that you want to DELETE
             {{
               membersSelected.length > 1
-                ? membersSelected.length + " members"
-                : membersSelected.length + " member"
+                ? membersSelected.length + ' members'
+                : membersSelected.length + ' member'
             }}.</span
           >
         </q-card-section>
@@ -262,11 +262,11 @@
 </template>
 
 <script>
-import { getFirestore, arrayUnion, updateDoc, doc } from "@firebase/firestore";
+import { getFirestore, arrayUnion, updateDoc, doc } from '@firebase/firestore';
 // // import { $firestore } from "./../data/firebase.js";
 
-import { mapGetters, mapActions, mapMutations, mapState } from "vuex";
-import { LocalStorage, Dark, Notify } from "quasar";
+import { mapGetters, mapActions, mapMutations, mapState } from 'vuex';
+import { LocalStorage, Dark, Notify } from 'quasar';
 // import { mapActions } from 'vuex'
 
 export default {
@@ -283,10 +283,10 @@ export default {
       fabPos: [18, 18],
       draggingFab: false,
       batchEdit: {
-        role: "",
+        role: '',
         mods: [],
-        parent: "",
-        tree: "",
+        parent: '',
+        tree: '',
         shadow: false,
       },
       batchConfirm: false,
@@ -297,7 +297,7 @@ export default {
     this.Dark = Dark;
   },
   methods: {
-    ...mapMutations("movement", ["moveLocalMember", "updateStateMember"]),
+    ...mapMutations('movement', ['moveLocalMember', 'updateStateMember']),
     moveFab(ev) {
       this.draggingFab = ev.isFirst !== true && ev.isFinal !== true;
 
@@ -305,7 +305,7 @@ export default {
     },
     filterOverrideStyles(val, update) {
       update(() => {
-        if (val === "") {
+        if (val === '') {
           this.modOptsFiltered = this.modOpts;
         } else {
           const needle = val.toLowerCase();
@@ -322,7 +322,7 @@ export default {
     },
     filterBaseStyles(val, update) {
       update(() => {
-        if (val === "") {
+        if (val === '') {
           this.roleOptsFiltered = this.roleOpts;
         } else {
           const needle = val.toLowerCase();
@@ -338,7 +338,7 @@ export default {
       });
     },
     filterParents(val, update) {
-      if (val === "") {
+      if (val === '') {
         update(() => {
           this.parentOptionsFiltered = this.parentOptions.sort((a, b) => {
             return a.name > b.name ? 1 : a.name < b.name ? -1 : 0;
@@ -377,10 +377,10 @@ export default {
     },
     filterParents(val, update) {
       let parentOptions = [
-        { id: "root", name: "--First Member in Tree--" },
+        { id: 'root', name: '--First Member in Tree--' },
         ...Object.values(this.parents),
       ];
-      if (val === "") {
+      if (val === '') {
         update(() => {
           this.parentOptionsFiltered = parentOptions.sort((a, b) => {
             return a.name > b.name ? 1 : a.name < b.name ? -1 : 0;
@@ -402,40 +402,51 @@ export default {
       });
     },
     batchUpdate() {
-      // this.batchLoading = true
       const members = this.membersSelected;
       const elements = this.batchEdit;
       const membersObject = {};
-      // console.log(elements)
-      for (var member in this.members) {
-        membersObject[this.members[member].id] = this.members[member];
+
+      //construct a lookup table to convert parent-child key to id
+      for (let memberKey of members) {
+        for (let el in this.parents) {
+          if (this.parents[el].key === memberKey) {
+            membersObject[this.parents[el].key] =
+              this.members[this.parents[el].id];
+          }
+          for (let childInd in this.parents[el].children) {
+            let child = this.parents[el].children[childInd];
+            if (child.key === memberKey) {
+              membersObject[child.key] = this.members[child.id];
+            }
+          }
+        }
       }
-      members.forEach((key) => {
-        // console.log(membersObject)
+      for (let l_key of members) {
         let newMember = {};
-        var currentMember = membersObject[key];
-        if (elements.role > "") {
+        var currentMember = membersObject[l_key];
+        if (elements.role > '') {
           newMember.role = elements.role.id;
         }
         if (elements.mods.length > 0) {
-          newMember.mods = [];
-          for (var mod in currentMember.mods) {
-            // console.log(currentMember.mods[mod].id, newMember.mods, !newMember.mods.includes(currentMember.mods[mod].id))
-            if (
-              currentMember.mods[mod].id &&
-              !newMember.mods.includes(currentMember.mods[mod].id)
-            ) {
-              newMember.mods.push(currentMember.mods[mod].id);
-            }
-          }
-          for (mod in elements.mods) {
-            // console.log(newMember.mods, elements.mods[mod], !newMember.mods.includes(elements.mods[mod]))
+          //if mods are being added
+          newMember.mods = currentMember.mods
+            ? JSON.parse(JSON.stringify(currentMember.mods))
+            : [];
+          // for (var mod in currentMember.mods) {
+          //   if (
+          //     currentMember.mods[mod].id &&
+          //     !newMember.mods.includes(currentMember.mods[mod].id)
+          //   ) {
+          //     newMember.mods.push(currentMember.mods[mod].id);
+          //   }
+          // }
+          for (let mod in elements.mods) {
             if (!newMember.mods.includes(elements.mods[mod])) {
               newMember.mods.push(elements.mods[mod]);
             }
           }
         }
-        if (elements.parent > "" && elements.tree > "") {
+        if (elements.parent > '' && elements.tree > '') {
           newMember.trees = arrayUnion(elements.tree);
           if (elements.shadow) {
             updateDoc(
@@ -443,7 +454,7 @@ export default {
                 getFirestore(),
                 `/movements/${this.$route.params.movId}/trees/${elements.tree}/components/parents`
               ),
-              { [currentMember.id + ".shadow"]: arrayUnion(elements.parent.id) }
+              { [currentMember.id + '.shadow']: arrayUnion(elements.parent.id) }
             );
           } else {
             updateDoc(
@@ -451,11 +462,11 @@ export default {
                 getFirestore(),
                 `/movements/${this.$route.params.movId}/trees/${elements.tree}/components/parents`
               ),
-              { [currentMember.id + ".parent"]: elements.parent.id }
+              { [currentMember.id + '.parent']: elements.parent.id }
             );
           }
         }
-        if (elements.role > "" || elements.mods.length > 0) {
+        if (elements.role > '' || elements.mods.length > 0) {
           updateDoc(
             doc(
               getFirestore(),
@@ -464,10 +475,10 @@ export default {
             newMember
           )
             .then(() => {
-              if (elements.role > "") {
+              if (elements.role > '') {
                 this.updateStateMember({
                   memberId: currentMember.id,
-                  key: "role",
+                  key: 'role',
                   localValue: elements.role,
                 });
               }
@@ -481,7 +492,7 @@ export default {
                 // console.log({ memberId: currentMember.id, key: 'mods', localValue: mods })
                 this.updateStateMember({
                   memberId: currentMember.id,
-                  key: "mods",
+                  key: 'mods',
                   localValue: mods,
                 });
               }
@@ -502,39 +513,39 @@ export default {
               // })
               // this.updateStateMember({ memberId: currentMember.id, key: 'role', localValue: elements.role })
               // }
-              this.$emit("clearMembers", "");
+              this.$emit('clearMembers', '');
               this.batchEdit = {
-                role: "",
+                role: '',
                 mods: [],
-                tree: "",
-                parent: "",
+                tree: '',
+                parent: '',
               };
               Notify.create({
-                color: "positive",
-                textColor: "white",
-                icon: "cloud_download",
-                message: "Member Updated",
+                color: 'positive',
+                textColor: 'white',
+                icon: 'cloud_download',
+                message: 'Member Updated',
               });
               // this.batchLoading = false
               return true;
             })
             .catch((err) => {
               if (process.env.PROD)
-                logEvent(getAnalytics(), "exception", {
+                logEvent(getAnalytics(), 'exception', {
                   description: err,
                   fatal: false,
                 });
-              console.error(new Error("Oops, something went wrong: " + err));
+              console.error(new Error('Oops, something went wrong: ' + err));
               Notify.create({
-                color: "negative",
-                textColor: "white",
-                icon: "error",
-                message: "Oops, Something went wrong!",
+                color: 'negative',
+                textColor: 'white',
+                icon: 'error',
+                message: 'Oops, Something went wrong!',
               });
               // this.batchLoading = false
             });
         }
-      });
+      }
     },
     batchDelete() {
       const checkDeletable = (currentMember) => {
@@ -571,68 +582,63 @@ export default {
             )
           )
             .then(() => {
-              this.$emit("clearMembers", "");
+              this.$emit('clearMembers', '');
               this.batchEdit = {
-                role: "",
+                role: '',
                 mods: [],
-                parent: "",
+                parent: '',
               };
               Notify.create({
-                color: "positive",
-                textColor: "white",
-                icon: "cloud_download",
-                message: "Member Updated",
+                color: 'positive',
+                textColor: 'white',
+                icon: 'cloud_download',
+                message: 'Member Updated',
               });
               // this.batchLoading = false
               return true;
             })
             .catch((err) => {
               if (process.env.PROD)
-                logEvent(getAnalytics(), "exception", {
+                logEvent(getAnalytics(), 'exception', {
                   description: err,
                   fatal: false,
                 });
-              console.error(new Error("Oops, something went wrong: " + err));
+              console.error(new Error('Oops, something went wrong: ' + err));
               Notify.create({
-                color: "negative",
-                textColor: "white",
-                icon: "error",
-                message: "Oops, Something went wrong!",
+                color: 'negative',
+                textColor: 'white',
+                icon: 'error',
+                message: 'Oops, Something went wrong!',
               });
               // this.batchLoading = false
             });
         } else {
           Notify.create({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Cannot Delete, member has child!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Cannot Delete, member has child!',
           });
         }
       });
     },
     batchCancel() {
       this.batchEdit = {
-        role: "",
+        role: '',
         mods: [],
-        parent: "",
+        parent: '',
       };
-      this.$emit("clearMembers", "");
+      this.$emit('clearMembers', '');
     },
   },
   computed: {
-    ...mapGetters("movement", [
-      "roleOpts",
-      "modOpts",
-      "parentOptions",
-      "treeOpts",
-    ]),
-    ...mapState("movement", [
-      "movement",
-      "permissions",
-      "mods",
-      "members",
-      "trees",
+    ...mapGetters('movement', ['roleOpts', 'modOpts', 'treeOpts']),
+    ...mapState('movement', [
+      'movement',
+      'permissions',
+      'mods',
+      'members',
+      'trees',
     ]),
     parents() {
       let bfs = function (tree, key, collection) {
@@ -654,7 +660,7 @@ export default {
         ),
       };
       // console.log("bfs", bfs(dataTree, "children", flattenedCollection));
-      bfs(dataTree, "children", flattenedCollection);
+      bfs(dataTree, 'children', flattenedCollection);
 
       for (let ii in flattenedCollection) {
         flattenedCollection[ii].name =
@@ -662,6 +668,9 @@ export default {
       }
       // console.log("out", flattenedCollection);
       return flattenedCollection;
+    },
+    parentOptions() {
+      return Object.values(this.parents);
     },
   },
   watch: {

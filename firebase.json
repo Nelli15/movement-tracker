@@ -1,10 +1,10 @@
 {
   "functions": {
-    "source": "functions",
-    "predeploy": [
-      "npm --prefix \"$RESOURCE_DIR\" run lint",
-      "npm --prefix \"$RESOURCE_DIR\" run build"
-    ]
+    "source": "functions"
+    // "predeploy": [
+    //   "npm --prefix \"$RESOURCE_DIR\" run lint",
+    //   "npm --prefix \"$RESOURCE_DIR\" run build"
+    // ]
   },
   "database": {
     "rules": "database.rules.json"
@@ -14,12 +14,9 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "public": "src/dist",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "public": "app/dist/pwa",
+    "site": "pwa-tracking-tree",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",

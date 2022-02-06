@@ -1,4 +1,5 @@
- const path = require("path");
+ const { copyFileSync } = require("fs");
+const path = require("path");
  
  describe('members page tests', () => {
     before(()=> {
@@ -147,15 +148,56 @@
       cy.dataCy('"member-example-parent-member"').should('not.exist')
     });
 
-    it.skip('should sort trees', () => {
+  });
+  describe('should sort members', () => {
+    beforeEach(() => {
+      cy.get('[data-cy="member-example-member"]', {timeout: 90000}).should('exist')
+      for(let name of ['member a', 'member b', 'member c']) {
+        cy.dataCy('create-member').click()
+        cy.dataCy('"add-member-comp"').within(()=>{
+          // name
+          cy.contains('Name').type(name)
+          // submit
+          cy.contains('Create').click()
+        })
+        cy.checkNotify('Member Created')
+      }
+      cy.dataCy('filter-members').click()
+      cy.dataCy('"filter-comp"').should('exist').and('be.visible')
+    })
+
+    it('should sort trees by Name', () => {
+      cy.dataCy('"filter-comp"').within(() => {
+        cy.contains('Sort Members').click()
+      })
+    
+      cy.get('.q-menu').last().contains('Name').click()
+      cy.get('.q-tree').within(() => {
+        let testList = ['Example Member', 'Example Member with Parent', 'member a', 'member b', 'member c']
+        cy.get('.q-btn__content').each((el, ind, list) => {
+          cy.wrap(el).should('include.text', testList[ind])
+        })
+        cy.get('.q-btn__content').should('have.length', testList.length)
+      });
+      
+
+    });
+    it.skip('should sort trees by Role', () => {
       cy.dataCy('"filter-comp"').within(() => {
         cy.contains('Sort Members').click()
       })
     
       cy.get('.q-menu').last().contains('Role').click()
-      //TODO: check it sorted
+      cy.get('.q-tree').within(() => {
+        let testList = ['Example Member', 'Example Member with Parent', 'member a', 'member b', 'member c']
+        cy.get('.q-btn__content').each((el, ind, list) => {
+          cy.wrap(el).should('include.text', testList[ind])
+        })
+      });
+      cy.get('.q-tree').should('have.length', testList.length)
+
     });
-  });
+  })
 
   describe('trees', () => {
     it('should select tree', () => {
@@ -287,7 +329,9 @@
           // shadow
           cy.contains('Shadow Member?')
           // notes
-          cy.contains('Notes').type('This is a note')
+          cy.contains('Notes').type('This is a note').within(() => {
+            cy.get('input').should('have.value', 'This is a note')
+          })
           // submit
           cy.contains('Create').click()
         })
@@ -328,10 +372,15 @@
       })
     });
 
-      it('should delete tree', () => {
-      cy.get('[data-cy="background"]', {timeout: 90000}).wait(1000).rightclick()
+    it('should delete tree', () => {
+      cy.get('[data-cy="background"]', {timeout: 90000}).rightclick()
         cy.get('.q-menu').within(() => {
           cy.contains('Delete Tree').click()
+        })
+        cy.root().dataCy('"delete-dialog"').should('be.visible').within(()=>{
+          cy.get('.q-field').should('have.class', 'q-field--focused')
+          cy.get('input').should('be.enabled').type('DELETE')
+          cy.dataCy('delete-submit-btn').click({force: true})
         })
         cy.checkNotify('Tree Deleted')
         cy.dataCy('"member-tabs"').within(() => {

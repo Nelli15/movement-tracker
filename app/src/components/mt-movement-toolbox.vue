@@ -46,7 +46,11 @@
                 >{{ tool.item.tooltip }}</q-tooltip
               >
               <q-menu
-                ref="menu"
+                :ref="
+                  (el) => {
+                    if (el) refs[tool['data-cy'] + '-menu'] = el;
+                  }
+                "
                 anchor="bottom right"
                 self="top left"
                 style="min-height: 378px"
@@ -90,6 +94,7 @@ export default {
   },
   setup(props) {
     const store = useStore();
+    const refs = ref({});
     const toolCabinet = ref(true);
     const storeModule = ref(props.storeModule ? props.storeModule : 'movement');
     function changeSize(val) {
@@ -117,31 +122,23 @@ export default {
             ? mods[member.mods[styleId]].label
             : mods[member.mods[styleId]];
         }
-        member.parent = l_members[member.parent]
-          ? l_members[member.parent].name
-          : member.parent;
-        member.alt = l_members[member.alt]
-          ? l_members[member.alt].name
-          : member.alt;
       }
 
       // bundle the members into a CSV file
-      let csv = 'Name, Role, Modifiers, Parent, Alternate Parent, Notes\r\n';
+      let csv = 'Name, Role, Modifiers, Notes\r\n';
       for (var memberId in l_members) {
         if (memberId === 'root' || memberId === 'No Parent') continue;
         let member = l_members[memberId];
         csv += '"' + member.name + '",';
         csv += '"' + member.role + '",';
         csv += '"' + member.mods.toString().replace(/,/g, ', ') + '",';
-        csv += '"' + member.parent + '",';
-        csv += '"' + member.alt + '",';
         csv += '"' + (member.notes ? member.notes.replace(/\r?\n/g, ', ') : '');
         csv += '"\r\n';
       }
       // download the file
       saveAs(
         new Blob([csv], { type: 'text/plain;charset=utf-8' }),
-        `${movement.name}.csv`
+        `${movement.value.name}.csv`
       );
     }
     const movement = computed(() => store.state[storeModule.value].movement);
@@ -164,7 +161,11 @@ export default {
               import('./actions/mt-add-member.vue')
             ),
             props: { treeOpt: props.treeOpt },
-            events: { success: () => $refs.menu[0].hide() },
+            events: {
+              success: () => {
+                refs.value['create-member-menu'].hide();
+              },
+            },
             isMenu: true,
           },
           'data-cy': 'create-member',
@@ -263,7 +264,7 @@ export default {
       }
       return filteredTools;
     });
-    return { toolCabinet, toggleFilterVisible, toolListFiltered };
+    return { toolCabinet, toggleFilterVisible, toolListFiltered, refs };
   },
 };
 </script>

@@ -28,6 +28,7 @@
             label="Save"
             @click="saveChanges()"
             v-close-popup
+            color="positive"
           />
         </q-item-section>
       </q-item>
@@ -36,11 +37,11 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import { Dark, Notify } from "quasar";
+import { mapActions } from 'vuex';
+import { Dark, Notify } from 'quasar';
 export default {
-  name: "MemberNotes",
-  props: ["member"],
+  name: 'MemberNotes',
+  props: ['member'],
   data() {
     return {
       fieldsToUpdate: {},
@@ -50,7 +51,7 @@ export default {
     this.Dark = Dark;
   },
   methods: {
-    ...mapActions("movement", ["updateMember"]),
+    ...mapActions('movement', ['updateMember']),
     updateFields(payload) {
       if (payload.value === null) return false;
       // this.localMember[payload.key] = payload.value;

@@ -251,10 +251,10 @@ const getLabel = function(member, styles) {
     if (typeof styles[member.mods[key]] === "object") {
       if (styles[member.mods[key]].icon > "") {
         if (styles[member.mods[key]].style.prepend === true) {
-          if (!spaceAdded) {
-            res += " ";
-            spaceAdded = true;
-          }
+          // if (!spaceAdded) {
+          //   res += " ";
+          //   spaceAdded = true;
+          // }
           res += `[${styles[member.mods[key]].icon}]`;
         }
       }

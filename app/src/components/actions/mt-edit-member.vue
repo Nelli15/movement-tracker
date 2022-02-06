@@ -71,9 +71,9 @@
                   <q-item-section>
                     <q-item-label v-html="scope.opt.label" />
                     <q-item-label caption v-if="scope.opt.desc > ''">{{
-                      typeof scope.opt.desc === "string" && scope.opt.desc > ""
+                      typeof scope.opt.desc === 'string' && scope.opt.desc > ''
                         ? scope.opt.desc.length > 100
-                          ? scope.opt.desc.substring(0, 100).concat("...")
+                          ? scope.opt.desc.substring(0, 100).concat('...')
                           : scope.opt.desc
                         : scope.opt.desc
                     }}</q-item-label>
@@ -119,8 +119,8 @@
                 <q-item-section>
                   <q-item-label v-html="scope.opt.label" />
                   <q-item-label caption v-if="scope.opt.desc > ''">{{
-                    typeof scope.opt.desc === "string" && scope.opt.desc > ""
-                      ? scope.opt.desc.substring(0, 100).concat("...")
+                    typeof scope.opt.desc === 'string' && scope.opt.desc > ''
+                      ? scope.opt.desc.substring(0, 100).concat('...')
                       : scope.opt.desc
                   }}</q-item-label>
                 </q-item-section>
@@ -181,20 +181,20 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapState } from "vuex";
-const promiseDebounce = require("./../../scripts/promiseDebounce.js");
+import { mapGetters, mapActions, mapState } from 'vuex';
+const promiseDebounce = require('./../../scripts/promiseDebounce.js');
 import {
   getFirestore,
   updateDoc,
   doc,
   arrayRemove,
   arrayUnion,
-} from "@firebase/firestore";
-import { Dark, Notify, Platform } from "quasar";
+} from '@firebase/firestore';
+import { Dark, Notify, Platform } from 'quasar';
 // import { mapActions } from 'vuex'
 
 export default {
-  name: "mt-edit-member",
+  name: 'mt-edit-member',
   props: {
     // user: {}
     // contextMenu: Boolean,
@@ -208,7 +208,7 @@ export default {
       // parentOptionsFiltered: [],
       modOptsFiltered: [],
       roleOptsFiltered: [],
-      name: "",
+      name: '',
       localMember: {},
       localShadow: false,
       changeType: false,
@@ -227,10 +227,10 @@ export default {
     // this.name = this.localMember.name;
   },
   methods: {
-    ...mapActions("movement", ["updateMember"]),
+    ...mapActions('movement', ['updateMember']),
     filterOverrideStyles(val, update) {
       update(() => {
-        if (val === "") {
+        if (val === '') {
           this.modOptsFiltered = this.modOpts;
         } else {
           const needle = val.toLowerCase();
@@ -247,7 +247,7 @@ export default {
     },
     filterBaseStyles(val, update) {
       update(() => {
-        if (val === "") {
+        if (val === '') {
           this.roleOptsFiltered = this.roleOpts;
         } else {
           const needle = val.toLowerCase();
@@ -276,7 +276,7 @@ export default {
         var mods = this.localMember.mods;
         // console.log(mods);
         this.updateFields({
-          key: "mods",
+          key: 'mods',
           memberId: this.localMember.id,
           value: mods,
           // localValue: this.localMember.mods,
@@ -306,7 +306,7 @@ export default {
         }
         // console.log(this.localMember.mods);
         this.updateFields({
-          key: "mods",
+          key: 'mods',
           memberId: this.localMember.id,
           value: mods,
         });
@@ -332,18 +332,18 @@ export default {
       Promise.all(promises)
         .then(() => {
           Notify.create({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Member Updated",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Member Updated',
           });
         })
         .catch((err) => {
           Notify.create({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     },
@@ -355,8 +355,8 @@ export default {
             `/movements/${this.movement.id}/trees/${this.treeOpt.id}/components/parents`
           ),
           {
-            [this.member.id + ".parent"]: null,
-            [this.member.id + ".shadow"]: arrayUnion(this.node.parent),
+            [this.member.id + '.parent']: null,
+            [this.member.id + '.shadow']: arrayUnion(this.node.parent),
           }
         );
       } else {
@@ -366,17 +366,17 @@ export default {
             `/movements/${this.movement.id}/trees/${this.treeOpt.id}/components/parents`
           ),
           {
-            [this.member.id + ".parent"]: this.node.parent,
-            [this.member.id + ".shadow"]: arrayRemove(this.node.parent),
+            [this.member.id + '.parent']: this.node.parent,
+            [this.member.id + '.shadow']: arrayRemove(this.node.parent),
           }
         );
       }
     },
   },
   computed: {
-    ...mapGetters("auth", ["user"]),
-    ...mapGetters("movement", ["roleOpts", "modOpts"]),
-    ...mapState("movement", ["movement", "roles", "mods"]),
+    ...mapGetters('auth', ['user']),
+    ...mapGetters('movement', ['roleOpts', 'modOpts']),
+    ...mapState('movement', ['movement', 'roles', 'mods']),
   },
   watch: {
     member: {
@@ -388,7 +388,7 @@ export default {
         //   this.member.id,
         //   this.localMember.id === this.member.id
         // );
-        if (this.localMember.id === this.member.id) return;
+        // if (this.localMember.id === this.member.id && ) return;
         let member = JSON.parse(JSON.stringify(this.member));
         this.name = member.name;
         this.localMember = member;

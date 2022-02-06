@@ -31,7 +31,7 @@
 
 <script>
 // import { uid } from 'quasar'
-import { mapGetters, mapState } from "vuex";
+import { mapGetters, mapState } from 'vuex';
 // // import { $firestore } from "./../data/firebase.js";
 import {
   matWarning,
@@ -39,7 +39,7 @@ import {
   matHome,
   matQuestionAnswer,
   matError,
-} from "@quasar/extras/material-icons";
+} from '@quasar/extras/material-icons';
 
 export default {
   props: {},
@@ -76,10 +76,10 @@ export default {
       var requestDoc = await getDoc(requestRef);
       if (requestDoc.exists) {
         q.notify({
-          color: "negative",
-          textColor: "white",
+          color: 'negative',
+          textColor: 'white',
           icon: this.matError,
-          message: "Oops, Request already sent!",
+          message: 'Oops, Request already sent!',
         });
         return false;
       }
@@ -92,38 +92,38 @@ export default {
         {
           uid: this.user.uid,
           email: this.user.email,
-          photoUrl: this.user.photoURL,
+          photoURL: this.user.photoURL,
           name: this.user.displayName,
         }
       )
         .then(() => {
           q.notify({
-            color: "positive",
-            textColor: "white",
+            color: 'positive',
+            textColor: 'white',
             icon: this.matCloudDownload,
-            message: "Request Sent",
+            message: 'Request Sent',
           });
           return true;
         })
         .catch((err) => {
           if (process.env.DEV)
-            logEvent(getAnalytics(), "exception", {
+            logEvent(getAnalytics(), 'exception', {
               description: err,
               fatal: false,
             });
-          console.error(new Error("Oops, something went wrong: " + err));
+          console.error(new Error('Oops, something went wrong: ' + err));
           q.notify({
-            color: "negative",
-            textColor: "white",
+            color: 'negative',
+            textColor: 'white',
             icon: this.matError,
-            message: "Oops, Something went wrong!",
+            message: 'Oops, Something went wrong!',
           });
         });
     },
   },
   computed: {
-    ...mapGetters(["ready"]),
-    ...mapState("movement", ["permissions"]),
+    ...mapGetters(['ready']),
+    ...mapState('movement', ['permissions']),
   },
   watch: {
     ready() {

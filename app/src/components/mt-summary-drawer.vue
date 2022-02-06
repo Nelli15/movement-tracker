@@ -42,24 +42,24 @@
           </q-item>
           <q-item-label
             header
-            v-if="movement && baseFiltered.length > 0"
+            v-if="movement && rolesFiltered.length > 0"
             class="text-subtitle1"
             :class="q.dark.isActive ? 'text-white' : 'text-black'"
             style="padding-bottom: 0px"
           >
             Roles
           </q-item-label>
-          <q-item v-for="stat in baseFiltered" :key="stat.name">
+          <q-item v-for="stat in rolesFiltered" :key="stat.name">
             <q-item-section v-if="stat.label">
-              <div :class="highlight.current === stat.id ? ' highlight' : ''">
+              <div>
                 <q-btn
                   v-if="stat.style"
                   class="shadow-2 q-pl-sm"
-                  :class="
-                    stat.style.underline
-                      ? 'text-underline '
-                      : '' + getShape(stat.style.shape, stat.style.round)
-                  "
+                  :class="{
+                    'text-underline': stat.style.underline,
+                    [getShape(stat.style.shape, stat.style.round)]: true,
+                    highlight: highlight.current === stat.id,
+                  }"
                   :style="
                     'background-color:' +
                     stat.style.background +
@@ -270,7 +270,7 @@
                 {{ stat.label }}
                 <q-badge floating
                   >{{ (stat.total ? stat.total : 0).toFixed(2)
-                  }}{{ stat.unit ? stat.unit : "" }}</q-badge
+                  }}{{ stat.unit ? stat.unit : '' }}</q-badge
                 >
                 <q-tooltip
                   class="bg-accent text-grey-10"
@@ -290,9 +290,9 @@
 </template>
 
 <script>
-import { computed } from "vue";
-import { useStore } from "vuex";
-import { useQuasar } from "quasar";
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+import { useQuasar } from 'quasar';
 
 export default {
   props: {
@@ -308,56 +308,56 @@ export default {
     const q = useQuasar();
     const store = useStore();
     function fetchHighlighted(val) {
-      return store.dispatch("fetchHighlighted", val);
+      return store.dispatch('fetchHighlighted', val);
     }
     function showDrawer(val) {
-      return store.dispatch("showDrawer", val);
+      return store.dispatch('showDrawer', val);
     }
     function getShape(shape, round) {
       if (shape) {
         return shape;
       } else if (round === true) {
-        return "round";
+        return 'round';
       } else {
-        return "not-round";
+        return 'not-round';
       }
     }
     function getModShape(style) {
       if (style.shape && style.shapeOverride === true) {
         return true;
       } else if (style.roundOverride === true && style.round === true) {
-        return "round";
+        return 'round';
       } else {
-        return "not-round";
+        return 'not-round';
       }
     }
     function getModColors(style) {
       // 'background-color:'+mods[stat.id].style.backgroundOverride ? mods[stat.id].style.background : 'white'+'; color:'+mods[stat.id].style.colorOverride ? mods[stat.id].style.color : 'black'+';border-color:'+mods[stat.id].style.outlineOverride ? mods[stat.id].style.outline : 'white'+' !important;'
-      let styleText = "background-color:";
+      let styleText = 'background-color:';
       if (style.backgroundOverride) {
         styleText += style.background;
       } else {
-        styleText += "white";
+        styleText += 'white';
       }
-      styleText += "; color:";
+      styleText += '; color:';
       if (style.colorOverride) {
         styleText += style.color;
       } else {
-        styleText += "black";
+        styleText += 'black';
       }
-      styleText += ";border-color:";
+      styleText += ';border-color:';
       if (style.outlineOverride) {
         styleText += style.outline;
       } else {
-        styleText += "white";
+        styleText += 'white';
       }
-      styleText += " !important;";
+      styleText += ' !important;';
       return styleText;
     }
     const movement = computed(() => store.state.movement.movement);
-    const highlight = computed(() => store.getters["highlight"]);
-    const show = computed(() => store.getters["show"]);
-    const baseFiltered = computed(() => {
+    const highlight = computed(() => store.getters['highlight']);
+    const show = computed(() => store.getters['show']);
+    const rolesFiltered = computed(() => {
       if (!props.roleStats) return [];
       // let stats = { ...roleStats };
 
@@ -413,7 +413,7 @@ export default {
       calculatedFiltered,
       calcFiltered,
       overrideFiltered,
-      baseFiltered,
+      rolesFiltered,
       getShape,
       getModShape,
       getModColors,
@@ -458,17 +458,25 @@ export default {
   text-decoration: underline !important;
 }
 
-.highlight {
-  /* box-shadow: 0 0 2px 2px #ff0000; */
-  border: 5px solid transparent;
-  border-image: linear-gradient(
-    to bottom right,
+.highlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 5px;
+  background: linear-gradient(
+    45deg,
     #b827fc 0%,
     #2c90fc 25%,
     #b8fd33 50%,
     #fec837 75%,
     #fd1892 100%
   );
-  border-image-slice: 1;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 </style>

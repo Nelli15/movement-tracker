@@ -1,12 +1,12 @@
 <template>
-  <q-menu context-menu touch-position ref="newMenu">
+  <q-menu context-menu touch-position :persistent="closeDisabled">
     <q-list dense style="min-width: 100px">
       <div v-for="opt in options" :key="opt.label">
         <component
           dense
           v-if="opt.component"
           :is="opt.component.component"
-          v-bind="opt.component.props"
+          v-bind="opt.component.props ? opt.component.props : () => {}"
           v-on="opt.component.events ? opt.component.events : {}"
         />
         <q-item
@@ -32,15 +32,30 @@
           >
             <component
               v-if="opt.child"
-              :ref="opt.label"
+              :ref="
+                (el) => {
+                  if (el) refs[opt.label] = el;
+                }
+              "
               :is="opt.child.component"
               v-bind="opt.child.props"
             ></component>
           </q-menu>
-          <q-dialog v-else :ref="opt.label + '-menu'">
+          <q-dialog
+            v-else
+            :ref="
+              (el) => {
+                if (el) refs[opt.label + '-menu'] = el;
+              }
+            "
+          >
             <component
               v-if="opt.child"
-              :ref="opt.label"
+              :ref="
+                (el) => {
+                  if (el) refs[opt.label] = el;
+                }
+              "
               :is="opt.child.component"
               v-bind="opt.child.props"
             ></component>
@@ -60,8 +75,10 @@ export default {
   name: 'MovBGContextMenu',
   props: ['treeOpt', 'readOnly', 'storeModule'],
   setup(props) {
+    const refs = ref({});
     const q = useQuasar();
     const store = useStore();
+    const closeDisabled = ref(false);
     function getClickMethod($event, opt) {
       for (var platform in opt.platform) {
         if (q.platform.is[platform] && opt.platform[platform].click) {
@@ -92,7 +109,7 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                $refs['New Tree-menu'][0].show();
+                refs.value['New Tree-menu'].show();
               },
             },
           },
@@ -111,7 +128,7 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                $refs['Rename Tree-menu'][0].show();
+                refs.value['Rename Tree-menu'].show();
               },
             },
           },
@@ -131,6 +148,9 @@ export default {
               treeOpt: props.treeOpt,
               menu: true,
             },
+            events: {
+              open: (val) => (closeDisabled.value = val),
+            },
           },
         },
         {
@@ -140,7 +160,7 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                $refs['New Member-menu'][0].show();
+                refs.value['New Member-menu'].show();
               },
             },
           },
@@ -158,8 +178,8 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                // console.log($refs["Existing-menu"][0]);
-                $refs['Existing-menu'][0].show();
+                // console.log(refs["Existing-menu"][0]);
+                refs.value['Existing-menu'].show();
               },
             },
           },
@@ -183,8 +203,8 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                // console.log($refs["Existing-menu"][0]);
-                $refs['Add sub-tree'][0].show();
+                // console.log(refs["Existing-menu"][0]);
+                refs.value['Add sub-tree'].show();
               },
             },
           },
@@ -197,7 +217,7 @@ export default {
           },
         },
         {
-          hideIf: props.readOnly,
+          hideIf: !permissions.value.snapshots_update || props.readOnly,
           component: {
             component: defineAsyncComponent(() =>
               import('./mt-take-snapshot.vue')
@@ -217,7 +237,15 @@ export default {
       }
       return filteredOpts;
     });
-    return { q, movement, permissions, options, getClickMethod };
+    return {
+      q,
+      movement,
+      permissions,
+      options,
+      getClickMethod,
+      refs,
+      closeDisabled,
+    };
   },
   components: {
     'mt-member-node': defineAsyncComponent(() =>

@@ -11,7 +11,7 @@ module.exports = ({ admin, environment }) => async user => {
   userSanitized.photoURL = user.photoURL
   userSanitized.uid = user.uid
   // userSanitized.movements = []
-  // userSanitized.photo = validator.blacklist(data.user.photoUrl, `()+"<>{}[]`+'`')
+  // userSanitized.photo = validator.blacklist(data.user.photoURL, `()+"<>{}[]`+'`')
   const batch = db.batch()
   var docRef = db.collection('/app-users').doc(user.uid)
   docRef.set(userSanitized)

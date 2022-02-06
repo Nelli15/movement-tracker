@@ -28,7 +28,7 @@
             ? 'strict'
             : 'none'
         "
-        @update:ticked="membersSelected"
+        v-model:ticked="membersSelected"
         :filter="filterQuery"
         :filter-method="treeFilterMethod"
         no-results-label=" "
@@ -60,15 +60,16 @@
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { useRoute } from "vue-router";
-import { defineAsyncComponent, ref, computed, onBeforeUpdate } from "vue";
+import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
+import { defineAsyncComponent, ref, computed, onBeforeUpdate } from 'vue';
 export default {
-  name: "MovTrees",
-  props: ["treeOpt", "readOnly", "members", "tree"],
+  name: 'MovTrees',
+  props: ['treeOpt', 'readOnly', 'members', 'tree', 'storeModule'],
   setup(props) {
     const store = useStore();
     const route = useRoute();
+    const storeModule = ref(props.storeModule ? props.storeModule : 'movement');
     const membersSelected = ref([]);
     const memberNodes = ref({});
     function expandNode(ref, e) {
@@ -85,8 +86,8 @@ export default {
       let row = props.members[node.id];
       row.id = node.id;
 
-      const lowerTerms = terms ? terms.toLowerCase() : "";
-      if (row.id === "root") return false;
+      const lowerTerms = terms ? terms.toLowerCase() : '';
+      if (row.id === 'root') return false;
       else if (row.name.toLowerCase().indexOf(lowerTerms) !== -1) {
         return true;
       } else if (
@@ -107,7 +108,9 @@ export default {
       return false;
     }
     const permissions = computed(() => store.state.movement.permissions);
-    const filterQuery = computed(() => store.state.movement.filterQuery);
+    const filterQuery = computed(
+      () => store.state[storeModule.value].filterQuery
+    );
     const roles = computed(() =>
       route.params.snapId
         ? store.state.snapshot.roles
@@ -132,13 +135,13 @@ export default {
     };
   },
   components: {
-    "mt-member-node": defineAsyncComponent(() =>
-      import("./mt-member-node.vue")
+    'mt-member-node': defineAsyncComponent(() =>
+      import('./mt-member-node.vue')
     ),
-    "mt-add-member": defineAsyncComponent(() =>
-      import("./actions/mt-add-member.vue")
+    'mt-add-member': defineAsyncComponent(() =>
+      import('./actions/mt-add-member.vue')
     ),
-    "mt-batch": defineAsyncComponent(() => import("./mt-batch.vue")),
+    'mt-batch': defineAsyncComponent(() => import('./mt-batch.vue')),
   },
 };
 </script>

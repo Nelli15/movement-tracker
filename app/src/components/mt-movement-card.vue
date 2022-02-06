@@ -173,15 +173,15 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from "vue";
-import { useQuasar } from "quasar";
+import { defineAsyncComponent, computed } from 'vue';
+import { useQuasar } from 'quasar';
 export default {
   props: {
     movementProp: {},
   },
   setup(props) {
     const q = useQuasar();
-    function color() {
+    const color = computed(() => {
       // return '#000'
       if (props.movementProp.style) {
         if (props.movementProp.style.backgroundColor) {
@@ -192,25 +192,26 @@ export default {
               parseInt(h[5] + h[6], 16) / 255)) /
             3 >=
             50
-            ? "black"
-            : "white";
+            ? 'black'
+            : 'white';
         }
       }
-      return "black";
-    }
-    function backgroundColor() {
-      if (props.movementProp.style) {
-        if (props.movementProp.style.backgroundColor) {
-          return props.movementProp.style.backgroundColor;
-        }
+      return 'black';
+    });
+    const backgroundColor = computed(() => {
+      if (
+        props.movementProp.style &&
+        props.movementProp.style.backgroundColor
+      ) {
+        return props.movementProp.style.backgroundColor;
       }
-      return "white";
-    }
+      return 'white';
+    });
     return { q, color, backgroundColor };
   },
   components: {
-    "mt-movement-context-menu": defineAsyncComponent(() =>
-      import("./actions/mt-movement-context-menu")
+    'mt-movement-context-menu': defineAsyncComponent(() =>
+      import('./actions/mt-movement-context-menu')
     ),
   },
 };

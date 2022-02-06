@@ -303,14 +303,14 @@ import {
   updateDoc,
   deleteDoc,
   getDoc,
-} from "@firebase/firestore";
+} from '@firebase/firestore';
 // import { debounce } from 'quasar'
-import { getAnalytics, setCurrentScreen } from "firebase/analytics";
-import { mapGetters, mapActions, mapState } from "vuex";
+import { getAnalytics, setCurrentScreen } from 'firebase/analytics';
+import { mapGetters, mapActions, mapState } from 'vuex';
 // import { $firestore, getAnalytics() } from "./../data/firebase.js";
-import { defineAsyncComponent, computed, ref } from "vue";
+import { defineAsyncComponent, computed, ref } from 'vue';
 // var movementJS = require('./../scripts/movement.js')
-import { LocalStorage } from "quasar";
+import { LocalStorage } from 'quasar';
 
 export default {
   props: {},
@@ -321,36 +321,36 @@ export default {
       toolCabinet: true,
       columns: [
         {
-          name: "title",
-          align: "left",
-          label: "Title",
-          field: "title",
+          name: 'title',
+          align: 'left',
+          label: 'Title',
+          field: 'title',
           sortable: true,
         },
         {
-          name: "desc",
-          align: "center",
-          label: "Description",
-          field: "desc",
+          name: 'desc',
+          align: 'center',
+          label: 'Description',
+          field: 'desc',
           sortable: true,
         },
         {
-          name: "date",
-          label: "Date",
-          field: "date",
+          name: 'date',
+          label: 'Date',
+          field: 'date',
           sortable: true,
-          align: "center",
+          align: 'center',
         },
         {
-          name: "createdBy",
-          label: "Created By",
-          field: "createdBy.displayName",
+          name: 'createdBy',
+          label: 'Created By',
+          field: 'createdBy.displayName',
           sortable: true,
-          align: "center",
+          align: 'center',
         },
-        { name: "actions", label: "Actions", field: "actions", align: "right" },
+        { name: 'actions', label: 'Actions', field: 'actions', align: 'right' },
       ],
-      snapshotsFilter: "",
+      snapshotsFilter: '',
       isFullscreen: false,
     };
   },
@@ -358,10 +358,10 @@ export default {
     const closeDisabled = ref();
     const pagination = computed({
       get() {
-        return LocalStorage.has("snapshotPagination")
-          ? LocalStorage.getItem("snapshotPagination")
+        return LocalStorage.has('snapshotPagination')
+          ? LocalStorage.getItem('snapshotPagination')
           : {
-              sortBy: "name",
+              sortBy: 'name',
               descending: false,
               page: 1,
               rowsPerPage: 10,
@@ -369,20 +369,20 @@ export default {
             };
       },
       set(value) {
-        LocalStorage.set("snapshotPagination", value);
+        LocalStorage.set('snapshotPagination', value);
       },
     });
     return { pagination, closeDisabled };
   },
   preFetch({ store, currentRoute }) {
     if (Object.keys(store.state.movement.snapshots).length <= 0) {
-      store.dispatch("movement/fetchSnapshots", {
+      store.dispatch('movement/fetchSnapshots', {
         id: currentRoute.params.movId,
       });
     }
   },
   created() {
-    setCurrentScreen(getAnalytics(), "Movement_Snapshots");
+    setCurrentScreen(getAnalytics(), 'Movement_Snapshots');
   },
   methods: {
     openCompareDialog() {
@@ -396,7 +396,7 @@ export default {
       return `${date.getDate()}/${
         date.getMonth() + 1
       }/${date.getFullYear()} ${date.getHours()}:${(
-        "00" + date.getMinutes()
+        '00' + date.getMinutes()
       ).slice(-2)}`;
     },
     openDeleteDialog(id) {
@@ -419,11 +419,11 @@ export default {
         })
         .catch((err) => {
           if (process.env.DEV)
-            logEvent(getAnalytics(), "exception", {
+            logEvent(getAnalytics(), 'exception', {
               description: err,
               fatal: false,
             });
-          console.error(new Error("Oops, something went wrong: " + err));
+          console.error(new Error('Oops, something went wrong: ' + err));
           this.$refs[`snap-delete-diag-${id}`].hideLoading();
           this.$refs[`snap-delete-diag-${id}`].hide();
         });
@@ -445,37 +445,37 @@ export default {
         })
         .catch((err) => {
           if (process.env.DEV)
-            logEvent(getAnalytics(), "exception", {
+            logEvent(getAnalytics(), 'exception', {
               description: err,
               fatal: false,
             });
-          console.error(new Error("Oops, something went wrong: " + err));
+          console.error(new Error('Oops, something went wrong: ' + err));
           // this.$refs[`snap-delete-diag-${id}`].hideLoading()
           // this.$refs[`snap-delete-diag-${id}`].hide()
         });
     },
-    ...mapActions("movement", ["fetchSnapshots"]),
+    ...mapActions('movement', ['fetchSnapshots']),
   },
   computed: {
-    ...mapGetters("movement", ["backgroundColor", "color"]),
-    ...mapState("movement", ["movement", "permissions", "snapshots"]),
+    ...mapGetters('movement', ['backgroundColor', 'color']),
+    ...mapState('movement', ['movement', 'permissions', 'snapshots']),
     snapshotsArray() {
       var tempArray = Object.keys(this.snapshots).map((i) => this.snapshots[i]);
       return tempArray;
     },
   },
   components: {
-    "mt-remove-dialog": defineAsyncComponent(() =>
-      import("./../components/actions/mt-remove-dialog.vue")
+    'mt-remove-dialog': defineAsyncComponent(() =>
+      import('./../components/actions/mt-remove-dialog.vue')
     ),
-    "mt-take-snapshot": defineAsyncComponent(() =>
-      import("./../components/actions/mt-take-snapshot.vue")
+    'mt-take-snapshot': defineAsyncComponent(() =>
+      import('./../components/actions/mt-take-snapshot.vue')
     ),
-    "mt-snap-compare": defineAsyncComponent(() =>
-      import("./../components/actions/mt-snap-compare.vue")
+    'mt-snap-compare': defineAsyncComponent(() =>
+      import('./../components/actions/mt-snap-compare.vue')
     ),
     BetaBadge: defineAsyncComponent(() =>
-      import("./../components/BetaBadge.vue")
+      import('./../components/BetaBadge.vue')
     ),
   },
 };

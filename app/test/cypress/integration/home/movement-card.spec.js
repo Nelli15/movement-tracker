@@ -181,7 +181,7 @@ describe('movement-card tests', () => {
           cy.dataCy('"delete-movement"').contains('Delete').click()
         })
         cy.dataCy('"delete-dialog"').within(()=>{
-          cy.get('input').type('DELETE')
+          cy.get('input').type('DELETE', { force: true })
           cy.dataCy('delete-submit-btn').click()
         })
         cy.root().find('.movement-card').should('have.length', numMovs-1)

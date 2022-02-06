@@ -87,7 +87,7 @@
                   v-model="login.password"
                   label="Password"
                   lazy-rules
-                  :type="pwdVisible ? 'password' : 'text'"
+                  :type="!pwdVisible ? 'password' : 'text'"
                   :rules="[(val) => !!val || 'Password is missing']"
                   :color="q.dark.isActive ? 'white' : ''"
                   class="full-width"
@@ -98,6 +98,7 @@
                       :name="!pwdVisible ? 'visibility_off' : 'visibility'"
                       class="cursor-pointer"
                       @click="pwdVisible = !pwdVisible"
+                      data-cy="pwd-visibility"
                     />
                   </template>
                 </q-input>
@@ -160,7 +161,7 @@
 </template>
 <script>
 // import { httpsCallable } from "firebase/functions";
-import { getAnalytics, logEvent } from "firebase/analytics";
+import { getAnalytics, logEvent } from 'firebase/analytics';
 import {
   getAuth,
   GoogleAuthProvider,
@@ -171,10 +172,10 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   fetchSignInMethodsForEmail,
-} from "@firebase/auth";
-import { useQuasar } from "quasar";
-import { useRoute, useRouter } from "vue-router";
-import { ref, reactive, onMounted } from "vue";
+} from '@firebase/auth';
+import { useQuasar } from 'quasar';
+import { useRoute, useRouter } from 'vue-router';
+import { ref, reactive, onMounted } from 'vue';
 
 export default {
   setup() {
@@ -182,56 +183,56 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const pwdVisible = ref(false);
-    const login_image_url = ref("");
-    const login_image_srcset = ref("");
-    const login_image_url_portrait = ref("");
-    const login_image_srcset_portrait = ref("");
+    const login_image_url = ref('');
+    const login_image_srcset = ref('');
+    const login_image_url_portrait = ref('');
+    const login_image_srcset_portrait = ref('');
     const loginPending = ref(true);
     const login = reactive({
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     });
 
     onMounted(async () => {
       const loginObject = {
-        400: "https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-400.jpg?alt=media&token=d72065ae-7242-4e8e-84bb-f35980efaeb5",
-        1050: "https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-1050.jpg?alt=media&token=61b9fe48-25c2-47f0-aaaa-cffed9b754f7",
-        1300: "https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-1300.jpg?alt=media&token=cbfeb245-f556-4c3d-8a75-1208181887cb",
-        1400: "https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-1400.jpg?alt=media&token=a215e34f-fb12-44d2-82e9-4dcd19a640a6",
-        2000: "https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-2000.jpg?alt=media&token=2fb1726f-ff41-4e2b-a2eb-b17d49c6dfe0",
-        4000: "https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-4000.jpg?alt=media&token=2dfbe02e-89c2-4b16-9004-55beb3403acf",
+        400: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-400.jpg?alt=media&token=d72065ae-7242-4e8e-84bb-f35980efaeb5',
+        1050: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-1050.jpg?alt=media&token=61b9fe48-25c2-47f0-aaaa-cffed9b754f7',
+        1300: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-1300.jpg?alt=media&token=cbfeb245-f556-4c3d-8a75-1208181887cb',
+        1400: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-1400.jpg?alt=media&token=a215e34f-fb12-44d2-82e9-4dcd19a640a6',
+        2000: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-2000.jpg?alt=media&token=2fb1726f-ff41-4e2b-a2eb-b17d49c6dfe0',
+        4000: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-4000.jpg?alt=media&token=2dfbe02e-89c2-4b16-9004-55beb3403acf',
       };
       const loginObjectPortrait = {
-        400: "https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-400_x_599.jpg?alt=media&token=0d17a3bb-7bf3-47f1-952f-fe104a8715d5",
-        1050: "https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-1050_x_1575.jpg?alt=media&token=5acfb1c4-5f16-4046-8e38-53d9abcf5830",
-        1300: "https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-1300_x_1949.jpg?alt=media&token=8da7f760-ab06-40d3-91ae-eedf9ceb2e0a",
-        1400: "https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-1400_x_2099.jpg?alt=media&token=7042b883-b804-4e89-ad01-038fdc68c125",
-        2000: "https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-2000_x_2999.jpg?alt=media&token=1ab11297-dade-443f-807b-264aa4519ac5",
-        4000: "https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-4000_x_5999.jpg?alt=media&token=fa277515-17a9-4a91-898b-40f341b4759c",
+        400: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-400_x_599.jpg?alt=media&token=0d17a3bb-7bf3-47f1-952f-fe104a8715d5',
+        1050: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-1050_x_1575.jpg?alt=media&token=5acfb1c4-5f16-4046-8e38-53d9abcf5830',
+        1300: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-1300_x_1949.jpg?alt=media&token=8da7f760-ab06-40d3-91ae-eedf9ceb2e0a',
+        1400: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-1400_x_2099.jpg?alt=media&token=7042b883-b804-4e89-ad01-038fdc68c125',
+        2000: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-2000_x_2999.jpg?alt=media&token=1ab11297-dade-443f-807b-264aa4519ac5',
+        4000: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-4000_x_5999.jpg?alt=media&token=fa277515-17a9-4a91-898b-40f341b4759c',
       };
       if (loginObject) {
-        login_image_url.value = loginObject["400"];
-        login_image_srcset.value = `${loginObject["400"]} 400w,
-            ${loginObject["1050"]} 1050w,
-            ${loginObject["1300"]} 1300w,
-            ${loginObject["1400"]} 1400w,
-            ${loginObject["2000"]} 2000w,
-            ${loginObject["4000"]} 4000w`;
+        login_image_url.value = loginObject['400'];
+        login_image_srcset.value = `${loginObject['400']} 400w,
+            ${loginObject['1050']} 1050w,
+            ${loginObject['1300']} 1300w,
+            ${loginObject['1400']} 1400w,
+            ${loginObject['2000']} 2000w,
+            ${loginObject['4000']} 4000w`;
       }
       if (loginObjectPortrait) {
-        login_image_url_portrait.value = loginObjectPortrait["400"];
-        login_image_srcset_portrait.value = `${loginObjectPortrait["400"]} 400w,
-            ${loginObjectPortrait["1050"]} 1050w,
-            ${loginObjectPortrait["1300"]} 1300w,
-            ${loginObjectPortrait["1400"]} 1400w,
-            ${loginObjectPortrait["2000"]} 2000w,
-            ${loginObjectPortrait["4000"]} 4000w`;
+        login_image_url_portrait.value = loginObjectPortrait['400'];
+        login_image_srcset_portrait.value = `${loginObjectPortrait['400']} 400w,
+            ${loginObjectPortrait['1050']} 1050w,
+            ${loginObjectPortrait['1300']} 1300w,
+            ${loginObjectPortrait['1400']} 1400w,
+            ${loginObjectPortrait['2000']} 2000w,
+            ${loginObjectPortrait['4000']} 4000w`;
         const result = await getRedirectResult(getAuth());
         if (result) {
           // This is the signed-in user
           const user = result.user;
           // This gives you a Facebook Access Token.
-          signInSuccessWithAuthResult(result, "/home");
+          signInSuccessWithAuthResult(result, '/home');
         } else {
           loginPending.value = false;
         }
@@ -242,7 +243,6 @@ export default {
       // console.log("logging in with email and password");
       return fetchSignInMethodsForEmail(getAuth(), login.email).then(
         (methods) => {
-          // console.log(methods);
           if (methods.length > 0) {
             return signInWithEmailAndPassword(
               getAuth(),
@@ -254,7 +254,7 @@ export default {
                 const user = userCredential.user;
                 // console.log("Signed in with email: ", userCredential);
                 // ...
-                router.push("/home");
+                router.push('/home');
               })
               .catch((error) => {
                 const errorCode = error.code;
@@ -273,9 +273,9 @@ export default {
     async function signInWithProvider(providerText) {
       // console.log("Signing in with Auth provider");
       let provider = null;
-      if (providerText === "google") {
+      if (providerText === 'google') {
         provider = new GoogleAuthProvider();
-      } else if (providerText === "github") {
+      } else if (providerText === 'github') {
         provider = new GithubAuthProvider();
       }
       signInWithRedirect(getAuth(), provider, browserPopupRedirectResolver)
@@ -284,7 +284,7 @@ export default {
         })
         .catch(function (error) {
           // An error happened.
-          if (error.code === "auth/account-exists-with-different-credential") {
+          if (error.code === 'auth/account-exists-with-different-credential') {
             // Step 2.
             // User's email already exists.
             // The pending Google credential.
@@ -298,7 +298,7 @@ export default {
               // Step 3.
               // If the user has several sign-in methods,
               // the first method in the list will be the "recommended" method to use.
-              if (methods[0] === "password") {
+              if (methods[0] === 'password') {
                 // Asks the user their password.
                 // In real scenario, you should handle this asynchronously.
                 var password = promptUserForPassword(); // TODO: implement promptUserForPassword.
@@ -362,25 +362,25 @@ export default {
       // console.log(authResult)
 
       if (process.env.DEV)
-        logEvent(getAnalytics(), "login", {
+        logEvent(getAnalytics(), 'login', {
           method: authResult.providerId,
         });
       if (
         route.query.signInSuccessUrl &&
-        route.query.signInSuccessUrl !== "login"
+        route.query.signInSuccessUrl !== 'login'
       ) {
         router.push(route.query.signInSuccessUrl);
       } else {
-        router.push("/home");
+        router.push('/home');
       }
     }
     function isValidEmail(val) {
       const emailPattern =
         /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
-      return emailPattern.test(val) || "Invalid email";
+      return emailPattern.test(val) || 'Invalid email';
     }
     async function createAccountEmail() {
-      // console.log("create account not yet setup", newUser);
+      // console.log('create account not yet setup');
       return createUserWithEmailAndPassword(
         getAuth(),
         login.email,
@@ -388,13 +388,13 @@ export default {
       )
         .then(() => {
           // Signed in
-          router.push("/home");
+          router.push('/home');
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           console.error(error);
-          if (error.code === "auth/account-exists-with-different-credential") {
+          if (error.code === 'auth/account-exists-with-different-credential') {
             // Step 2.
             // User's email already exists.
             // The pending Google credential.
@@ -409,7 +409,7 @@ export default {
               // Step 3.
               // If the user has several sign-in methods,
               // the first method in the list will be the "recommended" method to use.
-              if (methods[0] === "password") {
+              if (methods[0] === 'password') {
                 // Asks the user their password.
                 // In real scenario, you should handle this asynchronously.
                 var password = promptUserForPassword(); // TODO: implement promptUserForPassword.

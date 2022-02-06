@@ -113,6 +113,7 @@
           data-cy="label"
         >
           <q-btn
+            :disable="!permissions.settings_complex_edit"
             :key="props.row.value"
             style="background-color: white; color: black; width: 100%"
             dense
@@ -151,9 +152,23 @@
                 : JSON.parse(JSON.stringify(defaultCond))
             "
             :styles="styleOptions"
-            @add="onAdd($event, props.row)"
-            @change="onChange($event, props.row)"
-            @remove="onRemove($event, props.row)"
+            @add="
+              ($event) => {
+                if (permissions.settings_complex_edit) onAdd($event, props.row);
+              }
+            "
+            @change="
+              ($event) => {
+                if (permissions.settings_complex_edit)
+                  onChange($event, props.row);
+              }
+            "
+            @remove="
+              ($event) => {
+                if (permissions.settings_complex_edit)
+                  onRemove($event, props.row);
+              }
+            "
           />
         </q-td>
       </q-tr>
@@ -162,41 +177,41 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapState } from "vuex";
-import { debounce, LocalStorage } from "quasar";
-import { defineAsyncComponent } from "vue";
-import { updateStyleByKey } from "./../scripts/styles.js";
+import { mapGetters, mapMutations, mapState } from 'vuex';
+import { debounce, LocalStorage } from 'quasar';
+import { defineAsyncComponent } from 'vue';
+import { updateStyleByKey } from './../scripts/styles.js';
 
 const columns = [
   {
-    name: "label",
-    align: "center",
-    label: "Label",
-    field: "label",
+    name: 'label',
+    align: 'center',
+    label: 'Label',
+    field: 'label',
     sortable: true,
-    help: "The name of this statistic",
+    help: 'The name of this statistic',
   },
   {
-    name: "desc",
-    align: "left",
-    label: "Description",
-    field: "desc",
+    name: 'desc',
+    align: 'left',
+    label: 'Description',
+    field: 'desc',
     sortable: true,
-    help: "A short description of what this statistic is",
+    help: 'A short description of what this statistic is',
   },
   {
-    name: "target",
-    align: "left",
-    label: "Target",
-    field: "target",
-    help: "A goal for the number of members that match this statistic",
+    name: 'target',
+    align: 'left',
+    label: 'Target',
+    field: 'target',
+    help: 'A goal for the number of members that match this statistic',
   },
   {
-    name: "condition",
-    label: "Conditions",
-    field: "condition",
-    align: "left",
-    help: "Define a theoretical member of the Movement to search for",
+    name: 'condition',
+    label: 'Conditions',
+    field: 'condition',
+    align: 'left',
+    help: 'Define a theoretical member of the Movement to search for',
   },
 ];
 export default {
@@ -208,80 +223,80 @@ export default {
       hidebaseStyles: true,
       currentStyle: {},
       pagination: {
-        sortBy: "label",
+        sortBy: 'label',
         descending: false,
         page: 1,
         rowsPerPage: 10,
       },
       defaultCond: {
-        class: "expression",
+        class: 'expression',
         elements: [
           {
-            class: "condition",
+            class: 'condition',
             included: true,
-            id: "",
-            gen: "member",
+            id: '',
+            gen: 'member',
           },
           {
-            class: "condition",
+            class: 'condition',
             included: true,
-            id: "",
-            gen: "member",
+            id: '',
+            gen: 'member',
           },
         ],
-        operator: "OR",
+        operator: 'OR',
       },
     };
   },
   created() {
     this.updateStyleByKey = debounce(updateStyleByKey, 2000);
     // this.updateMovement = debounce(this.updateMovement, 2000)
-    this.pagination = LocalStorage.has("movementEditPagination")
-      ? LocalStorage.getItem("movementEditPagination")
+    this.pagination = LocalStorage.has('movementEditPagination')
+      ? LocalStorage.getItem('movementEditPagination')
       : {
-          sortBy: "label",
+          sortBy: 'label',
           descending: false,
           page: 1,
           rowsPerPage: 10,
         };
   },
   methods: {
-    ...mapMutations("movement", ["setStyleLoading"]),
+    ...mapMutations('movement', ['setStyleLoading']),
     onAdd($event, prop) {
       // console.log($event);
-      if ($event.el.class === "expression") {
-        if ($event.type === "condition") {
+      if ($event.el.class === 'expression') {
+        if ($event.type === 'condition') {
           $event.el.elements.push({
-            class: "condition",
+            class: 'condition',
             included: true,
-            id: "",
-            gen: "member",
+            id: '',
+            gen: 'member',
           });
-        } else if ($event.type === "expression") {
+        } else if ($event.type === 'expression') {
           $event.el.elements.push({
-            class: "expression",
+            class: 'expression',
             elements: [
               {
-                class: "condition",
+                class: 'condition',
                 included: true,
-                id: "",
-                gen: "member",
+                id: '',
+                gen: 'member',
               },
               {
-                class: "condition",
+                class: 'condition',
                 included: true,
-                id: "",
-                gen: "member",
+                id: '',
+                gen: 'member',
               },
             ],
-            operator: "OR",
+            operator: 'OR',
           });
         }
       }
       this.updateStyleByKey(
         this.$route.params.movId,
         prop.id,
-        "condition",
+        'condition',
         prop.condition
       );
     },
@@ -296,12 +311,12 @@ export default {
       this.updateStyleByKey(
         this.$route.params.movId,
         prop.id,
-        "condition",
+        'condition',
         prop.condition
       );
     },
     onRemove(path, prop) {
-      function resolve(path, obj = self, separator = ".") {
+      function resolve(path, obj = self, separator = '.') {
         var properties = Array.isArray(path) ? path : path.split(separator);
         return properties.reduce((prev, curr) => prev && prev[curr], obj);
       }
@@ -315,13 +330,13 @@ export default {
       el.splice(index, 1);
       if (el.length === 1) {
         const temp = { ...el[0] };
-        let shortPath = arrayPath.substring(0, arrayPath.lastIndexOf("."));
+        let shortPath = arrayPath.substring(0, arrayPath.lastIndexOf('.'));
         // console.log(shortPath);
         const shortIndex = shortPath.substring(
-          shortPath.lastIndexOf(".") + 1,
-          arrayPath.lastIndexOf(".")
+          shortPath.lastIndexOf('.') + 1,
+          arrayPath.lastIndexOf('.')
         );
-        shortPath = shortPath.substring(0, shortPath.lastIndexOf("."));
+        shortPath = shortPath.substring(0, shortPath.lastIndexOf('.'));
         // console.log(shortIndex);
         let parentEl = resolve(shortPath, prop.condition);
         if (Array.isArray(parentEl)) {
@@ -331,38 +346,39 @@ export default {
       this.updateStyleByKey(
         this.$route.params.movId,
         prop.id,
-        "condition",
+        'condition',
         prop.condition
       );
     },
   },
   computed: {
-    ...mapGetters("movement", [
-      "roleOpts",
-      "modOpts",
-      "complexOpts",
-      "backgroundColor",
-      "color",
+    ...mapGetters('movement', [
+      'roleOpts',
+      'modOpts',
+      'complexOpts',
+      'backgroundColor',
+      'color',
     ]),
-    ...mapState("movement", ["movement", "roles", "mods", "permissions"]),
+    ...mapState('movement', ['movement', 'roles', 'mods', 'permissions']),
     styleOptions() {
       // console.log(this.roleOpts)
-      return this.roleOpts.concat(this.modOpts).sort((a, b) => {
+      let opts = this.roleOpts.concat(this.modOpts);
+      return opts.sort((a, b) => {
         return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
       });
     },
   },
   watch: {
     pagination() {
-      LocalStorage.set("movementEditPagination", this.pagination);
+      LocalStorage.set('movementEditPagination', this.pagination);
     },
   },
   components: {
-    "mt-style-menu": defineAsyncComponent(() =>
-      import("./../components/actions/mt-style-menu.vue")
+    'mt-style-menu': defineAsyncComponent(() =>
+      import('./../components/actions/mt-style-menu.vue')
     ),
-    "mt-complex-node": defineAsyncComponent(() =>
-      import("./mt-complex-node.vue")
+    'mt-complex-node': defineAsyncComponent(() =>
+      import('./mt-complex-node.vue')
     ),
   },
 };

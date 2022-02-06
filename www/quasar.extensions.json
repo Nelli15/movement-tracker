@@ -1,0 +1,20 @@
+{
+  "@quasar/testing": {
+    "harnesses": [
+      "unit-jest",
+      "quality",
+      "security"
+    ]
+  },
+  "@quasar/testing-unit-jest": {
+    "babel": "babelrc",
+    "options": []
+  },
+  "@quasar/testing-quality": {
+    "options": []
+  },
+  "@quasar/testing-security": {
+    "options": [],
+    "zapbrowser": "Chrome"
+  }
+}

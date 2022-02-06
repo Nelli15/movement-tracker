@@ -54,7 +54,7 @@ export default {
     function addSnapshot() {
       const updateSnap = httpsCallable(
         getFunctions(),
-        "movementtracker-snapshots-updateSnap"
+        "mt-snapshots-updateSnap"
       );
 
       updateSnap({

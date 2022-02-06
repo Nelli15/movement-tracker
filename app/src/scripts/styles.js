@@ -50,7 +50,6 @@ export function addStyle (movId, type) {
       elements: []
     }
   }
-  console.log(data)
   return addDoc(collection(getFirestore(), `/movements/${movId}/styles`), data)
     .then(() => {
       if (process.env.PROD) logEvent(getAnalytics(), 'style_created', { type: type })

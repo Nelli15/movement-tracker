@@ -39,7 +39,7 @@ module.exports = ({ admin, environment }) => async (change, context) => {
           name: user.name,
           email: user.email,
           role: beforeData.role,
-          photoUrl: user.photoURL,
+          photoURL: user.photoURL,
           uid: context.params.uid
         });
         // transaction.update(userRef, { movements: admin.firestore.FieldValue.arrayUnion({ name: beforeData.movementName, id: beforeData.movId, style: { backgroundColor: beforeData.style.backgroundColor } }) })

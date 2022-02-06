@@ -112,6 +112,7 @@
           data-cy="label"
         >
           <q-btn
+            :disable="!permissions.settings_roles_edit"
             :key="props.row.value"
             :class="
               props.row.style.underline
@@ -151,6 +152,7 @@
         </q-td>
         <q-td key="background" :props="props">
           <q-btn
+            :disable="!permissions.settings_roles_edit"
             :style="'background-color:' + props.row.style.background + ';'"
             aria-label="Change Background Color"
             data-cy="background"
@@ -167,6 +169,7 @@
         </q-td>
         <q-td key="color" :props="props">
           <q-btn
+            :disable="!permissions.settings_roles_edit"
             :style="'background-color:' + props.row.style.color + ';'"
             aria-label="Change Forground Color"
             data-cy="color"
@@ -183,6 +186,7 @@
         </q-td>
         <q-td key="outline" :props="props">
           <q-btn
+            :disable="!permissions.settings_roles_edit"
             :style="'background-color:' + props.row.style.outline + ';'"
             aria-label="Change Outline Colour"
             data-cy="outline"
@@ -199,6 +203,7 @@
         </q-td>
         <q-td key="underline" :props="props">
           <q-btn
+            :disable="!permissions.settings_roles_edit"
             :style="
               'text-decoration: ' +
               (props.row.style.underline ? 'underline' : 'none') +
@@ -217,7 +222,11 @@
           ></q-btn>
         </q-td>
         <q-td key="rounded" :props="props">
-          <q-btn-dropdown dense data-cy="shape">
+          <q-btn-dropdown
+            :disable="!permissions.settings_roles_edit"
+            dense
+            data-cy="shape"
+          >
             <template v-slot:label>
               <div
                 data-cy="selected-shape"
@@ -338,68 +347,68 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapState } from "vuex";
-import { debounce, LocalStorage, Notify, Dark } from "quasar";
-import { updateStyleByKey } from "./../scripts/styles.js";
-import { defineAsyncComponent } from "vue";
+import { mapGetters, mapMutations, mapState } from 'vuex';
+import { debounce, LocalStorage, Notify, Dark } from 'quasar';
+import { updateStyleByKey } from './../scripts/styles.js';
+import { defineAsyncComponent } from 'vue';
 const columns = [
   {
-    name: "label",
-    align: "center",
-    label: "Label",
-    field: "label",
+    name: 'label',
+    align: 'center',
+    label: 'Label',
+    field: 'label',
     sortable: true,
-    help: "The name of this Role",
+    help: 'The name of this Role',
   },
   {
-    name: "desc",
-    align: "left",
-    label: "Description",
-    field: "desc",
+    name: 'desc',
+    align: 'left',
+    label: 'Description',
+    field: 'desc',
     sortable: true,
-    help: "A short description of what this Role is",
+    help: 'A short description of what this Role is',
   },
   {
-    name: "target",
-    align: "left",
-    label: "Target",
-    field: "target",
-    help: "A goal for the number of members with this Role",
+    name: 'target',
+    align: 'left',
+    label: 'Target',
+    field: 'target',
+    help: 'A goal for the number of members with this Role',
   },
   {
-    name: "background",
-    label: "Background",
-    field: "background",
-    align: "center",
-    help: "The background color members with this Role will have",
+    name: 'background',
+    label: 'Background',
+    field: 'background',
+    align: 'center',
+    help: 'The background color members with this Role will have',
   },
   {
-    name: "color",
-    label: "Text",
-    field: "color",
-    align: "center",
-    help: "The text color members with this Role will have",
+    name: 'color',
+    label: 'Text',
+    field: 'color',
+    align: 'center',
+    help: 'The text color members with this Role will have',
   },
   {
-    name: "outline",
-    label: "Outline",
-    field: "outline",
-    align: "center",
-    help: "The border color members with this Role will have",
+    name: 'outline',
+    label: 'Outline',
+    field: 'outline',
+    align: 'center',
+    help: 'The border color members with this Role will have',
   },
   {
-    name: "underline",
-    label: "Underline?",
-    field: "underline",
-    align: "center",
-    help: "The underline color members with this Role will have",
+    name: 'underline',
+    label: 'Underline?',
+    field: 'underline',
+    align: 'center',
+    help: 'The underline color members with this Role will have',
   },
   {
-    name: "rounded",
-    label: "Shape",
-    field: "rounded",
-    align: "center",
-    help: "The shape members with this Role will have",
+    name: 'rounded',
+    label: 'Shape',
+    field: 'rounded',
+    align: 'center',
+    help: 'The shape members with this Role will have',
   },
 ];
 export default {
@@ -410,7 +419,7 @@ export default {
       isFullscreen: false,
       currentStyle: {},
       pagination: {
-        sortBy: "label",
+        sortBy: 'label',
         descending: false,
         page: 1,
         rowsPerPage: 10,
@@ -421,17 +430,17 @@ export default {
     this.Dark = Dark;
     this.updateStyle = debounce(this.updateStyle, 2000);
     // this.updateMovement = debounce(this.updateMovement, 2000)
-    this.pagination = LocalStorage.has("movementEditPagination")
-      ? LocalStorage.getItem("movementEditPagination")
+    this.pagination = LocalStorage.has('movementEditPagination')
+      ? LocalStorage.getItem('movementEditPagination')
       : {
-          sortBy: "label",
+          sortBy: 'label',
           descending: false,
           page: 1,
           rowsPerPage: 10,
         };
   },
   methods: {
-    ...mapMutations("movement", ["setStyleLoading"]),
+    ...mapMutations('movement', ['setStyleLoading']),
     getShape(round, shape) {
       // console.log(round, shape)
       if (shape) {
@@ -439,11 +448,11 @@ export default {
         return shape;
       } else if (round === true) {
         // console.log('round')
-        return "round";
+        return 'round';
       } else {
         // props.row.style.shape ? props.row.style.shape : props.row.style.round ? 'round' : 'not-round'
         // console.log('not-round')
-        return "not-round";
+        return 'not-round';
       }
     },
     updateStyle(id, key, val) {
@@ -452,36 +461,36 @@ export default {
         .then(() => {
           this.setStyleLoading({ id, val: true });
           return Notify.create({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Style Updated",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Style Updated',
           });
         })
         .catch((err) => {
           this.setStyleLoading({ id, val: false });
           Notify.create({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     },
   },
   computed: {
-    ...mapGetters("movements", ["movements"]),
-    ...mapGetters("movement", ["roleOpts", "backgroundColor", "color"]),
-    ...mapState("movement", ["movement", "permissions", "stats"]),
+    ...mapGetters('movements', ['movements']),
+    ...mapGetters('movement', ['roleOpts', 'backgroundColor', 'color']),
+    ...mapState('movement', ['movement', 'permissions', 'stats']),
   },
   watch: {
     pagination() {
-      LocalStorage.set("movementEditPagination", this.pagination);
+      LocalStorage.set('movementEditPagination', this.pagination);
     },
   },
   components: {
-    "mt-style-menu": defineAsyncComponent(() =>
-      import("./actions/mt-style-menu.vue")
+    'mt-style-menu': defineAsyncComponent(() =>
+      import('./actions/mt-style-menu.vue')
     ),
   },
 };

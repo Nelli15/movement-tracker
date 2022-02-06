@@ -89,6 +89,7 @@ export function modStats (state) {
 export function roleStats (state) {
   var stats = []
   for (var key in state.stats) {
+    state.stats[key].id = key
     if (state.stats[key].type === 'role') {
       let total = []
     let members = {}
@@ -99,6 +100,7 @@ export function roleStats (state) {
     }
       stats.push({ ...state.stats[key], total: total.reduce((a, b) => a + b, 0), members: members})
     }
+    
   }
   return stats.sort((a, b) => {
     return a.label > b.label ? 1 : a.label < b.label ? -1 : 0

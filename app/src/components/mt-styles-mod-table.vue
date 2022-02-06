@@ -111,6 +111,7 @@
           data-cy="label"
         >
           <q-btn
+            :disable="!permissions.settings_mods_edit"
             :key="props.row.value"
             :class="
               (props.row.style.shape
@@ -147,14 +148,14 @@
             no-caps
             >{{
               props.row.style.prepend && props.row.icon
-                ? "[" + props.row.icon + "]"
-                : ""
+                ? '[' + props.row.icon + ']'
+                : ''
             }}
             {{ props.row.label }}
             {{
               !props.row.style.prepend && props.row.icon
-                ? "[" + props.row.icon + "]"
-                : ""
+                ? '[' + props.row.icon + ']'
+                : ''
             }}</q-btn
           >
         </q-td>
@@ -180,6 +181,7 @@
           data-cy="background"
         >
           <q-checkbox
+            :disable="!permissions.settings_mods_edit"
             :model-value="
               props.row.style.backgroundOverride
                 ? props.row.style.backgroundOverride
@@ -200,7 +202,10 @@
           </q-checkbox>
           <q-btn
             :style="'background-color:' + props.row.style.background + ';'"
-            :disable="!props.row.style.backgroundOverride"
+            :disable="
+              !props.row.style.backgroundOverride ||
+              !permissions.settings_mods_edit
+            "
             aria-label="Change Background Color"
             data-cy="color-display"
           >
@@ -222,6 +227,7 @@
           data-cy="color"
         >
           <q-checkbox
+            :disable="!permissions.settings_mods_edit"
             :model-value="
               props.row.style.colorOverride
                 ? props.row.style.colorOverride
@@ -243,7 +249,9 @@
           <q-btn
             :style="'background-color:' + props.row.style.color + ';'"
             aria-label="Change Forground Colour"
-            :disable="!props.row.style.colorOverride"
+            :disable="
+              !props.row.style.colorOverride || !permissions.settings_mods_edit
+            "
             data-cy="color-display"
           >
             <q-popup-edit :model-value="props.row.style.color">
@@ -264,6 +272,7 @@
           data-cy="outline"
         >
           <q-checkbox
+            :disable="!permissions.settings_mods_edit"
             :model-value="
               props.row.style.outlineOverride
                 ? props.row.style.outlineOverride
@@ -285,7 +294,10 @@
           <q-btn
             :style="'background-color:' + props.row.style.outline + ';'"
             aria-label="Change Outline Colour"
-            :disable="!props.row.style.outlineOverride"
+            :disable="
+              !props.row.style.outlineOverride ||
+              !permissions.settings_mods_edit
+            "
             data-cy="color-display"
           >
             <q-popup-edit :model-value="props.row.style.outline">
@@ -306,6 +318,7 @@
           data-cy="underline"
         >
           <q-checkbox
+            :disable="!permissions.settings_mods_edit"
             :model-value="
               props.row.style.underlineOverride
                 ? props.row.style.underlineOverride
@@ -339,7 +352,10 @@
                 !props.row.style.underline
               )
             "
-            :disable="!props.row.style.underlineOverride"
+            :disable="
+              !props.row.style.underlineOverride ||
+              !permissions.settings_mods_edit
+            "
             aria-label="Underline"
             data-cy="underline-display"
           ></q-btn>
@@ -351,6 +367,7 @@
           data-cy="shape"
         >
           <q-checkbox
+            :disable="!permissions.settings_mods_edit"
             :model-value="
               props.row.style.roundOverride &&
               props.row.style.shapeOverride === 'undefined'
@@ -383,7 +400,8 @@
               (props.row.style.shapeOverride === 'undefined' &&
                 !props.row.style.roundOverride) ||
               (props.row.style.shapeOverride !== 'undefined' &&
-                !props.row.style.shapeOverride)
+                !props.row.style.shapeOverride) ||
+              !permissions.settings_mods_edit
             "
           >
             <template v-slot:label>
@@ -511,8 +529,11 @@
           </q-btn-dropdown>
         </q-td>
         <q-td key="icon" :props="props" style="min-width: 80px" data-cy="icon">
-          {{ props.row.icon ? "[" + props.row.icon + "]" : "" }}
-          <q-popup-edit v-model="props.row.icon">
+          {{ props.row.icon ? '[' + props.row.icon + ']' : '' }}
+          <q-popup-edit
+            v-model="props.row.icon"
+            :disable="!permissions.settings_mods_edit"
+          >
             <q-input
               v-model="props.row.icon"
               dense
@@ -530,6 +551,7 @@
           data-cy="icon-location"
         >
           <q-btn
+            :disable="!permissions.settings_mods_edit"
             :icon="props.row.style.prepend ? 'first_page' : 'last_page'"
             dense
             @click="
@@ -549,83 +571,83 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapState } from "vuex";
-import { debounce, LocalStorage, Notify, Dark } from "quasar";
-import { updateStyleByKey } from "./../scripts/styles.js";
-import { defineAsyncComponent } from "vue";
+import { mapGetters, mapMutations, mapState } from 'vuex';
+import { debounce, LocalStorage, Notify, Dark } from 'quasar';
+import { updateStyleByKey } from './../scripts/styles.js';
+import { defineAsyncComponent } from 'vue';
 const columns = [
   {
-    name: "label",
-    align: "center",
-    label: "Label",
-    field: "label",
+    name: 'label',
+    align: 'center',
+    label: 'Label',
+    field: 'label',
     sortable: true,
-    help: "The name of this Modifier",
+    help: 'The name of this Modifier',
   },
   {
-    name: "desc",
-    align: "left",
-    label: "Description",
-    field: "desc",
+    name: 'desc',
+    align: 'left',
+    label: 'Description',
+    field: 'desc',
     sortable: true,
-    help: "A short description of what this Modifier is",
+    help: 'A short description of what this Modifier is',
   },
   {
-    name: "target",
-    align: "left",
-    label: "Target",
-    field: "target",
-    help: "A goal for the number of members with this Modifier",
+    name: 'target',
+    align: 'left',
+    label: 'Target',
+    field: 'target',
+    help: 'A goal for the number of members with this Modifier',
   },
   {
-    name: "background",
-    label: "Background",
-    field: "background",
-    align: "center",
-    help: "The background color members with this Modifier will have",
+    name: 'background',
+    label: 'Background',
+    field: 'background',
+    align: 'center',
+    help: 'The background color members with this Modifier will have',
   },
   {
-    name: "color",
-    label: "Text",
-    field: "color",
-    align: "center",
-    help: "The text color members with this Modifier will have",
+    name: 'color',
+    label: 'Text',
+    field: 'color',
+    align: 'center',
+    help: 'The text color members with this Modifier will have',
   },
   {
-    name: "outline",
-    label: "Outline",
-    field: "outline",
-    align: "center",
-    help: "The border color members with this Modifier will have",
+    name: 'outline',
+    label: 'Outline',
+    field: 'outline',
+    align: 'center',
+    help: 'The border color members with this Modifier will have',
   },
   {
-    name: "underline",
-    label: "Underline?",
-    field: "underline",
-    align: "center",
-    help: "The underline color members with this Modifier will have",
+    name: 'underline',
+    label: 'Underline?',
+    field: 'underline',
+    align: 'center',
+    help: 'The underline color members with this Modifier will have',
   },
   {
-    name: "rounded",
-    label: "Shape",
-    field: "rounded",
-    align: "center",
-    help: "The shape members with this Modifier will have",
+    name: 'rounded',
+    label: 'Shape',
+    field: 'rounded',
+    align: 'center',
+    help: 'The shape members with this Modifier will have',
   },
   {
-    name: "icon",
-    label: "Icon",
-    field: "icon",
-    align: "center",
+    name: 'icon',
+    label: 'Icon',
+    field: 'icon',
+    align: 'center',
     sortable: true,
-    help: "The icon assigned to this Modifier",
+    help: 'The icon assigned to this Modifier',
   },
   {
-    name: "prepend",
-    label: "Icon Location",
-    field: "prepend",
-    align: "center",
-    help: "Place the icon before or after the members name",
+    name: 'prepend',
+    label: 'Icon Location',
+    field: 'prepend',
+    align: 'center',
+    help: 'Place the icon before or after the members name',
   },
 ];
 export default {
@@ -637,7 +659,7 @@ export default {
       hidebaseStyles: true,
       currentStyle: {},
       pagination: {
-        sortBy: "label",
+        sortBy: 'label',
         descending: false,
         page: 1,
         rowsPerPage: 10,
@@ -648,17 +670,17 @@ export default {
     this.Dark = Dark;
     this.updateStyleByKey = debounce(this.updateStyle, 3000);
     // this.updateMovement = debounce(this.updateMovement, 2000)
-    this.pagination = LocalStorage.has("movementEditPagination")
-      ? LocalStorage.getItem("movementEditPagination")
+    this.pagination = LocalStorage.has('movementEditPagination')
+      ? LocalStorage.getItem('movementEditPagination')
       : {
-          sortBy: "label",
+          sortBy: 'label',
           descending: false,
           page: 1,
           rowsPerPage: 10,
         };
   },
   methods: {
-    ...mapMutations("movement", ["setStyleLoading"]),
+    ...mapMutations('movement', ['setStyleLoading']),
     getShape(round, shape) {
       // console.log(round, shape)
       if (shape) {
@@ -666,11 +688,11 @@ export default {
         return shape;
       } else if (round === true) {
         // console.log('round')
-        return "round";
+        return 'round';
       } else {
         // props.row.style.shape ? props.row.style.shape : props.row.style.round ? 'round' : 'not-round'
         // console.log('not-round')
-        return "not-round";
+        return 'not-round';
       }
     },
     updateStyle(id, key, val) {
@@ -679,35 +701,35 @@ export default {
         .then(() => {
           this.setStyleLoading({ id, val: true });
           return Notify.create({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Style Updated",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Style Updated',
           });
         })
         .catch((err) => {
           this.setStyleLoading({ id, val: false });
           Notify.create({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     },
   },
   computed: {
-    ...mapGetters("movement", ["modOpts", "backgroundColor", "color"]),
-    ...mapState("movement", ["movement", "permissions", "stats"]),
+    ...mapGetters('movement', ['modOpts', 'backgroundColor', 'color']),
+    ...mapState('movement', ['movement', 'permissions', 'stats']),
   },
   watch: {
     pagination() {
-      LocalStorage.set("movementEditPagination", this.pagination);
+      LocalStorage.set('movementEditPagination', this.pagination);
     },
   },
   components: {
-    "mt-style-menu": defineAsyncComponent(() =>
-      import("./../components/actions/mt-style-menu.vue")
+    'mt-style-menu': defineAsyncComponent(() =>
+      import('./../components/actions/mt-style-menu.vue')
     ),
   },
 };

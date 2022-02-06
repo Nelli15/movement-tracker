@@ -155,7 +155,6 @@ export function removeUser (state, payload) {
   delete state.users[payload.id]
 }
 export function setStats (state, payload) {
-  console.log('setStats', payload)
   const stats = JSON.parse(JSON.stringify(payload ? payload: {}))
   state.stats = stats
 }
@@ -184,7 +183,6 @@ export function setMemberList (state, payload) {
 }
 
 export function setMember (state, payload) {
-  console.log(payload)
   state.members[payload.id] = payload
 }
 
@@ -222,10 +220,9 @@ export function removeTree (state, id) {
 }
 
 export async function updateRoleDefinitionRule (state, payload) {
-  console.log(payload)
+
   state.userRoleDefinitions[payload.userRole].rules[payload.ruleKey] = payload.value
   let key = 'rules.'.concat(payload.ruleKey)
-console.log({ [key]: payload.value })
   // return firebase.firestore().doc(`/movements/${state.movement.id}/user-role-definitions/${payload.userRole}`).update({ ['rules.access.view']: payload.value }).catch(err => console.error(err))
   // use this once the bug with updating nested fields is fixed
   return await updateDoc(

@@ -1,42 +1,39 @@
 <template>
   <div
-    :data-cy="'member-' + localMember.id"
+    :data-cy="'member-' + l_member.id"
     :data-cy-parent="node.parent"
-    :class="
-      (highlight.current &&
-      (highlight.current === localMember.role ||
-        (localMember.mods && localMember.mods.includes(highlight.current)))
-        ? 'highlight '
-        : '') + (localMember.display ? localMember.display.shape : '')
-    "
+    :class="l_member.display ? l_member.display.shape : ''"
   >
-    <!-- {{ localMember.display }} -->
+    <!-- {{ l_member.display }} -->
     <q-btn
-      v-if="localMember.display"
+      v-if="l_member.display"
       :class="
-        (localMember.display.underline ? 'text-underline ' : '') +
-        localMember.display.shape +
+        (l_member.display.underline ? 'text-underline ' : '') +
+        l_member.display.shape +
         (q.dark.isActive && shadow ? ' dimmed ' : '') +
-        (!q.dark.isActive && shadow ? ' light-dimmed ' : '')
+        (!q.dark.isActive && shadow ? ' light-dimmed ' : '') +
+        (highlight.current &&
+        (highlight.current === l_member.role ||
+          (l_member.mods && l_member.mods.includes(highlight.current)))
+          ? ' highlight'
+          : '')
       "
       :style="
         'background-color:' +
-        localMember.display.background +
+        l_member.display.background +
         '; color:' +
-        localMember.display.color +
+        l_member.display.color +
         '; ' +
         'font-size:' +
         size +
         '%;border-color:' +
-        localMember.display.outline +
+        l_member.display.outline +
         ' !important; border-width: ' +
-        (localMember.display.background === localMember.display.outline
-          ? '0'
-          : '3') +
+        (l_member.display.background === l_member.display.outline ? '0' : '3') +
         'px;'
       "
       style="border-style: solid; z-index: 10"
-      :key="node.subTree + '-' + node.parent + '-' + localMember.name"
+      :key="node.subTree + '-' + node.parent + '-' + l_member.name"
       no-caps
       @click.stop
       @contextmenu.stop
@@ -44,14 +41,14 @@
       @mousedown.stop
     >
       <q-tooltip
-        v-if="localMember.notes > ''"
+        v-if="l_member.notes > ''"
         max-width="200px"
         class="bg-blue-grey-2 text-black"
-        >{{ localMember.notes }}</q-tooltip
+        >{{ l_member.notes }}</q-tooltip
       >
       <!-- Left Click Menu -->
       <q-menu>
-        <mt-member-view-menu :localMember="localMember" />
+        <mt-member-view-menu :l_member="l_member" />
       </q-menu>
       <!-- Right Click Menu-->
       <mt-member-context-menu
@@ -65,21 +62,21 @@
         @changeTree="$emit('changeTree', $event)"
       />
       <q-icon name="person" class="print-hide q-mr-sm" />
-      {{ localMember.display ? localMember.display.label : localMember.name }}
+      {{ l_member.display ? l_member.display.label : l_member.name }}
     </q-btn>
-    <q-skeleton type="QBtn" v-if="!localMember.display" />
+    <q-skeleton type="QBtn" v-if="!l_member.display" />
     <!-- </Draggable>
   </Container> -->
   </div>
 </template>
 
 <script>
-import { defineAsyncComponent, ref, computed, watch } from "vue";
-import { useQuasar } from "quasar";
-import { useStore } from "vuex";
+import { defineAsyncComponent, ref, computed, watch } from 'vue';
+import { useQuasar } from 'quasar';
+import { useStore } from 'vuex';
 
 export default {
-  name: "mt-member-node",
+  name: 'mt-member-node',
   props: {
     deleteable: Boolean,
     member: {},
@@ -91,7 +88,7 @@ export default {
   setup(props, { emit }) {
     const q = useQuasar();
     const store = useStore();
-    const localMember = ref({});
+    const l_member = ref({});
     const highlight = computed(() => {
       return store.state.general.highlight;
     });
@@ -106,24 +103,24 @@ export default {
     watch(
       () => props.member,
       (newVal, oldVal) => {
-        localMember.value = { ...newVal };
+        l_member.value = { ...newVal };
       },
       { immediate: true }
     );
     watch(
       () => props.node.children,
       () => {
-        emit("childrenChanged", props.node.key);
+        emit('childrenChanged', props.node.key);
       },
       { immediate: true }
     );
 
     function addToSelected() {
-      emit("selected", localMember.id);
+      emit('selected', props.node.key);
     }
     return {
       q,
-      localMember,
+      l_member,
       addToSelected,
       highlight,
       size,
@@ -132,11 +129,11 @@ export default {
   },
 
   components: {
-    "mt-member-view-menu": defineAsyncComponent(() =>
-      import("./../components/actions/mt-member-view-menu.vue")
+    'mt-member-view-menu': defineAsyncComponent(() =>
+      import('./../components/actions/mt-member-view-menu.vue')
     ),
-    "mt-member-context-menu": defineAsyncComponent(() =>
-      import("./../components/actions/mt-member-context-menu.vue")
+    'mt-member-context-menu': defineAsyncComponent(() =>
+      import('./../components/actions/mt-member-context-menu.vue')
     ),
   },
 };
@@ -175,19 +172,26 @@ export default {
   border-radius: 3px 20px 3px 20px;
 }
 
-.highlight {
-  /* box-shadow: 0 0 2px 2px #ff0000 !important; */
-  border: 5px solid transparent;
-  border-image: linear-gradient(
-    to bottom right,
+.highlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 5px;
+  background: linear-gradient(
+    45deg,
     #b827fc 0%,
     #2c90fc 25%,
     #b8fd33 50%,
     #fec837 75%,
     #fd1892 100%
   );
-  border-image-slice: 1;
-  border-radius: 3px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .shadow--dark {

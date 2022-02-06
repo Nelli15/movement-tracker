@@ -141,20 +141,20 @@
 <script>
 // import store from './../store'
 // const movementsModule = require('./../store/modules/movements.js')
-import { debounce, Notify } from "quasar";
-import { logEvent } from "firebase/analytics";
-import { onAuthStateChanged, getAuth, signOut } from "@firebase/auth";
+import { debounce, Notify } from 'quasar';
+import { logEvent } from 'firebase/analytics';
+import { onAuthStateChanged, getAuth, signOut } from '@firebase/auth';
 // import { getFirestore } from "@firebase/firestore";
-import { defineAsyncComponent, ref, computed } from "vue";
+import { defineAsyncComponent, ref, computed } from 'vue';
 
-import { create } from "../scripts/movement.js";
-import { useQuasar } from "quasar";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { create } from '../scripts/movement.js';
+import { useQuasar } from 'quasar';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 let installPromptEvent;
 
-window.addEventListener("beforeinstallprompt", (event) => {
+window.addEventListener('beforeinstallprompt', (event) => {
   // Prevent Chrome <= 67 from automatically showing the prompt
   event.preventDefault();
   // Stash the event so it can be triggered later.
@@ -162,14 +162,14 @@ window.addEventListener("beforeinstallprompt", (event) => {
   // Update the install UI to notify the user app can be installed
   // document.querySelector('#install-button').disabled = false
   Notify.create({
-    message: "Movement Tracker works best when installed! Install now?",
+    message: 'Movement Tracker works best when installed! Install now?',
     timeout: 10000,
-    color: "primary",
+    color: 'primary',
     actions: [
       {
-        label: "Install",
-        icon: "system_update",
-        color: "deep-orange-9",
+        label: 'Install',
+        icon: 'system_update',
+        color: 'deep-orange-9',
         handler: () => {
           // Update the install UI to remove the install button
           // document.querySelector('#install-button').disabled = true
@@ -177,9 +177,9 @@ window.addEventListener("beforeinstallprompt", (event) => {
           installPromptEvent.prompt();
           // Wait for the user to respond to the prompt
           installPromptEvent.userChoice.then((choice) => {
-            if (choice.outcome === "accepted") {
+            if (choice.outcome === 'accepted') {
               // console.log('User accepted the A2HS prompt')
-              if (process.env.PROD) logEvent(getAnalytics(), "app_installed");
+              if (process.env.PROD) logEvent(getAnalytics(), 'app_installed');
             } else {
               // console.log('User dismissed the A2HS prompt')
             }
@@ -195,15 +195,15 @@ window.addEventListener("beforeinstallprompt", (event) => {
 });
 
 export default {
-  name: "homeLayout",
+  name: 'homeLayout',
   setup() {
     const q = useQuasar();
     const store = useStore();
     const router = useRouter();
-    const logo_url = ref("/app-logo-128x128.png");
+    const logo_url = ref('/app-logo-128x128.png');
     if (navigator.standalone) {
       // console.log('Launched: Installed (iOS)')
-    } else if (matchMedia("(display-mode: standalone)").matches) {
+    } else if (matchMedia('(display-mode: standalone)').matches) {
       // console.log('Launched: Installed')
     } else {
       // console.log('Launched: Browser Tab')
@@ -213,14 +213,14 @@ export default {
             'Movement Tracker works best when installed! Just tap <img src="/icons/Navigation_Action_2x_white.png" height="15px"></img> then "Add to Homescreen"',
           html: true,
           timeout: 10000,
-          color: "primary",
+          color: 'primary',
         });
       } else if (q.platform.is.ios && !q.platform.is.safari) {
         Notify.create({
           message:
-            "Movement Tracker works best when installed! Open Movement Tracker in Safari to install the app.",
+            'Movement Tracker works best when installed! Open Movement Tracker in Safari to install the app.',
           timeout: 10000,
-          color: "primary",
+          color: 'primary',
           // actions: [{
           //   label: 'Install',
           //   icon: 'system_update',
@@ -242,28 +242,28 @@ export default {
     function logout() {
       signOut(getAuth())
         .then(() => {
-          router.push("/login");
+          router.push('/login');
           return true;
         })
         .catch((err) => {
           if (process.env.DEV)
-            logEvent(getAnalytics(), "exception", {
+            logEvent(getAnalytics(), 'exception', {
               description: err,
               fatal: false,
             });
-          console.error(new Error("Oops, something went wrong: " + err));
+          console.error(new Error('Oops, something went wrong: ' + err));
         });
     }
 
     const ready = computed(() => store.getters.ready);
-    const user = computed(() => store.getters["auth/user"]);
+    const user = computed(() => store.getters['auth/user']);
 
     return { q, logo_url, createMovement, logout, refresh, ready, user };
   },
   preFetch({ store, redirect, currentRoute }) {
     onAuthStateChanged(getAuth(), (user) => {
       if (user) {
-        store.dispatch("movements/fetchMovements", { uid: user.uid });
+        store.dispatch('movements/fetchMovements', { uid: user.uid });
 
         // // Create a reference to this user's specific status node.
         // // This is where we will store data about being online/offline.
@@ -340,17 +340,17 @@ export default {
   },
   components: {
     // "mt-notifications":defineAsyncComponent(() => import("../components/mt-notifications.vue")),
-    "mt-help-fab": defineAsyncComponent(() =>
-      import("../components/mt-help-fab.vue")
+    'mt-help-fab': defineAsyncComponent(() =>
+      import('../components/mt-help-fab.vue')
     ),
-    "mt-whats-new": defineAsyncComponent(() =>
-      import("../components/mt-whats-new.vue")
+    'mt-whats-new': defineAsyncComponent(() =>
+      import('../components/mt-whats-new.vue')
     ),
-    "mt-splashscreen": defineAsyncComponent(() =>
-      import("../components/mt-splashscreen.vue")
+    'mt-splashscreen': defineAsyncComponent(() =>
+      import('../components/mt-splashscreen.vue')
     ),
-    "mt-online-status": defineAsyncComponent(() =>
-      import("../components/mt-online-status.vue")
+    'mt-online-status': defineAsyncComponent(() =>
+      import('../components/mt-online-status.vue')
     ),
   },
 };

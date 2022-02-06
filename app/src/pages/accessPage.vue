@@ -50,7 +50,9 @@
             name="users"
             label="Users"
             v-if="
-              permissions.access_users_invite || permissions.access_users_revoke
+              permissions.access_view ||
+              permissions.access_users_invite ||
+              permissions.access_users_revoke
             "
             data-cy="users-tab"
           />
@@ -58,6 +60,7 @@
             name="manageUserRoles"
             label="Manage User Role"
             v-if="
+              permissions.access_view ||
               permissions.access_userRoles_create ||
               permissions.access_userRoles_edit ||
               permissions.access_userRoles_delete
@@ -82,7 +85,7 @@
                   {{
                     selectedUserRole
                       ? userRoleDefinitions[selectedUserRole].label
-                      : ""
+                      : ''
                   }}
                 </div>
               </template>
@@ -97,6 +100,7 @@
                   <div class="text-subtitle2 col-12">Invite People</div>
                   <div class="col-xs-12 col-sm-9" style="display: inline-block">
                     <q-input
+                      :disable="!permissions.access_users_invite"
                       v-model="newInvitation.email"
                       type="email"
                       label="Email"
@@ -107,6 +111,7 @@
                   </div>
                   <div class="col-xs-12 col-sm-2" style="display: inline-block">
                     <q-select
+                      :disable="!permissions.access_users_invite"
                       v-model="newInvitation.role"
                       placeholder="Permission"
                       :options="userRoleDefinitionsFiltered"
@@ -119,6 +124,7 @@
                   <div class="col-xs-12 col-sm-1" style="display: inline-block">
                     <div class="q-mx-auto" style="width: 32px">
                       <q-btn
+                        :disable="!permissions.access_users_invite"
                         dense
                         title="Send Invitation"
                         icon="send"
@@ -191,8 +197,8 @@
                       <q-avatar class size="md">
                         <q-img
                           :src="
-                            props.row.photoUrl
-                              ? props.row.photoUrl
+                            props.row.photoURL
+                              ? props.row.photoURL
                               : 'https://avatars.dicebear.com/api/bottts/' +
                                 props.row.email +
                                 '.svg'
@@ -240,6 +246,7 @@
                     data-cy="actions"
                   >
                     <q-btn
+                      :disable="!permissions.access_users_invite"
                       dense
                       icon="delete"
                       color="negative"
@@ -310,8 +317,8 @@
                       <q-avatar class size="md">
                         <q-img
                           :src="
-                            props.row.photoUrl
-                              ? props.row.photoUrl
+                            props.row.photoURL
+                              ? props.row.photoURL
                               : 'https://avatars.dicebear.com/api/bottts/' +
                                 props.row.uid +
                                 '.svg'
@@ -338,7 +345,7 @@
                         <!-- <q-badge v-if="props.row.online" color="positive" text-color="positive" floating round label="o" size="xs" /> -->
                       </q-avatar>
                     </q-avatar>
-                    {{ props.row.name ? props.row.name : "Anonymous" }}
+                    {{ props.row.name ? props.row.name : 'Anonymous' }}
                   </q-td>
                   <q-td key="email" :props="props" data-cy="email">{{
                     props.row.email
@@ -350,6 +357,7 @@
                     data-cy="actions"
                   >
                     <q-btn
+                      :disable="!permissions.access_users_invite"
                       dense
                       icon="done"
                       color="positive"
@@ -358,6 +366,7 @@
                       data-cy="accept"
                     />
                     <q-btn
+                      :disable="!permissions.access_users_invite"
                       dense
                       icon="delete"
                       color="negative"
@@ -431,8 +440,8 @@
                       <q-avatar class size="md">
                         <q-img
                           :src="
-                            props.row.photoUrl
-                              ? props.row.photoUrl
+                            props.row.photoURL
+                              ? props.row.photoURL
                               : 'https://avatars.dicebear.com/api/bottts/' +
                                 props.row.uid +
                                 '.svg'
@@ -460,7 +469,7 @@
                       </q-avatar>
                     </q-avatar>
                     <!-- {{ props.row.online}} -->
-                    {{ props.row.name ? props.row.name : "Anonymous" }}
+                    {{ props.row.name ? props.row.name : 'Anonymous' }}
                     <!-- <q-popup-edit v-model="props.row.label">
                   <q-input :model-value="props.row.label > '' ? props.row.label : ''" @update:model-value="updateAccount(props.row.id, 'label', $event)" dense autofocus label="Budget Label" />
                 </q-popup-edit>
@@ -495,6 +504,7 @@
                     </q-tooltip>
                     <!-- {{ user }} -->
                     <q-popup-edit
+                      :disable="!permissions.access_users_invite"
                       :model-value="props.row.role"
                       v-if="user.uid !== props.row.uid"
                     >
@@ -516,6 +526,7 @@
                   >
                     <q-btn
                       v-if="user.uid !== props.row.uid"
+                      :disable="!permissions.access_users_revoke"
                       dense
                       icon="delete"
                       color="negative"
@@ -537,6 +548,13 @@
                 data-cy="not-permitted-owner"
               >
                 The Owner role cannot be modified
+              </div>
+              <div
+                v-else-if="!permissions.access_userRoles_edit"
+                class="text-center"
+                data-cy="not-permitted-own-role"
+              >
+                You do not have permissions to modify user roles
               </div>
               <div
                 v-else-if="
@@ -579,7 +597,9 @@
                     <q-checkbox
                       :disable="
                         selectedUserRole === 'owner' ||
-                        (movement.role && selectedUserRole === movement.role.id)
+                        (movement.role &&
+                          selectedUserRole === movement.role.id) ||
+                        !permissions.access_userRoles_edit
                       "
                       @update:model-value="
                         updateUserRoleRule($event, `access_view`)
@@ -593,7 +613,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'access_users_invite')
@@ -606,7 +628,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'access_users_revoke')
@@ -619,7 +643,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'access_userRoles_create')
@@ -632,7 +658,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'access_userRoles_edit')
@@ -645,7 +673,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'access_userRoles_delete')
@@ -679,7 +709,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'members_view')
@@ -692,7 +724,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'members_create')
@@ -705,7 +739,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'members_edit')
@@ -718,7 +754,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'members_delete')
@@ -731,7 +769,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'members_export')
@@ -767,7 +807,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'movement_edit')
@@ -780,7 +822,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'movement_copy')
@@ -796,7 +840,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'movement_carbonCopy')
@@ -809,7 +855,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'movement_delete')
@@ -847,7 +895,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_roles_view')
@@ -860,7 +910,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_roles_create')
@@ -873,7 +925,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_roles_edit')
@@ -886,7 +940,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_roles_delete')
@@ -906,7 +962,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_mods_view')
@@ -919,7 +977,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_mods_create')
@@ -932,7 +992,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_mods_edit')
@@ -945,7 +1007,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_mods_delete')
@@ -965,7 +1029,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_complex_view')
@@ -978,7 +1044,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_complex_create')
@@ -991,7 +1059,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_complex_edit')
@@ -1004,7 +1074,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_complex_delete')
@@ -1024,7 +1096,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_calc_view')
@@ -1037,7 +1111,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_calc_create')
@@ -1050,7 +1126,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_calc_edit')
@@ -1063,7 +1141,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'settings_calc_delete')
@@ -1101,7 +1181,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'snapshots_view')
@@ -1114,7 +1196,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'snapshots_update')
@@ -1160,7 +1244,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'trees_view')
@@ -1173,7 +1259,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'trees_create')
@@ -1186,7 +1274,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'trees_export')
@@ -1199,7 +1289,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'trees_delete')
@@ -1212,7 +1304,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'subTrees_add')
@@ -1228,7 +1322,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'subTrees_remove')
@@ -1270,7 +1366,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'trends_view')
@@ -1283,7 +1381,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'trends_movementGraphs_view')
@@ -1301,7 +1401,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'trends_movementGraphs_create')
@@ -1319,7 +1421,9 @@
                   <q-checkbox
                     :disable="
                       selectedUserRole === 'owner' ||
-                      (movement.role && selectedUserRole === movement.role.id)
+                      (movement.role &&
+                        selectedUserRole === movement.role.id) ||
+                      !permissions.access_userRoles_edit
                     "
                     @update:model-value="
                       updateUserRoleRule($event, 'trends_movementGraphs_delete')
@@ -1373,7 +1477,7 @@
 </template>
 
 <script>
-import { setCurrentScreen, logEvent, getAnalytics } from "firebase/analytics";
+import { setCurrentScreen, logEvent, getAnalytics } from 'firebase/analytics';
 import {
   getFirestore,
   serverTimestamp,
@@ -1383,23 +1487,23 @@ import {
   updateDoc,
   collection,
   addDoc,
-} from "@firebase/firestore";
-import { getFunctions, httpsCallable } from "firebase/functions";
-import { ref, reactive, computed, watch } from "vue";
-import { useStore } from "vuex";
-import { useQuasar } from "quasar";
-import { useRoute } from "vue-router";
+} from '@firebase/firestore';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { ref, reactive, computed, watch } from 'vue';
+import { useStore } from 'vuex';
+import { useQuasar } from 'quasar';
+import { useRoute } from 'vue-router';
 
 export default {
   preFetch({ store, currentRoute }) {
     // console.log(Object.keys(store.state.movement.users));
     if (Object.keys(store.state.movement.users).length <= 0) {
-      store.dispatch("movement/fetchUsers", {
+      store.dispatch('movement/fetchUsers', {
         movId: currentRoute.params.movId,
       });
     }
     if (Object.keys(store.state.movement.userRoleDefinitions).length <= 0) {
-      store.dispatch("movement/fetchUserRoleDefinitions", {
+      store.dispatch('movement/fetchUserRoleDefinitions', {
         movId: currentRoute.params.movId,
       });
     }
@@ -1408,33 +1512,33 @@ export default {
     const q = useQuasar();
     const store = useStore();
     const route = useRoute();
-    setCurrentScreen(getAnalytics(), "Movement_Access");
+    setCurrentScreen(getAnalytics(), 'Movement_Access');
     const permissions = computed(() => store.state.movement.permissions);
 
     const user = computed(() => store.state.auth.user);
     const backgroundColor = computed(() => store.state.movement.user);
     const movement = computed(() => store.state.movement.movement);
     const isFullscreen = ref(false);
-    const tab = ref("");
+    const tab = ref('');
     tab.value = permissions.value.access_users_invite
-      ? "userInvites"
-      : permissions.value.access_users_revoke
-      ? "users"
+      ? 'userInvites'
+      : permissions.value.access_users_revoke || permissions.value.access_view
+      ? 'users'
       : permissions.value.access_userRoles_create ||
         permissions.value.access_userRoles_edit ||
         permissions.value.access_userRoles_delete
-      ? "manageUserRoles"
-      : "";
+      ? 'manageUserRoles'
+      : '';
     const newInvitation = reactive({
-      name: "",
-      email: "",
-      role: "",
+      name: '',
+      email: '',
+      role: '',
       accepted: false,
       sent: false,
-      movementName: "",
-      movId: "",
-      fromName: "",
-      fromEmail: "",
+      movementName: '',
+      movId: '',
+      fromName: '',
+      fromEmail: '',
       style: {},
     });
 
@@ -1442,18 +1546,18 @@ export default {
       () => store.state.movement.userRoleDefinitions
     );
     const userRoleDefinitionsFiltered = computed(() => {
-      return Object.keys(userRoleDefinitions.value).map(
-        (i) => userRoleDefinitions.value[i]
-      );
+      return Object.keys(userRoleDefinitions.value)
+        .map((i) => userRoleDefinitions.value[i])
+        .sort((a, b) => a.label - b.label);
     });
     const selectedUserRole = ref(
       userRoleDefinitionsFiltered.value[0]
         ? userRoleDefinitionsFiltered.value[0].id
-        : ""
+        : ''
     );
     function addUserRoleDefinition() {
       let newUserRole = {
-        label: "Untitled User Role",
+        label: 'Untitled User Role',
         rules: {
           snapshots: { view: false, update: false },
           events: { create: false },
@@ -1499,57 +1603,57 @@ export default {
       ).catch((err) => console.error(err));
     }
     function updateRoleDefinitionRule(value) {
-      store.commit("movement/updateRoleDefinitionRule", value);
+      store.commit('movement/updateRoleDefinitionRule', value);
     }
 
     function fetchUsers(value) {
-      store.dispatch("fetchUsers", value);
+      store.dispatch('fetchUsers', value);
     }
     const users = computed(() => {
       // console.log(store.state.movement);
       return store.state.movement.users;
     });
-    const usersFilter = ref("");
+    const usersFilter = ref('');
     const usersFiltered = computed(() => {
       return Object.keys(users.value).map((i) => users.value[i]);
     });
     const usersPagination = computed({
       get: () => {
-        q.localStorage.has("adminsTableRows")
-          ? q.localStorage.getItem("adminsTableRows")
+        q.localStorage.has('adminsTableRows')
+          ? q.localStorage.getItem('adminsTableRows')
           : {
-              sortBy: "name",
+              sortBy: 'name',
               descending: false,
               page: 1,
               rowsPerPage: 10,
               // rowsNumber: xx if getting data from a server
             };
       },
-      set: ($event) => q.localStorage.set("adminsTableRows", $event),
+      set: ($event) => q.localStorage.set('adminsTableRows', $event),
     });
     const usersColumns = reactive([
       {
-        name: "name",
-        align: "left",
-        label: "Name",
-        field: "name",
+        name: 'name',
+        align: 'left',
+        label: 'Name',
+        field: 'name',
         sortable: true,
       },
       {
-        name: "email",
-        align: "left",
-        label: "Email",
-        field: "email",
+        name: 'email',
+        align: 'left',
+        label: 'Email',
+        field: 'email',
         sortable: true,
       },
       {
-        name: "permission",
-        align: "left",
-        label: "Permission",
-        field: "permission",
+        name: 'permission',
+        align: 'left',
+        label: 'Permission',
+        field: 'permission',
         sortable: true,
       },
-      { name: "actions", align: "right", label: "Actions", field: "actions" },
+      { name: 'actions', align: 'right', label: 'Actions', field: 'actions' },
     ]);
 
     function updateUserRoleRule(value, key) {
@@ -1575,14 +1679,14 @@ export default {
         .then((res) => {
           // console.log('updated')
           q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Access Updated",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Access Updated',
           });
           // updateChangeLog({ msg: `${user.displayName} made ${member.name} a ${role} instead of a ${oldRole}`, movId: route.params.movId })
           if (process.env.DEV)
-            logEvent(getAnalytics(), "access_changed", {
+            logEvent(getAnalytics(), 'access_changed', {
               uid: member.uid,
               permission: role,
               old_permission: oldRole,
@@ -1591,16 +1695,16 @@ export default {
         })
         .catch((err) => {
           if (process.env.DEV)
-            logEvent(getAnalytics(), "exception", {
+            logEvent(getAnalytics(), 'exception', {
               description: err,
               fatal: false,
             });
-          console.error(new Error("Oops, something went wrong: " + err));
+          console.error(new Error('Oops, something went wrong: ' + err));
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     }
@@ -1616,28 +1720,28 @@ export default {
       )
         .then(() => {
           q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Access Revoked",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Access Revoked',
           });
           // updateChangeLog({ msg: `${user.displayName} removed ${role.name}`, movId: route.params.movId })
           if (process.env.DEV)
-            logEvent(getAnalytics(), "access_revoked", { uid: role.uid });
+            logEvent(getAnalytics(), 'access_revoked', { uid: role.uid });
           return true;
         })
         .catch((err) => {
           if (process.env.DEV)
-            logEvent(getAnalytics(), "exception", {
+            logEvent(getAnalytics(), 'exception', {
               description: err,
               fatal: false,
             });
-          console.error(new Error("Oops, something went wrong: " + err));
+          console.error(new Error('Oops, something went wrong: ' + err));
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     }
@@ -1648,21 +1752,21 @@ export default {
     });
     const userRequestsColumns = reactive([
       {
-        name: "name",
-        align: "left",
-        label: "Name",
-        field: "name",
+        name: 'name',
+        align: 'left',
+        label: 'Name',
+        field: 'name',
         sortable: true,
       },
       {
-        name: "email",
-        align: "left",
-        label: "Email",
-        field: "email",
+        name: 'email',
+        align: 'left',
+        label: 'Email',
+        field: 'email',
         sortable: true,
       },
       // { name: 'permission', align: 'left', label: 'Permission', field: 'permission', sortable: true },
-      { name: "actions", align: "right", label: "Actions", field: "actions" },
+      { name: 'actions', align: 'right', label: 'Actions', field: 'actions' },
     ]);
     const pendingAcceptRequest = ref({});
     const confirmRequest = ref(false);
@@ -1676,42 +1780,42 @@ export default {
       )
         .then(() => {
           q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Request Rejected",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Request Rejected',
           });
           // updateChangeLog({ msg: `${user.displayName} removed ${request.email}'s request to join`, movId: route.params.movId })
           if (process.env.DEV)
-            logEvent(getAnalytics(), "request_rejected", {
+            logEvent(getAnalytics(), 'request_rejected', {
               email: request.email,
             });
           return true;
         })
         .catch((err) => {
           if (process.env.DEV)
-            logEvent(getAnalytics(), "exception", {
+            logEvent(getAnalytics(), 'exception', {
               description: err,
               fatal: false,
             });
-          console.error(new Error("Oops, something went wrong: " + err));
+          console.error(new Error('Oops, something went wrong: ' + err));
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     }
     function acceptRequest1(request) {
       pendingAcceptRequest.value = request;
-      pendingAcceptRequest.value.role = "viewer";
+      pendingAcceptRequest.value.role = 'viewer';
       confirmRequest.value = true;
     }
     function acceptRequest() {
       httpsCallable(
         getFunctions(),
-        "movementtracker-users-acceptRequest"
+        'mt-users-acceptRequest'
       )({
         request: {
           email: pendingAcceptRequest.value.email,
@@ -1723,30 +1827,30 @@ export default {
       })
         .then(() => {
           q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Request Accepted",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Request Accepted',
           });
           // updateChangeLog({ msg: `${user.displayName} accepted ${pendingAcceptRequest.email}'s request to join.`, movId: route.params.movId })
           if (process.env.DEV)
-            logEvent(getAnalytics(), "request_accepted", {
+            logEvent(getAnalytics(), 'request_accepted', {
               email: pendingAcceptRequest.value.email,
             });
           return true;
         })
         .catch((err) => {
           if (process.env.DEV)
-            logEvent(getAnalytics(), "exception", {
+            logEvent(getAnalytics(), 'exception', {
               description: err,
               fatal: false,
             });
-          console.error(new Error("Oops, something went wrong: " + err));
+          console.error(new Error('Oops, something went wrong: ' + err));
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     }
@@ -1756,40 +1860,40 @@ export default {
     }
 
     const userInvites = computed(() => store.state.movement.userInvites);
-    const userInvitesFilter = ref("");
+    const userInvitesFilter = ref('');
     const userInvitesFiltered = computed(() => {
       return Object.keys(userInvites.value).map((i) => userInvites.value[i]);
     });
     const userInvitesColumns = reactive([
       {
-        name: "name",
-        align: "left",
-        label: "Name",
-        field: "name",
+        name: 'name',
+        align: 'left',
+        label: 'Name',
+        field: 'name',
         sortable: true,
       },
       {
-        name: "email",
-        align: "left",
-        label: "Email",
-        field: "email",
+        name: 'email',
+        align: 'left',
+        label: 'Email',
+        field: 'email',
         sortable: true,
       },
       {
-        name: "permission",
-        align: "left",
-        label: "Permission",
-        field: "permission",
+        name: 'permission',
+        align: 'left',
+        label: 'Permission',
+        field: 'permission',
         sortable: true,
       },
-      { name: "actions", align: "right", label: "Actions", field: "actions" },
+      { name: 'actions', align: 'right', label: 'Actions', field: 'actions' },
     ]);
     const userInvitesPagination = computed({
       get: () => {
-        return q.localStorage.has("userInvitesPagination")
-          ? q.localStorage.getItem("userInvitesPagination")
+        return q.localStorage.has('userInvitesPagination')
+          ? q.localStorage.getItem('userInvitesPagination')
           : {
-              sortBy: "name",
+              sortBy: 'name',
               descending: false,
               page: 1,
               rowsPerPage: 10,
@@ -1797,7 +1901,7 @@ export default {
             };
       },
       set: (value) => {
-        q.localStorage.set("userInvitesTableRows", value);
+        q.localStorage.set('userInvitesTableRows', value);
       },
     });
     const currentUserRole = computed(() => {
@@ -1826,20 +1930,20 @@ export default {
     }
     function sendInvite(invitation) {
       // console.log(invitation)
-      if (invitation.email <= "") {
+      if (invitation.email <= '') {
         q.notify({
-          color: "negative",
-          textColor: "white",
-          icon: "error",
-          message: "Oops, Missing Email Field!",
+          color: 'negative',
+          textColor: 'white',
+          icon: 'error',
+          message: 'Oops, Missing Email Field!',
         });
         return;
-      } else if (invitation.role <= "") {
+      } else if (invitation.role <= '') {
         q.notify({
-          color: "negative",
-          textColor: "white",
-          icon: "error",
-          message: "Oops, Missing Permission Field!",
+          color: 'negative',
+          textColor: 'white',
+          icon: 'error',
+          message: 'Oops, Missing Permission Field!',
         });
         return;
       }
@@ -1847,10 +1951,10 @@ export default {
         // console.log('test', invitation.email, users.value[key])
         if (invitation.email === users.value[key].email) {
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Invite Already Sent",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Invite Already Sent',
           });
           return;
         }
@@ -1859,10 +1963,10 @@ export default {
         // console.log('userInvites', invitation, userInvites[key])
         if (invitation.email === userInvites.value[key].email) {
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Invite Already Sent!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Invite Already Sent!',
           });
           return;
         }
@@ -1894,14 +1998,14 @@ export default {
       )
         .then((res) => {
           q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Invitation Sent",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Invitation Sent',
           });
           // updateChangeLog({ msg: `${user.displayName} sent an invite to ${invitation.email}`, movId: route.params.movId })
           if (process.env.DEV)
-            logEvent(getAnalytics(), "movement_shared", {
+            logEvent(getAnalytics(), 'movement_shared', {
               email: invitation.email,
               permission: invitation.role,
             });
@@ -1909,16 +2013,16 @@ export default {
         })
         .catch((err) => {
           if (process.env.DEV)
-            logEvent(getAnalytics(), "exception", {
+            logEvent(getAnalytics(), 'exception', {
               description: err,
               fatal: false,
             });
-          console.error(new Error("Oops, something went wrong: " + err));
+          console.error(new Error('Oops, something went wrong: ' + err));
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     }
@@ -1931,28 +2035,28 @@ export default {
       )
         .then(() => {
           q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Invitation Deleted",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Invitation Deleted',
           });
           // updateChangeLog({ msg: `${user.displayName} deleted ${invite}'s invite`, movId: route.params.movId })
           if (process.env.DEV)
-            logEvent(getAnalytics(), "invite_deleted", { email: invite });
+            logEvent(getAnalytics(), 'invite_deleted', { email: invite });
           return true;
         })
         .catch((err) => {
           if (process.env.DEV)
-            logEvent(getAnalytics(), "exception", {
+            logEvent(getAnalytics(), 'exception', {
               description: err,
               fatal: false,
             });
-          console.error(new Error("Oops, something went wrong: " + err));
+          console.error(new Error('Oops, something went wrong: ' + err));
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     }
@@ -1979,7 +2083,7 @@ export default {
         if (!newVal || !oldVal || newVal.length !== oldVal.length) {
           selectedUserRole.value = userRoleDefinitionsFiltered.value[0]
             ? userRoleDefinitionsFiltered.value[0].id
-            : "";
+            : '';
         }
       },
       { immediate: true }

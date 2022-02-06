@@ -1,7 +1,7 @@
 import { getDatabase, ref, get, query, orderByChild, startAt, endAt } from "@firebase/database";
 
 export function fetchTrend({commit, state}, {movId, styleId, treeId, startDate, endDate}) {
-  console.log(`/movements/${movId}/trends/${styleId}/${treeId}`, new Date(endDate), new Date(1640995200000))
+  // console.log(`/movements/${movId}/trends/${styleId}/${treeId}`, new Date(endDate), new Date(1640995200000))
   return get(query(
       ref(
         getDatabase(),
@@ -11,7 +11,7 @@ export function fetchTrend({commit, state}, {movId, styleId, treeId, startDate, 
         for(let ii in snapshot.val()) {
           trend.push(snapshot.val()[ii])
         }
-        console.log(trend)
+        // console.log(trend)
         commit('setTrend', { movId, styleId, treeId, trend: trend, computed: {mean: mean(trend), median: median(trend), mode: mode(trend), min: min(trend), max: max(trend) }})
         return { movId, styleId, treeId, trend: trend, computed: {mean: mean(trend), median: median(trend), mode: mode(trend), min: min(trend), max: max(trend) }}
       })

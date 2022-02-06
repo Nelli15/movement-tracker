@@ -27,9 +27,7 @@ export function fetchSnapshot ({ commit, rootState }, payload) {
       }/snapshots/${payload.snapId}`
     ),
     doc => {
-      console.log('snapshot', doc)
       const data = doc.data() ? doc.data() : {}
-      console.log(data)
       data.id = doc.id
       commit('setSnapshot', data)
     }
@@ -81,7 +79,6 @@ export function fetchStyles ({ commit, state, rootState }, payload) {
 
 export function fetchTreeData ({commit, state}, payload) {
   if (!payload.treeId) return
-  console.log(`/movements/${payload.movId}/snapshots/${payload.snapId}`, payload)
 let ref = doc(getFirestore(), `/movements/${payload.movId}/snapshots/${payload.snapId}`)
   onSnapshot(
     doc(getFirestore(), `${ref.path}/trees/${payload.treeId}/components/tree`),
@@ -132,12 +129,10 @@ let ref = doc(getFirestore(), `/movements/${payload.movId}/snapshots/${payload.s
 }
 
 export function fetchMembers ({commit, state}, payload) {
-  console.log('fetchMembers', payload)
   onSnapshot(
         collection(getFirestore(), `/movements/${payload.movId}/snapshots/${payload.snapId}/members`), snap => {
           snap.forEach(doc => {
             const data = doc.data()
-            console.log('member', data)
             commit('setMember', {...data, id: doc.id})
           })
         }

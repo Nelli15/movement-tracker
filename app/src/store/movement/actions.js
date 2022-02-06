@@ -262,13 +262,12 @@ export function updateMember ({ commit, state }, payload) {
 
 export function fetchTreeData ({commit, state}, payload) {
   // if(!payload.movId || ! payload.treeId) return console.debug(payload)
-  console.log(payload)
   if (!payload.treeId) return
 let ref = doc(getFirestore(), `/movements/${payload.movId}/trees/${payload.treeId}`)
   onSnapshot(
     doc(getFirestore(), `${ref.path}/components/tree`),
     async doc => {
-      console.log('tree', doc.data(), doc.exists())
+      // console.log('tree', doc.data(), doc.exists())
       let tree = doc.get('tree')
       commit('setTree', { id: payload.treeId, tree: tree })
     }
@@ -327,12 +326,11 @@ export function fetchUserRoleDefinitions ({commit, state}, payload) {
 }
 
 export function fetchMembers ({commit, state}, payload) {
-  console.log('fetchMembers', payload)
+  // console.log('fetchMembers', payload)
   onSnapshot(
         collection(getFirestore(), `/movements/${payload.movId}/members`), snap => {
           snap.forEach(doc => {
             const data = doc.data()
-            console.log('member', data)
             commit('setMember', {...data, id: doc.id})
           })
         }

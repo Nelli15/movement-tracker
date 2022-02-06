@@ -19,7 +19,7 @@
         class="text-center text-h3 w-100"
         :style="'position:absolute;top:30%;color:' + color + ';'"
       >
-        {{ movement ? movement.name : "" }}
+        {{ movement ? movement.name : '' }}
         <div v-if="snapshot" class="text-h5" data-cy="snap-title">
           {{ snapshot.title }}
         </div>
@@ -49,7 +49,10 @@
       </transition>
     </div>
     <div class="text-center text-h3 w-100 print-only">
-      {{ movement ? movement.name : "" }}
+      {{ movement ? movement.name : '' }}
+      <div v-if="snapshot" class="text-h5" data-cy="snap-title">
+        {{ snapshot.title }}
+      </div>
     </div>
     <div
       :style="
@@ -67,31 +70,31 @@
 </template>
 
 <script>
-import { defineAsyncComponent, ref, computed } from "vue";
-import { useQuasar } from "quasar";
-import { useStore } from "vuex";
+import { defineAsyncComponent, ref, computed } from 'vue';
+import { useQuasar } from 'quasar';
+import { useStore } from 'vuex';
 export default {
-  props: ["readOnly", "snapshot"],
+  props: ['readOnly', 'snapshot'],
   setup(props) {
     const q = useQuasar();
     const store = useStore();
     const dateStamp = ref(
-      q.localStorage.has("dateStamp")
-        ? q.localStorage.getItem("dateStamp")
+      q.localStorage.has('dateStamp')
+        ? q.localStorage.getItem('dateStamp')
         : true
     );
     function toggleDateStamp() {
       dateStamp = !dateStamp;
-      q.localStorage.set("dateStamp", dateStamp);
+      q.localStorage.set('dateStamp', dateStamp);
     }
 
     const movement = computed(() => store.state.movement.movement);
     const permissions = computed(() => store.state.movement.permissions);
     const backgroundColor = computed(
-      () => store.getters["movement/backgroundColor"]
+      () => store.getters['movement/backgroundColor']
     );
-    const color = computed(() => store.getters["movement/color"]);
-    const lastUpdated = computed(() => store.getters["movement/lastUpdated"]);
+    const color = computed(() => store.getters['movement/color']);
+    const lastUpdated = computed(() => store.getters['movement/lastUpdated']);
     return {
       q,
       dateStamp,
@@ -104,8 +107,8 @@ export default {
     };
   },
   components: {
-    "mt-movement-context-menu": defineAsyncComponent(() =>
-      import("./../components/actions/mt-movement-context-menu")
+    'mt-movement-context-menu': defineAsyncComponent(() =>
+      import('./../components/actions/mt-movement-context-menu')
     ),
   },
 };

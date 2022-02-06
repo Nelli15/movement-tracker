@@ -75,7 +75,7 @@ export async function add (newMember, movId, treeId = null, parent, shadow) {
 // }
 
 export function copy (memberId, movId) {
-const copyMember = httpsCallable(getFunctions(), 'movementtracker-members-copy');
+const copyMember = httpsCallable(getFunctions(), 'mt-members-copy');
   copyMember({ memberId, movId }).then(res => {
       Notify.create({
         color: 'positive',

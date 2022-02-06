@@ -41,10 +41,10 @@
                     <q-item-label v-html="scope.opt.label" />
                     <q-item-label caption
                       >{{
-                        typeof scope.opt.desc === "string" &&
-                        scope.opt.desc > ""
+                        typeof scope.opt.desc === 'string' &&
+                        scope.opt.desc > ''
                           ? scope.opt.desc.length > 100
-                            ? scope.opt.desc.substring(0, 100).concat("...")
+                            ? scope.opt.desc.substring(0, 100).concat('...')
                             : scope.opt.desc
                           : scope.opt.desc
                       }}
@@ -80,10 +80,10 @@
                     <q-item-label v-html="scope.opt.label" />
                     <q-item-label caption
                       >{{
-                        typeof scope.opt.desc === "string" &&
-                        scope.opt.desc > ""
+                        typeof scope.opt.desc === 'string' &&
+                        scope.opt.desc > ''
                           ? scope.opt.desc.length > 100
-                            ? scope.opt.desc.substring(0, 100).concat("...")
+                            ? scope.opt.desc.substring(0, 100).concat('...')
                             : scope.opt.desc
                           : scope.opt.desc
                       }}
@@ -166,11 +166,11 @@
         <q-item>
           <q-item-section>
             <q-btn
+              icon="add"
               label="Create"
               type="submit"
               class="q-my-sm full-width bg-positive"
               v-close-popup
-              ref="submit"
             />
           </q-item-section>
         </q-item>
@@ -186,11 +186,11 @@
 </template>
 
 <script>
-import { useQuasar } from "quasar";
-import { useStore } from "vuex";
-import { useRoute } from "vue-router";
-import { add } from "./../../scripts/member.js";
-import { ref, computed, watch } from "vue";
+import { useQuasar } from 'quasar';
+import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
+import { add } from './../../scripts/member.js';
+import { ref, computed, watch } from 'vue';
 
 export default {
   props: {
@@ -203,21 +203,21 @@ export default {
     const route = useRoute();
     const parentOptsFiltered = ref([]);
     const newMember = ref({
-      name: "",
-      role: "",
+      name: '',
+      role: '',
       mods: [],
-      notes: "",
+      notes: '',
       customFields: {},
     });
-    const selectedParent = ref(props.parent ? props.parent : "root");
+    const selectedParent = ref(props.parent ? props.parent : 'root');
     const shadow = ref(false);
 
     const mods = computed(() => store.state.movement.mods);
-    const modOpts = computed(() => store.getters["movement/modOpts"]);
+    const modOpts = computed(() => store.getters['movement/modOpts']);
     const modOptsFiltered = ref([]);
     function filterMods(val, update) {
       update(() => {
-        if (val === "") {
+        if (val === '') {
           modOptsFiltered.value = modOpts.value;
         } else {
           const needle = val.toLowerCase();
@@ -243,11 +243,11 @@ export default {
       }
     }
     const roles = computed(() => store.state.movement.roles);
-    const roleOpts = computed(() => store.getters["movement/roleOpts"]);
+    const roleOpts = computed(() => store.getters['movement/roleOpts']);
     const roleOptsFiltered = ref([]);
     function filterRoles(val, update) {
       update(() => {
-        if (val === "") {
+        if (val === '') {
           roleOptsFiltered.value = roleOpts;
         } else {
           const needle = val.toLowerCase();
@@ -264,34 +264,34 @@ export default {
         newMember.value,
         route.params.movId,
         props.treeOpt,
-        selectedParent.value ? selectedParent.value : "root",
+        selectedParent.value ? selectedParent.value : 'root',
         shadow.value
       ).then((res) => {
         q.loading.hide();
         if (res) {
           newMember.value = {
-            name: "",
-            role: "",
+            name: '',
+            role: '',
             mods: [],
-            notes: "",
+            notes: '',
             customFields: {},
           };
 
           q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Member Created",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Member Created',
           });
-          emit("success", {});
+          emit('success', {});
         } else {
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
-          emit("error", {});
+          emit('error', {});
         }
         return true;
       });
@@ -326,7 +326,7 @@ export default {
       //   flattenedCollection,
       //   bfs(dataTree, "children", flattenedCollection)
       // );
-      bfs(dataTree, "children", flattenedCollection);
+      bfs(dataTree, 'children', flattenedCollection);
 
       for (let ii in flattenedCollection) {
         // console.log("members", members.value[flattenedCollection[ii].id].name);
@@ -336,20 +336,20 @@ export default {
           flattenedCollection[ii] &&
           members.value[flattenedCollection[ii].id]
             ? members.value[flattenedCollection[ii].id].name
-            : "";
+            : '';
       }
       // console.log("out", flattenedCollection);
       return flattenedCollection;
     });
     function filterParents(val, update) {
       if (!parents.value)
-        return [{ id: "root", name: "--First Member in Tree--" }];
+        return [{ id: 'root', name: '--First Member in Tree--' }];
       let parentOpts = [
-        { id: "root", name: "--First Member in Tree--" },
+        { id: 'root', name: '--First Member in Tree--' },
         ...Object.values(parents.value),
       ];
       // console.log("parentOpts", parentOpts);
-      if (val === "") {
+      if (val === '') {
         update(() => {
           parentOptsFiltered.value = parentOpts.sort((a, b) => {
             return a.name > b.name ? 1 : a.name < b.name ? -1 : 0;
@@ -380,7 +380,7 @@ export default {
         //   "roleOpts",
         //   newMember.value.role === "" && roleOpts.value.length > 0
         // );
-        if (newMember.value.role === "" && roleOpts.value.length > 0) {
+        if (newMember.value.role === '' && roleOpts.value.length > 0) {
           newMember.value.role = roleOpts.value[0].id;
         }
       },

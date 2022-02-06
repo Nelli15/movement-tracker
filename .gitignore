@@ -65,8 +65,11 @@ node_modules/
 # dotenv environment variables file
 .env
 
-app/dist/**
+**/dist/**
 functions/serviceAccount.json
 serviceAccount.json
 app/package-lock.json
 fbConfig.json
+/server_data/**
+serviceAccount-test.json
+fbConfig-test.json

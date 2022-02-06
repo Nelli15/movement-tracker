@@ -2,6 +2,19 @@ import { getDoc, doc, getFirestore } from '@firebase/firestore'
 import { onAuthStateChanged, getAuth } from '@firebase/auth'
 
 const routes = [
+  // {
+  //   // use this when performing server maintainance
+  //   path: '/',
+  //   component:() => import('layouts/serverMaintenance.vue'),
+  //   children: [
+  //     {
+  //       path: '',
+  //       name: 'home',
+  //       component:() => import('pages/blank.vue'),
+  //       // beforeEnter: (to, from) => isLoggedIn(to, from)
+  //     }
+  //   ]
+  // },
   {
     // private routes
     path: '/home',
@@ -147,14 +160,12 @@ async function hasPermission (to, from) {
 }
 
 async function isLoggedIn (to, from) {
-  onAuthStateChanged(getAuth(), user => {
-    console.log(user)
+  const user = await AuthUser()
     if (user) {
       return
     } else {
       return '/login'
     }
-  })
 }
 
 function AuthUser() {

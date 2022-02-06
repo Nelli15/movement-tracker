@@ -1,8 +1,12 @@
+import { collection, doc } from 'firebase/firestore'
 import { LocalStorage } from 'quasar'
 
 export function fetchHighlighted ({ commit, rootState }, id) {
-  const members = rootState.movement.stats[id].members
-  commit('setHighlighted', { id, members })
+  // if (!rootState.movement.stats[id]) {
+  //   const snap = getDoc(doc(getFirestore(), ''))
+  // }
+  // const members = rootState.movement.stats[id].members
+  commit('setHighlighted', { id })
 }
 export function changeSize ({ commit, state }, option) {
   if (option === '-') {

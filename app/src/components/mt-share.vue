@@ -68,7 +68,7 @@
             >
               <q-item-section avatar>
                 <q-avatar>
-                  <img :src="member.photoUrl" />
+                  <img :src="member.photoURL" />
                 </q-avatar>
               </q-item-section>
               <q-item-section>{{ member.name }}</q-item-section>
@@ -127,7 +127,7 @@
             >
               <q-item-section avatar>
                 <q-avatar>
-                  <img :src="member.photoUrl" />
+                  <img :src="member.photoURL" />
                 </q-avatar>
               </q-item-section>
               <q-item-section>{{ member.name }}</q-item-section>
@@ -230,9 +230,9 @@
 </template>
 
 <script>
-import { $firestore, $firebase } from "./../data/firebase.js";
-import { mapGetters } from "vuex";
-import { uid } from "quasar";
+import { $firestore, $firebase } from './../data/firebase.js';
+import { mapGetters } from 'vuex';
+import { uid } from 'quasar';
 
 export default {
   props: {
@@ -243,15 +243,15 @@ export default {
   data() {
     return {
       newInvitation: {
-        name: "",
-        email: "",
-        role: "viewer",
+        name: '',
+        email: '',
+        role: 'viewer',
         accepted: false,
         sent: false,
-        movementName: "",
-        movId: "",
-        fromName: "",
-        fromEmail: "",
+        movementName: '',
+        movId: '',
+        fromName: '',
+        fromEmail: '',
         style: {},
       },
       share: { empty: true },
@@ -269,12 +269,12 @@ export default {
       return uid();
     },
     sendInvite() {
-      if (this.newInvitation.name <= "") {
-        this.newInvitation.name = "";
-      } else if (this.newInvitation.email <= "") {
+      if (this.newInvitation.name <= '') {
+        this.newInvitation.name = '';
+      } else if (this.newInvitation.email <= '') {
         // this.$toasted.global.toast_error('Invitation Failed! Missing email')
         return;
-      } else if (this.newInvitation.role <= "") {
+      } else if (this.newInvitation.role <= '') {
         // this.$toasted.global.toast_error('Invitation Failed! Missing role')
         return;
       }
@@ -361,9 +361,9 @@ export default {
     },
     toggleShareModal() {
       this.newInvitation = {
-        name: "",
-        email: "",
-        role: "viewer",
+        name: '',
+        email: '',
+        role: 'viewer',
         accepted: false,
         sent: false,
         movementName: this.movement.name,
@@ -376,7 +376,7 @@ export default {
       this.$toasted.global.toast_success(
         `We are making ${request.name} a ${request.role} of the ${this.movement.name} movement, this may take a moment!`
       );
-      var acceptRequest = httpsCallable(getFunctions(), "acceptRequest");
+      var acceptRequest = httpsCallable(getFunctions(), 'acceptRequest');
       acceptRequest({
         request: {
           name: request.name,
@@ -397,7 +397,7 @@ export default {
     lastOwner() {
       var owners = 0;
       for (var member in this.share) {
-        if (member.role === "owner") {
+        if (member.role === 'owner') {
           owners++;
           if (owners >= 2) {
             return false;
@@ -406,14 +406,14 @@ export default {
       }
       return true;
     },
-    ...mapGetters("auth", ["user"]),
-    ...mapGetters("movement", ["backgroundColor"]),
-    ...mapState("movement", [
-      "movement",
-      "shares",
-      "requests",
-      "invites",
-      "permissions",
+    ...mapGetters('auth', ['user']),
+    ...mapGetters('movement', ['backgroundColor']),
+    ...mapState('movement', [
+      'movement',
+      'shares',
+      'requests',
+      'invites',
+      'permissions',
     ]),
   },
 };

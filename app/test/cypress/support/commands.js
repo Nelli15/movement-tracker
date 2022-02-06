@@ -6,7 +6,7 @@ import 'firebase/compat/firestore';
 import 'firebase/compat/functions';
 import { attachCustomCommands } from 'cypress-firebase';
 
-const fbConfig = require('./../../../../fbConfig.json')
+const fbConfig = require('./../../../../fbConfig-test.json')
 const TestMovement = require('./../fixtures/test-movement.json')
 const TestMember = require('./../fixtures/test-member.json')
 const TestUser = require('./../fixtures/test-user.json')
@@ -105,8 +105,16 @@ Cypress.Commands.add('userLogin', () => {
   cy.get('[data-cy="login-card"]', {timeout:10000})
   cy.dataCy('"signin-email"').parent().type('test@email.com')
     cy.dataCy('"signin-password"').parent().type('test1234')
-    cy.dataCy('"signin-submit"').click().then(() => {
-      return firebase.auth().signInWithEmailAndPassword('test@email.com', 'test1234')
+    cy.dataCy('"signin-submit"').click().wait(400)
+    .then(() => {
+      // return firebase.auth().fetchSignInMethodsForEmail('test@email.com').then(
+      //   (methods) => {
+      //     console.log(methods);
+      //     if (methods.length > 0) {
+            firebase.auth().signInWithEmailAndPassword('test@email.com', 'test1234')
+      //     }
+      //   }
+      // )
     })
     cy.log('signin complete')
 });
@@ -119,9 +127,9 @@ Cypress.Commands.add('clearMovs', () => {
 })
 
 Cypress.Commands.add('createMov', () => {
-  console.log(firebase.auth().currentUser)
+  // console.log(firebase.auth().currentUser)
   cy.root().then(()=> {
-  const create = firebase.functions().httpsCallable('movementtracker-movements-create', {failOnNonZeroExit: false})
+  const create = firebase.functions().httpsCallable('mt-movements-create', {failOnNonZeroExit: false})
   return create().then(res => res )
   // cy.visit('/home')
   // cy.get('[data-cy="movements-table"]')
@@ -138,8 +146,9 @@ Cypress.Commands.add('createMov', () => {
 Cypress.Commands.add('navToMovPage', (page) => {
   cy.location('pathname').then(path => {
     path = path.split('/')
-    path.splice(-1,1, page)
-cy.visit(path.join('/'))
+    path = path.slice(0,3)
+    path.push(page)
+    cy.visit(path.join('/'))
   })
   cy.testRoute('/'+page)
 })

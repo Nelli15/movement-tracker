@@ -51,10 +51,19 @@ cy.get('.q-field__label').contains('Password')
   })
 
     it('has login with Github method', () => {
-    cy.dataCy('"signin-with-github"').within(() => {
-      cy.get('.q-btn__content').contains('Github')
+      cy.dataCy('"signin-with-github"').within(() => {
+        cy.get('.q-btn__content').contains('Github')
+      })
     })
-  })
+
+    it('should toggle password visibility and hide password by default', () => {
+      cy.dataCy('"signin-password"').should('have.attr','type', 'password')
+      cy.dataCy('"pwd-visibility"').click()
+      cy.dataCy('"signin-password"').should('have.attr','type', 'text')
+      cy.dataCy('"pwd-visibility"').click()
+      cy.dataCy('"signin-password"').should('have.attr','type', 'password')
+    });
+ 
 
   // it('has login with google method', () => {
   //   cy.dataCy('signin-with-google').should('include', 'Google')
@@ -85,4 +94,4 @@ cy.get('.q-field__label').contains('Password')
   //     .and('include', 'Database Configuration and CRUD operations')
   //     .and('include', 'Continuous Integration & Continuous Deployment CI/CD');
   // });
-})
+ })

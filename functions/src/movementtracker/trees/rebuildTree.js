@@ -1,4 +1,3 @@
-const { PubSub } = require("@google-cloud/pubsub");
 const membersHelpers = require("../../scripts/membersHelpers.js");
 
 module.exports = ({ admin, environment }) => async (change, context) => {
@@ -8,7 +7,11 @@ module.exports = ({ admin, environment }) => async (change, context) => {
   let beforeData = change.before.exists ? change.before.data(): {}
   let afterData = change.after.data()
   let members = Object.keys({...beforeData, ...afterData})
-
+  let treeDoc = await treeDocRef.get()
+  // TODO: get update Id from treeDoc
+  
+  let updateId = treeDoc.get('updateId')
+  // TODO: compare subtree update Id to current tree updateId and return if same
   const treeDocRef = db
     .collection(environment.schema.movements)
     .doc(
@@ -122,6 +125,7 @@ module.exports = ({ admin, environment }) => async (change, context) => {
     return membersByParent;
   };
   //check the change doesn't cause a loop
+  if(change.after.exists) {
   for(let memberKey of members) {
     if((afterData[memberKey] && beforeData[memberKey] && beforeData[memberKey].parent !== afterData[memberKey].parent)) {
       console.log(memberKey, 'changed')
@@ -137,8 +141,17 @@ module.exports = ({ admin, environment }) => async (change, context) => {
       }
     }
   }
+}
 
-  return treeStructRef.set({
+  await treeStructRef.set({
     tree: await buildTree(groupMembersByParent(parentsDoc.data()), "root")
   });
+  // update the tree 
+  
+  // trigger update of other trees.
+  let trees = treeDoc.get('trees')
+  for (let tree in trees) {
+    // get doc of tree to update
+    // add an update number to the subtree on the tree parents doc
+  }
 };

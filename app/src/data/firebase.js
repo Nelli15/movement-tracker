@@ -25,8 +25,12 @@ const firestoreSettings = {};
 //   console.debug(`Using RTDB emulator: ${config.databaseURL}`)
 // }
 
-
-const firebaseApp = initializeApp(require('./../../../fbConfig.json'));
+let firebaseApp
+// if (location.hostname === 'localhost') {
+//   firebaseApp = initializeApp(require('./../../../fbConfig-test.json'));
+// } else{
+  firebaseApp = initializeApp(require('./../../../fbConfig.json'));
+// }
 // const appCheckSiteKey = '6Lf2kcMbAAAAAMXGC0d4_EMUmT9Dzq2fxIJPu7rm'
 // const appCheck = initializeAppCheck(firebaseApp, { isTokenAutoRefreshEnabled: true, provider: ReCaptchaV3Provider })
 const authApp = initializeAuth(firebaseApp, {
@@ -46,10 +50,12 @@ if (location.hostname === 'localhost') {
 
 const db = initializeFirestore(firebaseApp, firestoreSettings);
 const funcs = getFunctions();
-const analytics = getAnalytics();
+
+
 
 
 if (process.env.PROD) {
+  const analytics = getAnalytics();
   enableIndexedDbPersistence(db).catch(function(err) {
     if (err.code === 'failed-precondition') {
       // Multiple tabs open, persistence can only be enabled

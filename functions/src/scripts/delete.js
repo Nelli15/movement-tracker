@@ -12,7 +12,7 @@ const deleteQueryBatch = function (db, query, batchSize, resolve, reject) {
     .then((snapshot) => {
       // When there are no documents left, we are done
       if (snapshot.size === 0) {
-        return 0
+        return resolve(false)
       }
 
       // Delete documents in a batch
@@ -26,7 +26,7 @@ const deleteQueryBatch = function (db, query, batchSize, resolve, reject) {
       return snapshot.size
     }).then((numDeleted) => {
       if (numDeleted === 0) {
-        return true
+        return resolve(true)
       }
 
       // Recurse on the next process tick, to avoid
@@ -34,7 +34,7 @@ const deleteQueryBatch = function (db, query, batchSize, resolve, reject) {
       process.nextTick(() => {
         deleteQueryBatch(db, query, batchSize, resolve, reject)
       })
-      return true
+      return resolve(true)
     })
     .catch(reject)
 }

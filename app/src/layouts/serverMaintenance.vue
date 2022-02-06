@@ -1,0 +1,102 @@
+<template>
+  <q-layout view="hHh lpR fFf">
+    <q-page-container>
+      <router-view />
+      <div>
+        <mt-splashscreen
+          message="Something great is coming, please check back later, we are getting the next update ready for you."
+        />
+        <router-view />
+      </div>
+    </q-page-container>
+  </q-layout>
+</template>
+
+<script>
+// import { getFirestore } from "@firebase/firestore";
+import { defineAsyncComponent, ref } from 'vue';
+
+export default {
+  name: 'homeLayout',
+  setup() {
+    const logo_url = ref('/app-logo-128x128.png');
+
+    return { logo_url };
+  },
+  components: {
+    'mt-splashscreen': defineAsyncComponent(() =>
+      import('../components/mt-splashscreen.vue')
+    ),
+  },
+};
+
+// const showRefreshUI = registration => {
+//   const container = document.querySelector(".new-sw");
+//   container.style.display = "block";
+
+//   const button = document.querySelector("button");
+//   button.addEventListener("click", () => {
+//     button.disabled = true;
+
+//     registration.waiting.postMessage("force-activate");
+//   });
+// };
+
+// const onNewServiceWorker = (registration, callback) => {
+//   if (registration.waiting) {
+//     // SW is waiting to activate. Can occur if multiple clients open and
+//     // one of the clients is refreshed.
+//     return callback();
+//   }
+
+//   const listenInstalledStateChange = () => {
+//     registration.installing.addEventListener("statechange", () => {
+//       if (event.target.state === "installed") {
+//         // A new service worker is available, inform the user
+//         callback();
+//       }
+//     });
+//   };
+
+//   if (registration.installing) {
+//     return listenInstalledStateChange();
+//   }
+
+//   // We are currently controlled so a new SW may be found...
+//   // Add a listener in case a new SW is found,
+//   registration.addEventListener("updatefound", listenInstalledStateChange);
+// };
+
+// window.addEventListener("load", () => {
+//   // When the user asks to refresh the UI, we'll need to reload the window
+//   navigator.serviceWorker.addEventListener("message", event => {
+//     if (!event.data) {
+//       return;
+//     }
+
+//     switch (event.data) {
+//       case "reload-window":
+//         window.location.reload();
+//         break;
+//       default:
+//         // NOOP
+//         break;
+//     }
+//   });
+
+//   navigator.serviceWorker
+//     .register("/service-worker.js")
+//     .then(function(registration) {
+//       // Track updates to the Service Worker.
+//       if (!navigator.serviceWorker.controller) {
+//         // The window client isn't currently controlled so it's a new service
+//         // worker that will activate immediately
+//         return;
+//       }
+
+//       onNewServiceWorker(registration, () => {
+//         showRefreshUI(registration);
+//       });
+//     });
+// });
+</script>

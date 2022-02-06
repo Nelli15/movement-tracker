@@ -85,29 +85,29 @@
 </template>
 
 <script>
-import { getFirestore, updateDoc, doc } from "@firebase/firestore";
-import { ref, computed, watch } from "vue";
-import { useStore } from "vuex";
-import { useQuasar } from "quasar";
-import { useRoute } from "vue-router";
-import draggable from "vuedraggable";
+import { getFirestore, updateDoc, doc } from '@firebase/firestore';
+import { ref, computed, watch } from 'vue';
+import { useStore } from 'vuex';
+import { useQuasar } from 'quasar';
+import { useRoute } from 'vue-router';
+import draggable from 'vuedraggable';
 export default {
-  props: ["tab", "storeModule"],
-  emits: ["filter-updated"],
+  props: ['tab', 'storeModule'],
+  emits: ['filter-updated'],
   setup(props, { emit }) {
     const q = useQuasar();
     const store = useStore();
     const route = useRoute();
-    const storeModule = ref(props.storeModule ? props.storeModule : "movement");
-    const filter = ref("");
+    const storeModule = ref(props.storeModule ? props.storeModule : 'movement');
+    const filter = ref('');
     const filterRef = ref(null);
     const fabPos = ref([18, 18]);
     const draggingFab = ref(false);
-    const sortKey = ref("Name");
+    const sortKey = ref('Name');
     const dragging = ref(false);
-    sortKey.value = q.localStorage.has("sortKey")
-      ? q.localStorage.getItem("sortKey")
-      : "Name";
+    sortKey.value = q.localStorage.has('sortKey')
+      ? q.localStorage.getItem('sortKey')
+      : 'Name';
 
     function toggleFilterVisible(e) {
       store.commit(`${storeModule.value}/toggleFilterVisible`, e);
@@ -116,7 +116,7 @@ export default {
       store.commit(`${storeModule.value}/setFilterQuery`, e);
     }
     function setSortKey(e) {
-      q.localStorage.set("sortKey", e);
+      q.localStorage.set('sortKey', e);
       store.commit(`${storeModule.value}/setSortKey`, e);
     }
     // function filterUpdated() {
@@ -141,7 +141,7 @@ export default {
       ];
     }
     function resetFilter() {
-      filter.value = "";
+      filter.value = '';
       filterRef.focus();
     }
 
@@ -166,7 +166,7 @@ export default {
       },
     });
     watch(filter, () => {
-      emit("filter-updated", filter.value);
+      emit('filter-updated', filter.value);
       setFilterQuery(filter.value);
     });
     watch(sortKey, () => {
