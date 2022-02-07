@@ -1,6 +1,6 @@
-const { PubSub } = require("@google-cloud/pubsub");
+import { getFirestore } from "firebase-admin/firestore";
 
-module.exports = ({ admin, environment }) => async (data, context) => {
+module.exports = ({ environment }) => async (data, context) => {
   // context.app will be undefined if the request doesn't include a valid
   // App Check token.
   // if (context.app == undefined && process.env.FUNCTIONS_EMULATOR !== "true") {
@@ -9,13 +9,13 @@ module.exports = ({ admin, environment }) => async (data, context) => {
   //     "The function must be called from an App Check verified app."
   //   );
   // }
-  const movRef = admin.firestore().doc(`/movements/${data.movId}`);
+  const movRef = getFirestore().doc(`/movements/${data.movId}`);
   const membersCol = movRef.collection(`members`);
   const memberRef = membersCol.doc(data.memberId);
   const treesCol = movRef.collection("trees");
   const newMemberRef = membersCol.doc();
 
-  let batch = admin.firestore().batch();
+  let batch = getFirestore().batch();
 
   let memberDoc = await memberRef.get();
   let trees = memberDoc.get("trees");

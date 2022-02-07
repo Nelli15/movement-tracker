@@ -1,4 +1,6 @@
-module.exports = ({ admin, environment }) => (data, context) => {
+import { getFirestore } from "firebase-admin/firestore";
+
+module.exports = ({ environment }) => (data, context) => {
 //   // context.app will be undefined if the request doesn't include a valid
 //   // App Check token.
 //   // if (context.app == undefined && process.env.FUNCTIONS_EMULATOR !== "true") {
@@ -10,7 +12,7 @@ module.exports = ({ admin, environment }) => (data, context) => {
 
 //   // console.log(data)
 //   // console.log("Carbon Copying Movement", data);
-//   const db = admin.firestore();
+//   const db = getFirestore();
 //   const movementRef = db.doc(
 //     `/${environment.schema.movements}/${
 //       data.movId ? data.movId : data.movementId

@@ -6,7 +6,7 @@
 // }
 
 // const Func = require('../carbonCopy.js')
-// const db = admin.firestore()
+// const db = getFirestore()
 
 // const movCol = db.collection(environment.schema.movements)
 it.skip('should ', () => {

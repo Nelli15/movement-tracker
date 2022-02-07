@@ -1,6 +1,6 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-var db = admin.firestore();
+import * as functions from "firebase-functions";
+import * as admin from 'firebase-admin'
+var db = getFirestore();
 
 exports.onCreate = functions.firestore
   .document("/organisations/{organisationId}/organisation_movements/{movId}")

@@ -1,5 +1,4 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
+import * as functions from "firebase-functions";
 const environment = require("./../environments/environment.js");
 
 const saveSnaps = require("./snapshots/saveSnaps.js");
@@ -7,8 +6,7 @@ const updateSnap = require("./snapshots/updateSnap.js");
 const updateTrendData = require("./snapshots/updateTrendData.js");
 
 const context = {
-  admin,
-  environment
+  environment,
 };
 
 exports.monthlySaveSnaps = functions.pubsub

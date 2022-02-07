@@ -1,6 +1,8 @@
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+
 const membersHelpers = require("../../scripts/membersHelpers.js");
 
-module.exports = ({ admin, environment }) => async (change, context) => {
+module.exports = ({ environment }) => async (change, context) => {
 // responds to a change in a member
 // if deleted then delete the member is removed from all trees and from the list of members
 // if created or updated then update the display data, the member list, the parents doc of the relevant trees
@@ -35,7 +37,7 @@ module.exports = ({ admin, environment }) => async (change, context) => {
     let promises = [];
 
     // delete the member from all the tree/parents docs
-    for (id of trees) {
+    for (let id of trees) {
       let treeRef = treeCol
         .doc(id)
         .collection("components")
@@ -45,7 +47,7 @@ module.exports = ({ admin, environment }) => async (change, context) => {
       if (treeDoc.exists) {
         promises.push(
           treeRef
-            .update({ [change.before.id]: admin.firestore.FieldValue.delete() })
+            .update({ [change.before.id]: FieldValue.delete() })
             .catch(err => console.error(err))
         );
       }
@@ -56,7 +58,7 @@ module.exports = ({ admin, environment }) => async (change, context) => {
     // delete the member from the list of all members
     promises.push(
       memberList
-        .update({ [change.after.id]: admin.firestore.FieldValue.delete() })
+        .update({ [change.after.id]: FieldValue.delete() })
         .catch(err => console.log(err))
     );
     }
@@ -105,7 +107,7 @@ module.exports = ({ admin, environment }) => async (change, context) => {
     }
 
     // update the parents doc with style data
-    stylesList = [];
+    let stylesList = [];
     if (
       !before ||
       JSON.stringify(before.role) !== JSON.stringify(after.role) ||
@@ -121,7 +123,7 @@ module.exports = ({ admin, environment }) => async (change, context) => {
       trees = [...new Set(trees)];
 
       // console.log(trees);
-      for (id of trees) {
+      for (let id of trees) {
         // console.log(
         //   "setting: ",
         //   treeCol

@@ -57,7 +57,13 @@
 
 <script>
 import { copy } from './../../scripts/member.js';
-import { getFirestore, setDoc, doc, deleteField } from '@firebase/firestore';
+import {
+  getFirestore,
+  setDoc,
+  doc,
+  deleteField,
+  arrayRemove,
+} from '@firebase/firestore';
 import { defineAsyncComponent, ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useQuasar } from 'quasar';
@@ -75,6 +81,7 @@ export default {
     node: {},
     shadow: false,
   },
+  emits: ['selected', 'changeTree'],
   setup(props, { emit }) {
     const q = useQuasar();
     const store = useStore();
@@ -344,11 +351,20 @@ export default {
               return await setDoc(
                 doc(
                   getFirestore(),
-                  `/movements/${movement.id}/trees/${props.treeOpt.id}/components/parents`
+                  `/movements/${movement.value.id}/trees/${props.treeOpt.id}/components/parents`
                 ),
                 { [props.node.subTree]: deleteField() },
                 { merge: true }
-              );
+              ).then(() => {
+                setDoc(
+                  doc(
+                    getFirestore(),
+                    `/movements/${movement.value.id}/trees/${props.node.subTree}`
+                  ),
+                  { importedBy: arrayRemove(props.treeOpt.id) },
+                  { merge: true }
+                );
+              });
             }
             return true;
           },

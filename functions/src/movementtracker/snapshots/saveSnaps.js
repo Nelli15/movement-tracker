@@ -1,11 +1,13 @@
-module.exports = ({ admin, environment }) => async context => {
-  var db = admin.firestore();
+import { getFirestore, Timestamp } from "firebase-admin/firestore";
+
+module.exports = ({ environment }) => async context => {
+  var db = getFirestore();
   //   console.log(
   //     'This will be run every month at 00:01 AM Australian Eastern Standard Time!'
   //   )
 
-  const nowDate = admin.firestore.Timestamp.now().toDate();
-  const pastMonth = admin.firestore.Timestamp.now().toDate();
+  const nowDate = Timestamp.now().toDate();
+  const pastMonth = Timestamp.now().toDate();
   pastMonth.setMonth(pastMonth.getMonth() - 1);
   // adjust from decrepancy between utc and bris time
   pastMonth.setHours(pastMonth.getHours() + 10);
@@ -14,7 +16,7 @@ module.exports = ({ admin, environment }) => async context => {
   // Zero the milliseconds
   pastMonth.setMilliseconds(0);
 
-  const pastMonthTS = admin.firestore.Timestamp.fromDate(pastMonth);
+  const pastMonthTS = Timestamp.fromDate(pastMonth);
   // console.log(pastMonthTS)
   const movements = await db
     .collection(environment.schema.movements)
@@ -37,7 +39,7 @@ module.exports = ({ admin, environment }) => async context => {
 
   async function createMonthlySnap(movId) {
     // creates or updates the current snapshot of the tree
-    const nowDate = admin.firestore.Timestamp.now().toDate();
+    const nowDate = Timestamp.now().toDate();
     nowDate.setHours(nowDate.getHours() + 10);
     const movRef = db.collection(environment.schema.movements).doc(movId);
     const snapRef = movRef
@@ -76,7 +78,7 @@ module.exports = ({ admin, environment }) => async context => {
         photoURL: "/app-logo-128x128.png",
         uid: "system"
       },
-      date: admin.firestore.Timestamp.now(),
+      date: Timestamp.now(),
       title: `${monthNames[nowDate.getMonth() + 1]} ${nowDate.getFullYear()}` // < -- make this the text date 'Month-Year'
     };
     snapRef.set(newSnapshot).catch(err => {
@@ -120,7 +122,7 @@ module.exports = ({ admin, environment }) => async context => {
 
 async function copyCollection(srcCollectionName, destCollectionName) {
   const documents = await firestore.collection(srcCollectionName).get();
-  let writeBatch = firebaseAdmin.firestore().batch();
+  let writeBatch = firebasegetFirestore().batch();
   const destCollection = firestore.collection(destCollectionName);
   let i = 0;
   for (const doc of documents.docs) {
@@ -138,7 +140,7 @@ async function copyCollection(srcCollectionName, destCollectionName) {
       i = 0;
       console.log("Intermediate committing of batch operation");
       await writeBatch.commit();
-      writeBatch = firebaseAdmin.firestore().batch();
+      writeBatch = firebasegetFirestore().batch();
     }
   }
   if (i > 0) {

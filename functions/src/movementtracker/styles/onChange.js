@@ -1,7 +1,8 @@
-const { PubSub } = require("@google-cloud/pubsub");
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+
 const membersHelpers = require("../../scripts/membersHelpers.js");
 
-module.exports = ({ admin, environment }) => async (change, context) => {
+module.exports = ({ environment }) => async (change, context) => {
   // const topicName = 'style_changed'
 
   const before = change.before.exists ? change.before.data() : null;
@@ -25,7 +26,7 @@ module.exports = ({ admin, environment }) => async (change, context) => {
     // Delete the style from the style list
     await stylesRef
       .update({
-        [change.after.id]: admin.firestore.FieldValue.delete()
+        [change.after.id]: FieldValue.delete()
       })
       .catch(err => console.error(err));
     }
@@ -38,7 +39,7 @@ module.exports = ({ admin, environment }) => async (change, context) => {
         querySnap.forEach(doc => {
           return doc.ref
             .update({
-              roleSortCriteria: admin.firestore.FieldValue.arrayRemove(
+              roleSortCriteria: FieldValue.arrayRemove(
                 change.data()
               )
             })

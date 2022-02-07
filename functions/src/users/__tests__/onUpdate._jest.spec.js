@@ -4,12 +4,12 @@ const context = {
   environment
 };
 
-const Func = require("../onChange.js");
+const Func = require("../onUpdate.js");
 const db = getFirestore();
 
 const movCol = db.collection(environment.schema.movements);
 
-describe("styles: onChange", () => {
+describe("users: onUpdate", () => {
   let func;
   let funcContext;
   let movDoc;

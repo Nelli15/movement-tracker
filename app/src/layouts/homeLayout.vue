@@ -12,10 +12,23 @@
               class="logo"
               data-cy="logo"
             />
-            <q-btn flat to="/home" aria-label="home" data-cy="home-btn">
-              <q-icon name="home" />
-              <q-tooltip class="bg-accent text-grey-10">Home</q-tooltip>
-            </q-btn>
+            <q-tabs v-model="tab">
+              <q-route-tab flat to="/home" aria-label="home" data-cy="home-btn">
+                <q-icon size="sm">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 0 24 24"
+                    width="24px"
+                    fill="currentColor"
+                  >
+                    <path d="M0 0h24v24H0z" fill="none" />
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                  </svg>
+                </q-icon>
+                Home
+              </q-route-tab>
+            </q-tabs>
             <q-space />
             <q-btn
               flat
@@ -258,7 +271,16 @@ export default {
     const ready = computed(() => store.getters.ready);
     const user = computed(() => store.getters['auth/user']);
 
-    return { q, logo_url, createMovement, logout, refresh, ready, user };
+    return {
+      q,
+      logo_url,
+      createMovement,
+      logout,
+      refresh,
+      ready,
+      user,
+      tab: ref('home'),
+    };
   },
   preFetch({ store, redirect, currentRoute }) {
     onAuthStateChanged(getAuth(), (user) => {

@@ -176,9 +176,9 @@
             <q-item-section dense>
               <q-item-label v-html="scope.opt.label" />
               <q-item-label caption>{{
-                typeof scope.opt.desc === "string" && scope.opt.desc > ""
+                typeof scope.opt.desc === 'string' && scope.opt.desc > ''
                   ? scope.opt.desc.length > 100
-                    ? scope.opt.desc.substring(0, 100).concat("...")
+                    ? scope.opt.desc.substring(0, 100).concat('...')
                     : scope.opt.desc
                   : scope.opt.desc
               }}</q-item-label>
@@ -202,15 +202,16 @@
 </template>
 
 <script>
-import { useQuasar } from "quasar";
+import { useQuasar } from 'quasar';
 export default {
-  name: "mt-complex-node",
+  name: 'mt-complex-node',
   props: {
     elClass: String,
     element: Object,
     styles: Array,
-    path: "",
+    path: '',
   },
+  emits: ['add', 'change', 'remove'],
   setup() {
     const q = useQuasar();
     return { q };
@@ -235,16 +236,16 @@ export default {
   },
   methods: {
     addEl(type) {
-      this.$emit("add", { el: this.element, type });
+      this.$emit('add', { el: this.element, type });
     },
     removeEl() {
-      this.$emit("remove", this.path);
+      this.$emit('remove', this.path);
     },
     changeEl(key, val) {
-      this.$emit("change", { el: this.element, key, val });
+      this.$emit('change', { el: this.element, key, val });
     },
     styleFilterFn(val, update) {
-      if (val === "") {
+      if (val === '') {
         update(() => {
           this.filteredStyleOptions = this.styles;
 

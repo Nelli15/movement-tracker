@@ -1,5 +1,4 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
+import * as functions from "firebase-functions";
 const environment = require("./../environments/environment.js");
 
 const create = require("./movements/create.js");
@@ -9,8 +8,7 @@ const onUpdate = require("./movements/onUpdate.js");
 const onDelete = require("./movements/onDelete.js");
 
 const context = {
-  admin,
-  environment
+  environment,
 };
 
 exports.create = functions.https.onCall(create(context));

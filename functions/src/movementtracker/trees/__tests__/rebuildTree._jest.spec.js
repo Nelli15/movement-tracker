@@ -7,7 +7,7 @@ const context = {
 }
 
 const Func = require('./converter')
-const db = admin.firestore()
+const db = getFirestore()
 
 const movCol = db.collection('movements')
 
@@ -33,12 +33,50 @@ describe('mt-trees-rebuildTree', () => {
           name: 'test user',
           email: 'test@user.com'
         }
-      }
+      },
+      params: {
+          movId: "test-movement"
+        }
     }
-    await func()
+    
   })
 
   it.skip('respond to a change of member in parent doc', async () => {
+      await movDoc
+        .collection("trees")
+        .doc("main-tree")
+        .set({id:"main-tree",
+        label: "Main Tree"});
+        let treeDoc = movDoc
+        .collection("trees")
+        .doc("main-tree")
+        await treeDoc
+        .set({id:"main-tree",
+        label: "Main Tree"});
+      change.before = await movDoc
+        .collection("styles")
+        .doc("styleId")
+        .get();
+
+      await movDoc
+        .collection("styles")
+        .doc("styleId")
+        .set({
+          label: "test style",
+          type: "base",
+          style: {
+            color: "#00000f",
+            underline: false,
+            outline: "#ffaafa",
+            shape: "round",
+            background: "#ffbaaa"
+          }
+        });
+      change.after = await movDoc
+        .collection("styles")
+        .doc("styleId")
+        .get();
+    await func(change, funcContext);
     const userRoles = []
     let colSnap = await db.collection('app-users').get()
     let docs = colSnap.docs

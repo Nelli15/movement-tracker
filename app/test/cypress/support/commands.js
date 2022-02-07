@@ -6,7 +6,7 @@ import 'firebase/compat/firestore';
 import 'firebase/compat/functions';
 import { attachCustomCommands } from 'cypress-firebase';
 
-const fbConfig = require('./../../../../fbConfig-test.json')
+const fbConfig = require('./../../../../fbConfig.json')
 const TestMovement = require('./../fixtures/test-movement.json')
 const TestMember = require('./../fixtures/test-member.json')
 const TestUser = require('./../fixtures/test-user.json')

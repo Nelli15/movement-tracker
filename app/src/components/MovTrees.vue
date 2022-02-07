@@ -66,6 +66,7 @@ import { defineAsyncComponent, ref, computed, onBeforeUpdate } from 'vue';
 export default {
   name: 'MovTrees',
   props: ['treeOpt', 'readOnly', 'members', 'tree', 'storeModule'],
+  emits: ['changeTree'],
   setup(props) {
     const store = useStore();
     const route = useRoute();

@@ -20,8 +20,7 @@
       :name="treeOpt.label"
       type="Tree"
       @confirmed="confirmed"
-      :loading="removeLoading"
-      @changed="($event) => (confirm = $event)"
+      @change="($event) => (confirm = $event)"
     />
   </q-item>
 </template>

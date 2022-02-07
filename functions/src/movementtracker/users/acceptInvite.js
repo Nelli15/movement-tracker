@@ -1,5 +1,7 @@
-module.exports = ({ admin, environment }) => async (change, context) => {
-  var db = admin.firestore();
+import { getFirestore } from "firebase-admin/firestore";
+
+module.exports = ({ environment }) => async (change, context) => {
+  var db = getFirestore();
   // console.log(context)
 
   var beforeData = change.before.data();
@@ -42,7 +44,7 @@ module.exports = ({ admin, environment }) => async (change, context) => {
           photoURL: user.photoURL,
           uid: context.params.uid
         });
-        // transaction.update(userRef, { movements: admin.firestore.FieldValue.arrayUnion({ name: beforeData.movementName, id: beforeData.movId, style: { backgroundColor: beforeData.style.backgroundColor } }) })
+        // transaction.update(userRef, { movements: FieldValue.arrayUnion({ name: beforeData.movementName, id: beforeData.movId, style: { backgroundColor: beforeData.style.backgroundColor } }) })
         // transaction.delete(notificationRef)
         transaction.delete(movementInviteRef);
         return true;

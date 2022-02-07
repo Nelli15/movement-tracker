@@ -85,6 +85,7 @@ export default {
     treeOpt: {},
     node: {},
   },
+  emits: ['changeTree', 'childrenChanged', 'selected'],
   setup(props, { emit }) {
     const q = useQuasar();
     const store = useStore();

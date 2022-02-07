@@ -1,4 +1,6 @@
-module.exports = ({ admin, environment }) => (data, context) => {
+import { getFirestore, Timestamp } from "firebase-admin/firestore";
+
+module.exports = ({ environment }) => (data, context) => {
   // context.app will be undefined if the request doesn't include a valid
   // App Check token.
 
@@ -9,7 +11,7 @@ module.exports = ({ admin, environment }) => (data, context) => {
   //   );
   // }
 
-  const db = admin.firestore();
+  const db = getFirestore();
   // console.log("Copying Movement", data);
   const movementRef = db.doc(
     `/${environment.schema.movements}/${
@@ -41,7 +43,7 @@ module.exports = ({ admin, environment }) => (data, context) => {
       transaction.set(newMovementRef, {
         name: "Copy of " + movementData.name,
         style: movementData.style,
-        last_modified: admin.firestore.Timestamp.fromDate(new Date())
+        last_modified: Timestamp.fromDate(new Date())
       });
       transaction.set(newRoleRef, {
         name: context.auth.token.name ? context.auth.token.name : 'Anonymous',

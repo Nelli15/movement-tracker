@@ -38,6 +38,7 @@ export default {
     const store = useStore();
     const newTree = ref({
       label: '',
+      importedBy: [],
     });
     function createTree(e) {
       addDoc(

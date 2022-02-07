@@ -1,6 +1,8 @@
-module.exports = ({ admin, environment }) => async (change, context) => {
+import { getFirestore } from "firebase-admin/firestore";
+
+module.exports = ({ environment }) => async (change, context) => {
   // If the document does not exist, it has been deleted.
-  const db = admin.firestore();
+  const db = getFirestore();
   const before = change.before.data();
   const after = change.after.data();
 

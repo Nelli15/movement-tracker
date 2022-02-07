@@ -6,7 +6,7 @@ const context = {
 }
 
 const Func = require('../onDelete.js')
-const db = admin.firestore()
+const db = getFirestore()
 
 const movCol = db.collection(environment.schema.movements)
 

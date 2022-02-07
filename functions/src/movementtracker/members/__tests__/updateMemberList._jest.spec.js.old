@@ -1,12 +1,11 @@
 const admin = require("../../../utils/test-admin");
 const environment = require("../../../environments/environment.test.js");
 const context = {
-  admin,
   environment
 };
 
 const Func = require("../onChange.js");
-const db = admin.firestore();
+const db = getFirestore();
 
 const movCol = db.collection(environment.schema.movements);
 

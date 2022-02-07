@@ -1,9 +1,9 @@
-const { PubSub } = require("@google-cloud/pubsub");
+import { getFirestore } from "firebase-admin/firestore";
 const membersHelpers = require("../../scripts/membersHelpers.js");
 const movementHelpers = require("../../scripts/movementHelpers.js");
 
-module.exports = ({ admin, environment }) => async (change, context) => {
-  const db = admin.firestore();
+module.exports = ({ environment }) => async (change, context) => {
+  const db = getFirestore();
 
   const before = change.before.exists ? change.before.data() : null;
   const after = change.after.exists ? change.after.data() : null;

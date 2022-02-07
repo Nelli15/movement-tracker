@@ -2,7 +2,7 @@
 const _delete = require("./src/scripts/delete.js");
 const membersHelpers = require("./src/scripts/membersHelpers.js");
 
-module.exports = ({ admin, environment }) => async (req, res) => {
+module.exports = ({ environment }) => async (req, res) => {
   const buildTree = async (members, parentKey) => {
     // Takes a list of members and a parentKey and returns a tree of children for that parent along with all subsequent grand children
     let children = [],
@@ -115,7 +115,7 @@ module.exports = ({ admin, environment }) => async (req, res) => {
   }
   BATCH_SIZE = 0
   
-  let db = admin.firestore()
+  let db = getFirestore()
   // Get a new write batch
   let batch = db.batch();
 

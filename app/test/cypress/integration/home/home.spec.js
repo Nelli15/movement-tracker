@@ -36,7 +36,7 @@ describe('home page tests', () => {
   });
   
   it('should have a home button', () => {
-    cy.dataCy('"home-btn"').should('contain', 'home').click()
+    cy.dataCy('"home-btn"').should('contain', 'Home').click()
     cy.testRoute('/home')
   })
 

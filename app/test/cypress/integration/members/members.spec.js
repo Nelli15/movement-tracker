@@ -132,8 +132,6 @@ const path = require("path");
     });
   });
 
-  
-
   describe('should filter', () => {
     beforeEach(() => {
       cy.dataCy('filter-members').click()

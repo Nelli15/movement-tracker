@@ -1,5 +1,7 @@
-module.exports = ({ admin, environment }) => async (inviteSnap, context) => {
-  var db = admin.firestore()
+import { getFirestore } from "firebase-admin/firestore";
+
+module.exports = ({ environment }) => async (inviteSnap, context) => {
+  var db = getFirestore()
   var inviteData = inviteSnap.data()
   // check if the user being invited exists
   return db

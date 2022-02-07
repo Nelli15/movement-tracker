@@ -18,7 +18,7 @@ module.exports = (/*on, config*/) => {
   //
 };
 
-const admin = require("firebase-admin");
+import * as admin from 'firebase-admin'
 const cypressFirebasePlugin = require("cypress-firebase").plugin;
 
 module.exports = (on, config) => {

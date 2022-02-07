@@ -1,12 +1,10 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
+import * as functions from "firebase-functions";
 const environment = require("./../environments/environment.js");
 
 const onChange = require("./styles/onChange.js");
 
 const context = {
-  admin,
-  environment
+  environment,
 };
 
 exports.onChange = functions.firestore

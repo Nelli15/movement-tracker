@@ -1,12 +1,11 @@
 const admin = require("../../../utils/test-admin");
 const environment = require("../../../environments/environment.test.js");
 const context = {
-  admin,
   environment
 };
 
 const Func = require("../create.js");
-const db = admin.firestore();
+const db = getFirestore();
 
 const movCol = db.collection(environment.schema.movements);
 
@@ -30,7 +29,7 @@ describe("movements: create", () => {
 
   it("should create a movement doc", async () => {
     // 
-    const date = admin.firestore.Timestamp.fromDate(new Date());
+    const date = Timestamp.fromDate(new Date());
 
     // run the function
     const response = await func(data, funcContext);

@@ -1,5 +1,7 @@
-module.exports = ({ admin, environment }) => async (change, context) => {
-  var db = admin.firestore()
+import { getFirestore } from "firebase-admin/firestore";
+
+module.exports = ({ environment }) => async (change, context) => {
+  var db = getFirestore()
   // console.log(context)
 
   var beforeData = change.before.data()

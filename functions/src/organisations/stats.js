@@ -1,6 +1,6 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-var db = admin.firestore()
+var db = getFirestore()
 
 exports.onCreate = functions.firestore.document('/organisations/{organisationId}/organisation_stats/{statId}')
   .onCreate(async (doc, context) => {

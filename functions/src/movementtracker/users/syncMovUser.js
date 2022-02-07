@@ -1,5 +1,7 @@
-module.exports = ({ admin, environment }) => async (change, context) => {
-  let db = admin.database();
+import { getDatabase } from "firebase-admin/database";
+
+module.exports = ({ environment }) => async (change, context) => {
+  let db = getDatabase();
   let movId = context.params.movId;
   let uid = context.params.uid;
   let after = change.after.exists ? change.after.data() : {};

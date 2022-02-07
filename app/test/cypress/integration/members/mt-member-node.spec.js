@@ -267,6 +267,7 @@ cy.dataCy('"add-member-comp"').within(()=>{
     });
 
     it('should delete the member', () => {
+
       cy.get('[data-cy="member-example-member"]', {timeout: 90000}).rightclick()
       cy.get('.q-menu').within(() => {
         cy.contains('Delete').click()
@@ -282,6 +283,66 @@ cy.dataCy('"add-member-comp"').within(()=>{
           cy.wrap(r).should('not.exist')
         })
       })
+    });
+
+    it('should delete the member from a tree it was imported into', () => {
+      // add noParents to main-tree 
+      // check for member 
+      cy.get('[data-cy="member-example-member"]', {timeout: 90000}).rightclick()
+      cy.get('.q-menu').within(() => {
+        cy.contains('Add sub-tree').click()
+      })
+
+      cy.root().get('[data-cy="add-sub-tree-comp"]', {timeout: 10000}).within(()=>{
+        cy.contains('Tree').click()
+      })
+        cy.root().find('.q-menu').last().within(()=>{
+          cy.contains('No Parents').click()
+        })
+        cy.contains('Add to Tree').click()
+
+      cy.contains('Example No Parent Member')
+
+      // navigate to no Parents
+        cy.dataCy('"member-tabs"').within(() => {
+          cy.contains('Trees').parent().within(() => {
+            cy.get('.q-select').click()
+          })
+        })
+        cy.get('.q-menu').within(() => {
+          cy.contains('No Parents').click()
+        })
+      
+      // delete member
+      cy.contains('Example No Parent Member').rightclick()
+
+      // check member is deleted
+
+      // navigate to main-tree to check member is deleted
+      cy.get('.q-menu').within(() => {
+        cy.contains('Delete').click()
+      })
+      cy.root().get('.q-card').within(() => {
+        cy.contains('Delete').click()
+      })
+      cy.contains('Example No Parent Member').should('not.exist')
+      // check it was also deleted from the DB
+      cy.getMovId().then(movId => {
+        cy.callFirestore('get', `/movements/${movId}/members/example-no-parent-member`).then(r => {
+          cy.wrap(r).should('not.exist')
+        })
+      })
+
+      // navigate to main-tree
+      cy.dataCy('"member-tabs"').within(() => {
+          cy.contains('Trees').parent().within(() => {
+            cy.get('.q-select').click()
+          })
+        })
+        cy.get('.q-menu').within(() => {
+          cy.contains('Main Tree').click()
+        })
+      cy.contains('Example No Parent Member').should('not.exist')
     });
   });
 })

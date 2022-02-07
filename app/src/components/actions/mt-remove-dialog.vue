@@ -41,6 +41,7 @@ export default {
     name: String,
     type: String,
   },
+  emits: ['confirmed', 'change'],
   data() {
     return {
       confirmDelete: '',

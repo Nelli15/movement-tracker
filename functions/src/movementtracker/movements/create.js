@@ -1,4 +1,6 @@
-module.exports = ({ admin, environment }) => async (data, context) => {
+import { getFirestore, Timestamp } from "firebase-admin/firestore";
+
+module.exports = ({ environment }) => async (data, context) => {
   // context.app will be undefined if the request doesn't include a valid
   // App Check token.
   // if (context.app == undefined && process.env.FUNCTIONS_EMULATOR !== "true") {
@@ -8,12 +10,12 @@ module.exports = ({ admin, environment }) => async (data, context) => {
   //   );
   // }
 
-  var db = admin.firestore();
+  var db = getFirestore();
   // console.log(context.auth)
   const newMovement = {
     name: "Untitled Movement",
     style: { backgroundColor: "#ffffff" },
-    last_modified: admin.firestore.Timestamp.fromDate(new Date())
+    last_modified: Timestamp.fromDate(new Date())
   };
 
   // Get a new write batch

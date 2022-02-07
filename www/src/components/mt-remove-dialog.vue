@@ -7,14 +7,25 @@
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
       <q-card-section>
-        <form
-          @submit="confirmed"
-        >
+        <form @submit="confirmed">
           Are you sure you want to delete the {{ type }}: {{ name }}?
           <!-- <q-banner inline-actions> -->
-          <q-input outlined v-model="confirmDelete" label="Type DELETE to confirm the deletion!" :rules="[val => val == 'DELETE' || 'Input must match DELETE']" class="q-pt-md" autofocus>
+          <q-input
+            outlined
+            v-model="confirmDelete"
+            label="Type DELETE to confirm the deletion!"
+            :rules="[val => val == 'DELETE' || 'Input must match DELETE']"
+            class="q-pt-md"
+            autofocus
+          >
             <template v-slot:append>
-              <q-btn type="submit" @click="confirmed" icon="delete" color="negative" dense/>
+              <q-btn
+                type="submit"
+                @click="confirmed"
+                icon="delete"
+                color="negative"
+                dense
+              />
             </template>
           </q-input>
         </form>
@@ -28,7 +39,6 @@
 </template>
 
 <script>
-
 export default {
   props: {
     name: String,
@@ -36,25 +46,26 @@ export default {
     show: Boolean,
     loading: Boolean
   },
-  data () {
+  emits: ["confirmed"],
+  data() {
     return {
-      confirmDelete: ''
-    }
+      confirmDelete: ""
+    };
   },
   methods: {
-    confirmed () {
+    confirmed() {
       // console.log('confirmed', this.confirmDelete)
-      if (this.confirmDelete === 'DELETE') {
+      if (this.confirmDelete === "DELETE") {
         // this.show = false
-        this.$emit('confirmed')
+        this.$emit("confirmed");
       }
     }
   },
   watch: {
-    show () {
-      console.log('close')
-      this.$emit('change', this.show)
+    show() {
+      console.log("close");
+      this.$emit("change", this.show);
     }
   }
-}
+};
 </script>

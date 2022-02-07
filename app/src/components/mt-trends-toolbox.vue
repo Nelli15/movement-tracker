@@ -245,12 +245,13 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
-import { saveGraph } from "./../scripts/trends.js";
+import { mapGetters, mapState } from 'vuex';
+import { saveGraph } from './../scripts/trends.js';
 
 export default {
   // name: 'ComponentName',
-  props: ["graphDetails", "typeOptions", "statsOptions"],
+  props: ['graphDetails', 'typeOptions', 'statsOptions'],
+  emits: ['toggleOptionsDrawer', 'toggleGraphsDrawer'],
   data() {
     return {
       optionsDrawer: false,
@@ -262,12 +263,12 @@ export default {
   },
   created() {},
   computed: {
-    ...mapGetters("auth", ["user"]),
-    ...mapState("movement", ["permissions", "movement", "snapshots"]),
+    ...mapGetters('auth', ['user']),
+    ...mapState('movement', ['permissions', 'movement', 'snapshots']),
     selectedStats() {
       return [...this.graphDetails.selectedStats].filter((val) =>
-        this.graphDetails.type === "Individual Member"
-          ? val.id !== "treeTotal" && val.id !== "noParentTotal"
+        this.graphDetails.type === 'Individual Member'
+          ? val.id !== 'treeTotal' && val.id !== 'noParentTotal'
           : true
       );
     },
@@ -281,7 +282,7 @@ export default {
         .map((val) => {
           return { label: val.name, id: val.id };
         })
-        .filter((val) => val.id !== "root")
+        .filter((val) => val.id !== 'root')
         .sort((a, b) => {
           return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
         });
@@ -289,7 +290,7 @@ export default {
   },
   methods: {
     membersFilterFn(val, update) {
-      if (val === "") {
+      if (val === '') {
         update(() => {
           this.memberOptionsFiltered = this.memberOptions.sort((a, b) => {
             return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
@@ -315,23 +316,23 @@ export default {
       saveGraph(this.$route.params.movId, this.user.uid, this.graphDetails)
         .then((res) => {
           return q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Graph Saved",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Graph Saved',
           });
         })
         .catch((err) => {
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     },
     statsFilterFn(val, update) {
-      if (val === "") {
+      if (val === '') {
         update(() => {
           this.statsOptionsFiltered = this.statsOptions.sort((a, b) => {
             return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
@@ -342,8 +343,8 @@ export default {
           // is the Vue reference of the QSelect
         });
         this.statsOptionsFiltered.filter((val) =>
-          this.graphDetails.type === "Individual Member"
-            ? val.id !== "treeTotal"
+          this.graphDetails.type === 'Individual Member'
+            ? val.id !== 'treeTotal'
             : true
         );
         return;
@@ -357,8 +358,8 @@ export default {
             return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
           });
         this.statsOptionsFiltered.filter((val) =>
-          this.graphDetails.type === "Individual Member"
-            ? val.id !== "treeTotal"
+          this.graphDetails.type === 'Individual Member'
+            ? val.id !== 'treeTotal'
             : true
         );
       });
@@ -366,10 +367,10 @@ export default {
   },
   watch: {
     optionsDrawer() {
-      this.$emit("toggleOptionsDrawer", this.optionsDrawer);
+      this.$emit('toggleOptionsDrawer', this.optionsDrawer);
     },
     graphsDrawer() {
-      this.$emit("toggleGraphsDrawer", this.graphsDrawer);
+      this.$emit('toggleGraphsDrawer', this.graphsDrawer);
     },
   },
 };

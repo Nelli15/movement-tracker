@@ -8,7 +8,11 @@
     />
     <mt-filter-sort :tab="tab" storeModule="snapshot" />
     <q-scroll-area style="height: calc(100vh - 50px); max-width: 100%">
-      <div style="padding-left: 56px; min-height: 90vh" data-cy="background">
+      <div
+        style="padding-left: 56px; min-height: calc(100vh - 50px)"
+        :style="`background: ${q.dark.isActive ? '#263238' : 'white'};`"
+        data-cy="background"
+      >
         <MovBanner :readOnly="true" :snapshot="snapshot" />
         <div class="print-only text-center">
           {{ tab === 'trees' ? visibleTree.label : '' }}
@@ -125,7 +129,7 @@ export default {
       snapId: currentRoute.params.snapId,
     });
   },
-  setup(props, { emit }) {
+  setup() {
     const q = useQuasar();
     const store = useStore();
     const route = useRoute();

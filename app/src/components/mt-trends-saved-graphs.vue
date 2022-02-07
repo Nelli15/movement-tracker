@@ -110,20 +110,21 @@
 
 <script>
 // import { $firestore, getAnalytics() } from "./../data/firebase.js";
-import { collection, getFirestore, onSnapshot } from "@firebase/firestore";
-import { mapGetters, mapState } from "vuex";
+import { collection, getFirestore, onSnapshot } from '@firebase/firestore';
+import { mapGetters, mapState } from 'vuex';
 import {
   saveGraph,
   uploadGraph,
   deleteGraph,
   deleteMovementGraph,
-} from "./../scripts/trends.js";
+} from './../scripts/trends.js';
 
 export default {
   // name: 'ComponentName',
   props: {
     show: Boolean,
   },
+  emits: ['close', 'openGraph'],
   data() {
     return {
       savedGraphs: {},
@@ -174,31 +175,31 @@ export default {
   },
   methods: {
     openGraph(graphId) {
-      this.$emit("openGraph", this.savedGraphs[graphId]);
+      this.$emit('openGraph', this.savedGraphs[graphId]);
       this.graphDetails = { ...this.savedGraphs[graphId] };
-      this.graphDetails.label = "";
+      this.graphDetails.label = '';
     },
     openMovementGraph(graphId) {
-      this.$emit("openGraph", this.movementSavedGraphs[graphId]);
+      this.$emit('openGraph', this.movementSavedGraphs[graphId]);
       this.graphDetails = { ...this.movementSavedGraphs[graphId] };
-      this.graphDetails.label = "";
+      this.graphDetails.label = '';
     },
     saveGraph() {
       saveGraph(this.$route.params.movId, this.user.uid, this.graphDetails)
         .then((res) => {
           return q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Graph Saved",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Graph Saved',
           });
         })
         .catch((err) => {
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     },
@@ -210,19 +211,19 @@ export default {
         })
         .then((res) => {
           q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Graph Saved",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Graph Saved',
           });
           return this.$set(this.savedGraphs, graphId, {});
         })
         .catch((err) => {
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     },
@@ -230,19 +231,19 @@ export default {
       deleteGraph(this.$route.params.movId, this.user.uid, graphId)
         .then((res) => {
           q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Graph Deleted",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Graph Deleted',
           });
           return this.$set(this.savedGraphs, graphId, {});
         })
         .catch((err) => {
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     },
@@ -255,47 +256,47 @@ export default {
         })
         .then((res) => {
           q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "cloud_download",
-            message: "Graph Deleted",
+            color: 'positive',
+            textColor: 'white',
+            icon: 'cloud_download',
+            message: 'Graph Deleted',
           });
           return this.$set(this.movementSavedGraphs, graphId, {});
         })
         .catch((err) => {
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!',
           });
         });
     },
     getIcon(type) {
-      if (type === "Line") {
-        return "show_chart";
-      } else if (type === "Bar") {
-        return "bar_chart";
-      } else if (type === "Pie") {
-        return "pie_chart";
-      } else if (type === "Doughnut") {
-        return "doughnut_large";
-      } else if (type === "Polar") {
-        return "doughnut_small";
-      } else if (type === "Individual Member") {
-        return "person";
+      if (type === 'Line') {
+        return 'show_chart';
+      } else if (type === 'Bar') {
+        return 'bar_chart';
+      } else if (type === 'Pie') {
+        return 'pie_chart';
+      } else if (type === 'Doughnut') {
+        return 'doughnut_large';
+      } else if (type === 'Polar') {
+        return 'doughnut_small';
+      } else if (type === 'Individual Member') {
+        return 'person';
       } else {
-        return "img:icons/mdi-finance.svg";
+        return 'img:icons/mdi-finance.svg';
       }
     },
   },
   computed: {
-    ...mapGetters("auth", ["user"]),
-    ...mapState("movement", ["permissions", "movement"]),
+    ...mapGetters('auth', ['user']),
+    ...mapState('movement', ['permissions', 'movement']),
     savedGraphsFiltered() {
       return Object.keys(this.savedGraphs)
         .map((i) => this.savedGraphs[i])
-        .filter((x) => x.id > "")
+        .filter((x) => x.id > '')
         .sort((a, b) => {
           return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
         });
@@ -303,7 +304,7 @@ export default {
     movementSavedGraphsFiltered() {
       return Object.keys(this.movementSavedGraphs)
         .map((i) => this.movementSavedGraphs[i])
-        .filter((x) => x.id > "")
+        .filter((x) => x.id > '')
         .sort((a, b) => {
           return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
         });

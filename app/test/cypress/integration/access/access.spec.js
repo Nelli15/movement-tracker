@@ -2,7 +2,6 @@
 const TestUser = require('./../../fixtures/test-user.json')
 const TestUser2 = require('./../../fixtures/test-user-2.json')
 const TestMovement = require('./../../fixtures/test-movement.json')
-const { waitForPendingWrites } = require('firebase/firestore')
 
 describe('access page tests', () => {
   Cypress.on('uncaught:exception', (err, runnable) => {

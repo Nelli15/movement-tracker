@@ -89,7 +89,7 @@ describe('movement-card tests', () => {
       // cy.wait(1000)
       // cy.pause()
       cy.checkNotify('Movement Updated')
-      cy.get('.movement-card > .text-h6').should('have.css', 'background-color').and('eq', 'rgba(0, 0, 0, 0)')
+      cy.get('.movement-card > .text-h6').should('have.css', 'background-color').and('eq', 'rgb(0, 0, 0)')
     });
 
     it('should update the snapshot', () => {

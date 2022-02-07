@@ -1,12 +1,11 @@
 const admin = require("../../../utils/test-admin");
 const environment = require("../../../environments/environment.test.js");
 const context = {
-  admin,
   environment
 };
 
 const Func = require("../onChange.js");
-const db = admin.firestore();
+const db = getFirestore();
 
 describe("member:", () => {
   let func;
@@ -150,7 +149,7 @@ describe("member:", () => {
     });
 
     it.skip("updates the stats in the now doc", async () => {
-      // const date = admin.firestore.Timestamp.fromDate(new Date())
+      // const date = Timestamp.fromDate(new Date())
       // console.log(change)
       await movDoc.set({
         name: "test name",
@@ -258,7 +257,7 @@ describe("member:", () => {
 
     // This now happens in a different function
     it.skip("updates the last modified key", async () => {
-      const date = admin.firestore.Timestamp.fromDate(new Date());
+      const date = Timestamp.fromDate(new Date());
       // console.log(change)
       await movDoc
         .collection("styles")

@@ -197,6 +197,7 @@ export default {
     parent: String,
     treeOpt: {},
   },
+  emits: ['success', 'error'],
   setup(props, { emit }) {
     const q = useQuasar();
     const store = useStore();

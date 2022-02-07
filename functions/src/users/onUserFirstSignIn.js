@@ -1,5 +1,7 @@
-module.exports = ({ admin, environment }) => async user => {
-  var db = admin.firestore()
+import { getFirestore } from "firebase-admin/firestore";
+
+module.exports = ({ environment }) => async user => {
+  var db = getFirestore()
   // console.log("signing user in")
   // console.log(user.uid)
   // console.log(user.displayName)

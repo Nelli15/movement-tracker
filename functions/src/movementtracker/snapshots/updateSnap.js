@@ -1,4 +1,5 @@
-module.exports = ({ admin, environment }) => async data => {
+import { getFirestore, Timestamp } from "firebase-admin/firestore";
+module.exports = ({ environment }) => async data => {
   // context.app will be undefined if the request doesn't include a valid
   // App Check token.
   // if (context.app == undefined && process.env.FUNCTIONS_EMULATOR !== "true") {
@@ -8,11 +9,11 @@ module.exports = ({ admin, environment }) => async data => {
   //   );
   // }
 
-  let db = admin.firestore();
+  let db = getFirestore();
   let movId = data.movId;
   console.log('movId', movId)
   // creates or updates the current snapshot of the tree
-  const nowDate = admin.firestore.Timestamp.now().toDate();
+  const nowDate = Timestamp.now().toDate();
   nowDate.setHours(nowDate.getHours() + 10);
   const movRef = db.collection(environment.schema.movements).doc(movId);
   const snapRef = movRef
@@ -56,7 +57,7 @@ module.exports = ({ admin, environment }) => async data => {
           photoURL: "/app-logo-128x128.png",
           uid: "system"
         },
-    date: admin.firestore.Timestamp.now(),
+    date: Timestamp.now(),
     title: snapDoc.get("title")
       ? snapDoc.get("title")
       : `${monthNames[nowDate.getMonth() + 1]} ${nowDate.getFullYear()}` // < -- make this the text date 'Month-Year'

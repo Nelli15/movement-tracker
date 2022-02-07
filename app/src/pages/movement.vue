@@ -3,7 +3,11 @@
     <mt-movement-toolbox class="print-hide" :treeOpt="visibleTree" />
     <mt-filter-sort :tab="tab" />
     <q-scroll-area style="height: calc(100vh - 50px); max-width: 100%">
-      <div style="padding-left: 56px; min-height: 90vh" data-cy="background">
+      <div
+        style="padding-left: 56px; min-height: calc(100vh - 50px)"
+        :style="`background: ${q.dark.isActive ? '#263238' : 'white'};`"
+        data-cy="background"
+      >
         <MovBanner />
         <div class="print-only text-center">
           {{ tab === 'trees' ? visibleTree.label : '' }}

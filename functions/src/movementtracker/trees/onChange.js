@@ -1,7 +1,8 @@
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
 const _delete = require("../../scripts/delete.js");
 
-module.exports = ({ admin, environment }) => async (change, context) => {
-   const db = admin.firestore();
+module.exports = ({ environment }) => async (change, context) => {
+   const db = getFirestore();
    const movRef = change.before.ref.parent.parent;
   const treesList = movRef.collection("lists").doc("trees");
 
@@ -23,7 +24,7 @@ module.exports = ({ admin, environment }) => async (change, context) => {
     if(treesDoc.exists) {
     promises.push(
       treesList
-        .update({ [before.id]: admin.firestore.FieldValue.delete() })
+        .update({ [before.id]: FieldValue.delete() })
         .catch(err => console.log(err))
     );
     }

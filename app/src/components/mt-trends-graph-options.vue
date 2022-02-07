@@ -271,45 +271,46 @@ import {
   collection,
   orderBy,
   where,
-} from "@firebase/firestore";
-import { mapActions, mapState } from "vuex";
+} from '@firebase/firestore';
+import { mapActions, mapState } from 'vuex';
 export default {
   // name: 'ComponentName',
-  props: ["show", "typeOptions", "statsOptions"],
+  props: ['show', 'typeOptions', 'statsOptions'],
+  emits: ['close', 'trends-updated'],
   data() {
     return {
       treeOptsFiltered: [],
       statsOptsFiltered: [],
-      title: "Movement Size over time",
-      type: "Line",
+      title: 'Movement Size over time',
+      type: 'Line',
       selectedStyles: [],
       selectedTrees: [],
-      xAxis: "Snapshots by Date",
-      yAxis: "Number of Members",
-      axis: "Number of Member",
+      xAxis: 'Snapshots by Date',
+      yAxis: 'Number of Members',
+      axis: 'Number of Member',
       lineTension: 0.3,
-      endMonth: "",
-      fromMonth: "",
+      endMonth: '',
+      fromMonth: '',
       treeOpts: [],
       styleOpts: [],
-      tab: "data",
+      tab: 'data',
       trends: {},
     };
   },
   computed: {
-    ...mapState("movement", ["movement"]),
+    ...mapState('movement', ['movement']),
     monthOpts() {
       let initialDate = new Date(2018, 0, 1, 0, 0, 0, 0);
       let now = new Date();
       return dateRange(
-        "2018-01-01",
+        '2018-01-01',
         `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
       )
         .sort()
         .reverse();
       function dateRange(startDate, endDate) {
-        var start = startDate.split("-");
-        var end = endDate.split("-");
+        var start = startDate.split('-');
+        var end = endDate.split('-');
         var startYear = parseInt(start[0]);
         var endYear = parseInt(end[0]);
         var dates = [];
@@ -323,8 +324,8 @@ export default {
             j = j > 12 ? j % 12 || 11 : j + 1
           ) {
             var month = j + 1;
-            var displayMonth = month < 10 ? "0" + month : month;
-            dates.push([i, displayMonth].join("-"));
+            var displayMonth = month < 10 ? '0' + month : month;
+            dates.push([i, displayMonth].join('-'));
           }
         }
         return dates;
@@ -336,7 +337,7 @@ export default {
   },
   methods: {
     statsFilterFn(val, update) {
-      if (val === "") {
+      if (val === '') {
         update(() => {
           this.statsOptsFiltered = this.styleOpts.sort((a, b) => {
             return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
@@ -360,7 +361,7 @@ export default {
       });
     },
     treesFilterFn(val, update) {
-      if (val === "") {
+      if (val === '') {
         update(() => {
           this.treeOptsFiltered = this.treeOpts.sort((a, b) => {
             return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
@@ -385,7 +386,7 @@ export default {
     },
     async fetchSnapStyles() {
       // console.log("fetching the style lists");
-      let styles = { treeTotal: { label: "Total on Tree", id: "treeTotal" } };
+      let styles = { treeTotal: { label: 'Total on Tree', id: 'treeTotal' } };
       let snapsToFetch = [...this.monthOpts]
         .filter((val, ind) => val >= this.fromMonth && val <= this.endMonth)
         .sort();
@@ -460,7 +461,7 @@ export default {
           });
         }
       }
-      this.$emit("trends-updated", this.trends);
+      this.$emit('trends-updated', this.trends);
     },
     fetchTrend(payload) {
       if (this.trends[`${payload.treeId}-${payload.styleId}`]) return;
@@ -471,9 +472,9 @@ export default {
             getFirestore(),
             `/movements/${this.movement.id}/trend-data`
           ),
-          orderBy("snapId", "asc"),
-          where("styleId", "==", payload.styleId),
-          where("treeId", "==", payload.treeId)
+          orderBy('snapId', 'asc'),
+          where('styleId', '==', payload.styleId),
+          where('treeId', '==', payload.treeId)
         )
       ).then((querySnap) => {
         querySnap.forEach((doc) => {
@@ -487,7 +488,7 @@ export default {
     endMonth: {
       deep: true,
       handler(newDetails, oldDetails) {
-        if (this.fromMonth > "") {
+        if (this.fromMonth > '') {
           this.fetchSnapStyles();
           this.fetchSnapTrees();
         }
@@ -496,7 +497,7 @@ export default {
     fromMonth: {
       deep: true,
       handler(newDetails, oldDetails) {
-        if (this.endMonth > "") {
+        if (this.endMonth > '') {
           this.fetchSnapStyles();
           this.fetchSnapTrees();
         }

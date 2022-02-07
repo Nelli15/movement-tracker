@@ -275,6 +275,7 @@ export default {
     membersSelected: Array,
     treeOpt: null,
   },
+  emits: ['clearMembers'],
   data() {
     return {
       parentOptionsFiltered: [],
