@@ -17,10 +17,10 @@ module.exports = configure(function (ctx) {
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: {
       tsCheckerConfig: {
-        // eslint: {
-        //   enabled: true,
-        //   files: './src/**/*.{ts,tsx,js,jsx,vue}',
-        // },
+        eslint: {
+          enabled: true,
+          files: './src/**/*.{ts,tsx,js,jsx,vue}',
+        },
       }
     },
 

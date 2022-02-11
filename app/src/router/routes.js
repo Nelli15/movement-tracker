@@ -41,7 +41,19 @@ const routes = [
       }
     ]
   },
-
+{
+    // private routes
+    path: '/movement/:movId/',
+    component:() => import('layouts/movementLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'smartRedirect',
+        beforeEnter: (to, from) => smartRedirect(to, from),
+        component:() => import('pages/movement.vue')
+      },
+    ]
+  },
   {
     // private routes
     path: '/movement/:movId/',
@@ -49,61 +61,61 @@ const routes = [
     beforeEnter: (to, from) => hasPermission(to, from),
     children: [
       {
-        meta: { rule: 'members_view' },
+        meta: { rules: ['members_view', 'trees_view'] },
         path: 'members',
         name: 'members',
         component:() => import('pages/movement.vue')
       },
       {
-        meta: { rule: 'members_view' },
+        meta: { rules: ['members_view', 'trees_view'] },
         path: 'printable',
         name: 'printable',
         component:() => import('pages/movementPrintable.vue')
       },
       {
-        meta: { rule: 'snapshots_view' },
+        meta: { rules: ['snapshots_view'] },
         path: 'snapshots',
         name: 'snapshots',
         component:() => import('pages/snapshots.vue')
       },
       {
-        meta: { rule: 'snapshots_view' },
+        meta: { rules: ['snapshots_view'] },
         path: 'snapshot/:snapId',
         name: 'snapshot',
         component:() => import('pages/snapshot.vue')
       },
       {
-        meta: { rule: 'snapshots_view' },
+        meta: { rules: ['snapshots_view'] },
         path: 'snapshot/:snapId/printable',
         name: 'snapshot-printable',
         component:() => import('pages/snapshotPrintable.vue')
       },
       {
-        meta: { rule: 'trends_view' },
+        meta: { rules: ['trends_view'] },
         path: 'trends',
         name: 'trends',
         component:() => import('pages/trends.vue')
       },
       {
-        meta: { rule: 'events_view' },
+        meta: { rules: ['events_view'] },
         path: 'events',
         name: 'events',
         component:() => import('pages/events.vue')
       },
       {
-        meta: { rule: 'events_view' },
+        meta: { rules: ['events_view'] },
         path: 'event/:eventId',
         name: 'event',
         component:() => import('pages/event.vue')
       },
       {
-        meta: { rule: 'settings_view' },
+        meta: { rules: ['settings_view'] },
         path: 'settings',
         name: 'settings',
         component:() => import('pages/settings.vue')
       },
       {
-        meta: { rule: 'access_view' },
+        meta: { rules: ['access_view'] },
         path: 'access',
         name: 'access',
         component:() => import('pages/accessPage.vue')
@@ -154,7 +166,36 @@ async function hasPermission (to, from) {
         )
         if(!permissionsDoc.exists()) return { name: 'home'}
         const permissions = permissionsDoc.get('rules')
-        if (permissions[to.meta.rule]) return 
+        for (let rule of to.meta.rules) {
+        if (permissions[rule]) return 
+        }
+      }
+    return { name: 'home'}
+}
+async function smartRedirect (to, from) {
+    const user = await AuthUser();
+    const res = await getDoc(
+      doc(
+        getFirestore(),
+        `/movements/${to.params.movId}/users/${user.uid}`
+      )
+    ).catch(err => console.log(err))
+    
+      if (!res || !res.exists()) return { name: 'home'}
+      else if (res.get('role')) {
+        
+        const permissionsDoc = await getDoc(doc(getFirestore(), `/movements/${to.params.movId}/user-role-definitions/${res.get('role')}`)
+        )
+        
+        
+        if(!permissionsDoc.exists()) return { name: 'home'}
+        const permissions = permissionsDoc.get('rules')
+        if (permissions['members_view'] || permissions['trees_view']) return { name: 'members', params: to.params}
+        if (permissions['snapshots_view']) return { name: 'snapshots', params: to.params}
+        // if (permissions['trends_view']) return { name: 'trends', params: to.params}
+        if (permissions['settings_view'] || permissions['trees_view']) return { name: 'settings', params: to.params}
+        if (permissions['access_view'] || permissions['trees_view']) return { name: 'access', params: to.params}
+        console.log(`/movements/${to.params.movId}/users/${user.uid}`)
       }
     return { name: 'home'}
 }

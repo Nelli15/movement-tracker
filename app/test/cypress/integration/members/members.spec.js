@@ -404,6 +404,7 @@ const path = require("path");
     });
 
     it('should show member info', () => {
+      cy.dataCy('"member"').should('have.length', 3)
       cy.dataCy('"member"').first().within(() => {
         cy.dataCy('"name"').contains('Example No Parent Member').should('exist')
         cy.dataCy('"role"').contains('Example Role').should('exist')

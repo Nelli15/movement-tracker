@@ -36,8 +36,9 @@ exports.calcStats = function(styles, members) {
   const memberList = toArray(members);
 
   for (var key in styles) {
+    if(key === undefined) {delete styles[key]}
     const style = styles[key];
-    statsToUpdate[style.id] = calcStat(style, memberList);
+    statsToUpdate[key] = calcStat(style, memberList);
   }
   return statsToUpdate;
 };
@@ -119,7 +120,9 @@ function toArray(object) {
   if (Object.keys(object).length <= 0) {
     return [];
   }
-  return Object.keys(object).map(i => object[i]);
+
+  return Object.keys(object).map(i => {return i !== 'id' ? {...object[i], id: i} : null});
+
 }
 
 function evalExpression(expression, memberId, members) {
@@ -183,8 +186,11 @@ function evalCondition(cond, memberId, members) {
       return true;
     }
   } else if (cond.gen === "parent") {
-    if (!(member.parent === "root" || member.parent === "No Parent")) {
+    if (member.parent !== "root" && member.id !== 'id') {
+      
       const parent = members[member.parent];
+      // if(!parent) console.log(member)
+      // console.log(parent, members)
       const parentStyles = parent.styles;
       // [...parent.mods];
 

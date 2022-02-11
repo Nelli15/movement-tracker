@@ -5,7 +5,9 @@
     <q-scroll-area style="height: calc(100vh - 50px); max-width: 100%">
       <div
         style="padding-left: 56px; min-height: calc(100vh - 50px)"
-        :style="`background: ${q.dark.isActive ? '#263238' : 'white'};`"
+        :style="`background: ${
+          q.dark.isActive ? 'var(--q-dark-page)' : 'white'
+        };`"
         data-cy="background"
       >
         <MovBanner />
@@ -55,7 +57,13 @@
         <q-separator />
 
         <q-tab-panels v-model="tab" animated>
-          <q-tab-panel name="trees" class="q-px-none">
+          <q-tab-panel
+            name="trees"
+            class="q-px-none"
+            :style="`background: ${
+              q.dark.isActive ? 'var(--q-dark-page)' : 'white'
+            };`"
+          >
             <MovTrees
               :treeOpt="visibleTree"
               v-if="visibleTree !== null"
@@ -83,6 +91,7 @@
       :totalStats="totalStats"
       :complexStats="complexStats"
       :calcStats="calcStats"
+      :treeOpt="visibleTree"
     />
     <mt-legend-drawer :roleOpts="roleOpts" :modOpts="modOpts" />
   </div>

@@ -21,6 +21,14 @@ module.exports = ({ environment }) => async (change, context) => {
     .get();
 
   let stats = stylesDoc.data() ? stylesDoc.data() : {};
+  for (var key in stats) {
+    if (!key) {
+      delete stats[key]
+    } else {
+      stats[key].id = key
+    }
+  }
+
   // console.log("stats before", stats);
 
   // get all the members in the tree to check for changes
@@ -28,7 +36,7 @@ module.exports = ({ environment }) => async (change, context) => {
   let subTrees = {};
   for (let ind in after) {
     // console.log(after[ind]);
-    if (!after[ind].subTreeParent) {
+    if (!after[ind].subTreeParent && ind !== 'id') {
       members[ind] = { ...after[ind], id: ind };
     } else {
       subTrees[ind] = { id: ind };
@@ -43,6 +51,7 @@ module.exports = ({ environment }) => async (change, context) => {
   // console.log(stats);
 
   // calculate roles and mods
+  // console.log(Object.keys(members).length)
   stats = { ...stats, ...movementHelpers.calcStats(stats, members) };
   // console.log(stats);
 

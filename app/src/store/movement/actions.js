@@ -217,11 +217,12 @@ export function fetchStyles ({ commit, state }, payload) {
       ),
       doc => {
         let data = doc.data()
-        commit('setStats', data)
+        
         for (var statId in data) {
           data[statId].id = statId
           commit('addStyle', data[statId])
         }
+        commit('setStats', data)
       }
     )
   }

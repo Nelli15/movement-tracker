@@ -5,13 +5,8 @@ export function someMutation (state) {
 
 import {
   getFirestore,
-  serverTimestamp,
-  setDoc,
   doc,
-  deleteDoc,
   updateDoc,
-  collection,
-  addDoc
 } from "@firebase/firestore";
 
 export function cleanMovement (state, payload) {
@@ -54,6 +49,16 @@ export function setUserRole (state, payload) {
 export function setPermissions (state, payload) {
   console.log('permissions', payload)
   state.permissions = typeof payload === "object" ? payload : {}
+  // state.permissions.access_view = access_view || access_users_create || access_users_edit || access_userRoles_delete || access_userRoles_invite || access_userRoles_revoke    
+  // state.permissions.members_view = members_view || members_create || members_edit || members_delete || members_export 
+  // state.permissions.settings_view = settings_view || settings_roles_view || settings_roles_create || settings_roles_edit || settings_roles_delete
+  //  || settings_mods_view || settings_mods_create || settings_mods_edit || settings_mods_delete
+  //   || settings_calc_view || settings_calc_create || settings_calc_edit || settings_calc_delete
+  //    || settings_complex_view || settings_complex_create || settings_complex_edit || settings_complex_delete 
+  //    state.permissions.snapshots_view = snapshots_view || snapshots_update
+  //    state.permissions.trees_view = trees_view || trees_create || trees_delete|| trees_export || subTrees_add || subTrees_remove
+  //    state.permissions.trends_view = trends_view || trends_movementGraphs_view || trends_movementGraphs_create || trends_movementGraphs_delete
+     
 }
 
 export function addStyle (state, payload) {
@@ -220,9 +225,18 @@ export function removeTree (state, id) {
 }
 
 export async function updateRoleDefinitionRule (state, payload) {
-
-  state.userRoleDefinitions[payload.userRole].rules[payload.ruleKey] = payload.value
-  let key = 'rules.'.concat(payload.ruleKey)
+  let currentRole = state.userRoleDefinitions[payload.userRole].rules
+  currentRole[payload.ruleKey] = payload.value
+  currentRole.access_view = currentRole.access_view || currentRole.access_users_invite || currentRole.access_users_revoke || currentRole.access_userRoles_create || currentRole.access_userRoles_edit || currentRole.access_userRoles_delete
+  currentRole.members_view = currentRole.members_view || currentRole.members_create || currentRole.members_edit || currentRole.members_delete || currentRole.members_export 
+  currentRole.settings_roles_view = currentRole.settings_roles_view || currentRole.settings_roles_create || currentRole.settings_roles_edit || currentRole.settings_roles_delete
+  currentRole.settings_mods_view = currentRole.settings_mods_view || currentRole.settings_mods_create || currentRole.settings_mods_edit || currentRole.settings_mods_delete
+  currentRole.settings_calc_view = currentRole.settings_calc_view || currentRole.settings_calc_create || currentRole.settings_calc_edit || currentRole.settings_calc_delete
+  currentRole.settings_complex_view = currentRole.settings_complex_view || currentRole.settings_complex_create || currentRole.settings_complex_edit || currentRole.settings_complex_delete 
+  currentRole.settings_view = currentRole.settings_view || currentRole.settings_roles_view || currentRole.settings_mods_view || currentRole.settings_calc_view || currentRole.settings_complex_view
+  currentRole.snapshots_view = currentRole.snapshots_view || currentRole.snapshots_update
+  currentRole.trees_view = currentRole.trees_view || currentRole.trees_create || currentRole.trees_delete || currentRole.trees_export || currentRole.subTrees_add || currentRole.subTrees_remove
+  currentRole.trends_view = currentRole.trends_view || currentRole.trends_movementGraphs_view ||currentRole. trends_movementGraphs_create || currentRole.trends_movementGraphs_delete
   // return firebase.firestore().doc(`/movements/${state.movement.id}/user-role-definitions/${payload.userRole}`).update({ ['rules.access.view']: payload.value }).catch(err => console.error(err))
   // use this once the bug with updating nested fields is fixed
   return await updateDoc(
@@ -230,6 +244,6 @@ export async function updateRoleDefinitionRule (state, payload) {
             getFirestore(),
             `/movements/${state.movement.id}/user-role-definitions/${payload.userRole}`
           ),
-          { [key]: payload.value }
+          state.userRoleDefinitions[payload.userRole]
         ).catch(err => console.error(err)); 
 }

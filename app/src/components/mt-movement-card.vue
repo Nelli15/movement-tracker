@@ -75,7 +75,7 @@
       class="shadow-3 movement-card"
       :style="'border-color:' + backgroundColor + ';'"
       style="cursor: pointer"
-      @click.stop="$router.push('/movement/' + movementProp.id + '/members')"
+      @click.stop="$router.push('/movement/' + movementProp.id)"
     >
       <q-card-section
         :style="'background-color:' + backgroundColor + ';color:' + color + ';'"

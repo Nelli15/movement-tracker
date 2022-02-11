@@ -1,13 +1,11 @@
 <template>
   <div class="fit">
     <!-- <mt-trends-toolbox
-      :graphDetails="graphDetails"
-      :typeOptions="typeOptions"
+      :options="options"
       @toggleOptionsDrawer="toggleOptionsDrawer = !toggleOptionsDrawer"
       @toggleGraphsDrawer="toggleGraphsDrawer = !toggleGraphsDrawer"
-      :statsOptions="statsOptions"
     /> -->
-    <!-- {{options}} -->
+    <mt-line-chart :options="options" />
     <!-- <q-scroll-area style="height: calc(100vh - 50px); max-width: 100%">
       <div
         :style="
@@ -27,8 +25,7 @@
       </div>
       <div class="container row" style="margin-left: 58px">
         <div class="col-12">-->
-    <canvas ref="chartRef" width="400" height="400" data-cy="graph"></canvas
-    ><!--
+    <!--
           <q-tab-panels v-model="type"> </q-tab-panels>
         </div>
       </div>
@@ -294,8 +291,14 @@
           </q-tab-panel>
         </q-tab-panels>
       </q-scroll-area>
-    </q-drawer>
-    <mt-trends-saved-graphs
+    </q-drawer> -->
+
+    <mt-trends-graph-options
+      :show="true"
+      :options="options"
+      @update="options = $event"
+    />
+    <!-- <mt-trends-saved-graphs
       :show="toggleGraphsDrawer"
       @close="toggleGraphsDrawer = false"
       @openGraph="onOpenGraph"
@@ -304,8 +307,8 @@
 </template>
 
 <script>
-import { setCurrentScreen, getAnalytics } from "@firebase/analytics";
-import { useStore } from "vuex";
+import { setCurrentScreen, getAnalytics } from '@firebase/analytics';
+import { useStore } from 'vuex';
 import {
   getFirestore,
   getDoc,
@@ -315,7 +318,7 @@ import {
   collection,
   orderBy,
   where,
-} from "@firebase/firestore";
+} from '@firebase/firestore';
 import {
   defineAsyncComponent,
   ref,
@@ -323,11 +326,9 @@ import {
   computed,
   watch,
   onMounted,
-} from "vue";
-import Chart from "chart.js/auto";
-import { useQuasar } from "quasar";
-import { useRoute } from "vue-router";
-
+} from 'vue';
+import { useQuasar } from 'quasar';
+import { useRoute } from 'vue-router';
 function toArray(object) {
   if (!object) {
     return [];
@@ -339,7 +340,15 @@ function toArray(object) {
 }
 
 export default {
-  name: "TrendsPage",
+  name: 'TrendsPage',
+  preFetch({ store, currentRoute }) {
+    store.dispatch('movement/fetchTrees', {
+      movId: currentRoute.params.movId,
+    });
+    store.dispatch('movement/fetchStyles', {
+      movId: currentRoute.params.movId,
+    });
+  },
   setup() {
     const q = useQuasar();
     const store = useStore();
@@ -347,111 +356,54 @@ export default {
     const toggleOptionsDrawer = ref(false);
     const toggleGraphsDrawer = ref(false);
     const options = ref({
-      responsive: true,
-      maintainAspectRatio: false,
-      legend: {
-        position: "bottom",
-        align: "left",
-        labels: {
-          fontColor: q.dark.isActive ? "#fff" : "#666",
-        },
-      },
-      title: {
-        display: true,
-        text: "Movement Statistics over time",
-        fontColor: q.dark.isActive ? "#fff" : "#666",
-      },
-      scales: {
-        yAxes: [
-          {
-            scaleLabel: {
-              display: true,
-              labelString: "Number of Members",
-              fontColor: q.dark.isActive ? "#fff" : "#666",
-            },
-            ticks: {
-              min: 0,
-              stepSize: 1,
-              precision: 0,
-              fontColor: q.dark.isActive ? "#fff" : "#666",
-            },
-            gridLines: {
-              color: q.dark.isActive
-                ? "rgba(255, 255, 255, 0.1)"
-                : "rgba(0, 0, 0, 0.1)",
-            },
-          },
-        ],
-        xAxes: [
-          {
-            scaleLabel: {
-              display: true,
-              labelString: "Snapshots by Date",
-              fontColor: q.dark.isActive ? "#fff" : "#666",
-            },
-            ticks: {
-              fontColor: q.dark.isActive ? "#fff" : "#666",
-            },
-            gridLines: {
-              color: q.dark.isActive
-                ? "rgba(255, 255, 255, 0.1)"
-                : "rgba(0, 0, 0, 0.1)",
-            },
-          },
-        ],
-      },
-      tooltips: {
-        enabled: true,
-        mode: "single",
-        callbacks: {
-          label: function (tooltipItems, data) {
-            return data.labels[tooltipItems.index];
-          },
-        },
-      },
+      chartType: 'Line',
+      startDate: new Date().getTime(),
+      endDate: new Date().getTime(),
+      title: '',
+      stats: [],
+      trees: [],
+      lineTension: 0.3,
+      xAxis: 'Snapshots by Date',
+      yAxis: 'Number of Members',
+      axis: 'Number of Members',
     });
-    const type = ref("Line");
-    const typeOptions = ref(["Line", "Bar", "Pie", "Polar"]);
-    const title = ref("Movement Size over time");
-    const xAxis = ref("Snapshots by Date");
-    const yAxis = ref("Number of Members");
-    const axis = ref("Number of Members");
+    const type = ref('Line');
+    const typeOptions = ref(['Line', 'Bar', 'Pie', 'Polar']);
+    const title = ref('Movement Size over time');
+    const xAxis = ref('Snapshots by Date');
+    const yAxis = ref('Number of Members');
+    const axis = ref('Number of Members');
 
     // define data related user editable values
     let d = new Date();
     d.setFullYear(d.getFullYear() - 1);
     const dataOpts = ref({
-      selectedTrees: ["main-tree"],
-      selectedStyles: ["example-role"],
+      selectedTrees: ['main-tree'],
+      selectedStyles: ['example-role'],
       startDate: d.getTime(),
       endDate: new Date().getTime(),
     });
     const graphDetails = ref({});
 
-    const tab = ref("data");
+    const tab = ref('data');
     const trends = computed(() => store.state.trends.trends);
 
-    const myChart = ref({});
-    const chartRef = ref(null);
     const config = reactive({
-      type: "bar",
+      type: 'bar',
       data: {
-        labels: ["test"],
+        labels: ['test'],
         datasets: [
           {
-            label: "test",
+            label: 'test',
             data: Array(1),
-            backgroundColor: "#ffffff",
-            borderColor: "#ff0000",
+            backgroundColor: '#ffffff',
+            borderColor: '#ff0000',
             fill: false,
           },
         ],
       },
     });
-    setCurrentScreen(getAnalytics(), "Movement_Trends");
-    onMounted(() => {
-      myChart.value = new Chart(chartRef.value, config);
-    });
+    setCurrentScreen(getAnalytics(), 'Movement_Trends');
 
     function getLineData() {
       let chartData = {
@@ -472,7 +424,7 @@ export default {
           // snapshots[selectedMonths[ii]] && snapshots[selectedMonths[ii]].title
           //   ? snapshots[selectedMonths[ii]].title
           //   : selectedMonths[ii]
-          "test"
+          'test'
         );
         // }
 
@@ -490,7 +442,7 @@ export default {
               }
               //push the trend into the datasets array
               chartData.datasets.push({
-                label: "test",
+                label: 'test',
                 // styleOpts.find(
                 //   (el) =>
                 //     Object.values(trend.data)[
@@ -498,8 +450,8 @@ export default {
                 //     ].styleId === el.id
                 // ).label,
                 data: data,
-                backgroundColor: "#ffffff",
-                borderColor: "#ff0000",
+                backgroundColor: '#ffffff',
+                borderColor: '#ff0000',
                 fill: false,
                 // lineTension: lineTension
                 //   ? lineTension
@@ -545,7 +497,7 @@ export default {
           for (var ii in dataOpts.value.selectedTrees) {
             for (var jj in dataOpts.value.selectedStyles) {
               promises.push(
-                store.dispatch("trends/fetchTrend", {
+                store.dispatch('trends/fetchTrend', {
                   movId: route.params.movId,
                   styleId: dataOpts.value.selectedStyles[jj],
                   treeId: dataOpts.value.selectedTrees[ii],
@@ -561,55 +513,33 @@ export default {
       },
       { deep: true, immediate: true }
     );
-    watch(config, () => {
-      console.log(
-        "ready to update",
-        config,
-        config.data.datasets,
-        config.data.datasets.length > 0
-      );
-      if (config.data.datasets.length > 0) {
-        myChart.value.update();
-      }
-    });
     return {
+      q,
       graphDetails,
       typeOptions,
       toggleOptionsDrawer,
       toggleGraphsDrawer,
       type,
       tab,
-      chartRef,
       title,
       xAxis,
       yAxis,
       axis,
+      options,
     };
   },
   components: {
-    "line-chart": defineAsyncComponent(() =>
-      import("./../components/charts/mt-linechart.vue")
+    'mt-trends-toolbox': defineAsyncComponent(() =>
+      import('./../components/mt-trends-toolbox.vue')
     ),
-    "bar-chart": defineAsyncComponent(() =>
-      import("./../components/charts/mt-barchart.vue")
+    'mt-trends-saved-graphs': defineAsyncComponent(() =>
+      import('./../components/mt-trends-saved-graphs.vue')
     ),
-    "pie-chart": defineAsyncComponent(() =>
-      import("./../components/charts/mt-piechart.vue")
+    'mt-trends-graph-options': defineAsyncComponent(() =>
+      import('./../components/mt-trends-graph-options.vue')
     ),
-    "scatter-chart": defineAsyncComponent(() =>
-      import("./../components/charts/mt-scatterchart.vue")
-    ),
-    "polar-chart": defineAsyncComponent(() =>
-      import("./../components/charts/mt-polarchart.vue")
-    ),
-    "radar-chart": defineAsyncComponent(() =>
-      import("./../components/charts/mt-radarchart.vue")
-    ),
-    "mt-trends-toolbox": defineAsyncComponent(() =>
-      import("./../components/mt-trends-toolbox.vue")
-    ),
-    "mt-trends-saved-graphs": defineAsyncComponent(() =>
-      import("./../components/mt-trends-saved-graphs.vue")
+    'mt-line-chart': defineAsyncComponent(() =>
+      import('./../components/mt-LineChart.vue')
     ),
   },
 };

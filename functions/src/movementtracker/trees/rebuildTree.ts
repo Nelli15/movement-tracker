@@ -49,7 +49,7 @@ module.exports =
     if (!treeDoc.exists) return;
     // get update Id from treeDoc
     let updateId: string = treeDoc.get("updateId");
-    // TODO: compare subtree update Id to current tree updateId and return if same
+    //  compare subtree update Id to current tree updateId and return if same
     // loop through all members to check if they have changed
     for (let memberId of members) {
       if (!afterData[memberId]) {

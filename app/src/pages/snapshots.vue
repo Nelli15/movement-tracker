@@ -308,9 +308,9 @@ import {
 import { getAnalytics, setCurrentScreen } from 'firebase/analytics';
 import { mapGetters, mapActions, mapState } from 'vuex';
 // import { $firestore, getAnalytics() } from "./../data/firebase.js";
-import { defineAsyncComponent, computed, ref } from 'vue';
+import { defineAsyncComponent, ref, watch } from 'vue';
 // var movementJS = require('./../scripts/movement.js')
-import { LocalStorage } from 'quasar';
+import { useQuasar } from 'quasar';
 
 export default {
   props: {},
@@ -355,22 +355,30 @@ export default {
     };
   },
   setup() {
+    const q = useQuasar();
     const closeDisabled = ref();
-    const pagination = computed({
-      get() {
-        return LocalStorage.has('snapshotPagination')
-          ? LocalStorage.getItem('snapshotPagination')
-          : {
-              sortBy: 'name',
-              descending: false,
-              page: 1,
-              rowsPerPage: 10,
-              // rowsNumber: xx if getting data from a server
-            };
-      },
-      set(value) {
-        LocalStorage.set('snapshotPagination', value);
-      },
+    const pagination = ref({
+      sortBy: 'name',
+      descending: false,
+      page: 1,
+      rowsPerPage: 10,
+      // rowsNumber: xx if getting data from a server
+    });
+
+    pagination.value = q.localStorage.has('snapshotPagination')
+      ? q.localStorage.getItem('snapshotPagination')
+      : {
+          sortBy: 'name',
+          descending: false,
+          page: 1,
+          rowsPerPage: 10,
+          // rowsNumber: xx if getting data from a server
+        };
+    watch(pagination, (newVal, oldVal) => {
+      if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+        console.log(pagination.value);
+        q.localStorage.set('snapshotPagination', pagination.value);
+      }
     });
     return { pagination, closeDisabled };
   },

@@ -15,10 +15,10 @@
         v-model="tab"
         dense
         class="text-grey"
-        active-color="primary"
-        indicator-color="primary"
         align="justify"
         narrow-indicator
+        :active-color="q.dark.isActive ? 'blue-2' : 'primary'"
+        :indicator-color="q.dark.isActive ? 'blue-2' : 'primary'"
       >
         <q-tab name="data" label="Data" />
         <q-tab name="style" label="Style" />
@@ -33,8 +33,8 @@
             <q-item>
               <q-select
                 outlined
-                v-model="type"
-                :options="typeOptions"
+                v-model="l_options.chartType"
+                :options="typeOpts"
                 label="Graph Type"
                 options-selected-class="text-positive"
                 style="width: 100%"
@@ -43,37 +43,81 @@
             </q-item>
             Dates
             <q-item>
-              <q-select
+              <!-- <q-input
                 outlined
-                v-model="fromMonth"
+                v-model="options.startDate"
                 label="Start Month"
                 style="width: 50%"
                 :color="q.dark.isActive ? 'blue-2' : ''"
                 debounce="1000"
-                :options="monthOpts"
                 options-dense
               >
-              </q-select>
+              </q-input> -->
+              <q-input v-model="startDate">
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      ref="qDateProxy"
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="startDate" mask="YYYY-MM-DD">
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Close"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
               <!-- </div> -->
               <!-- <div class="q-pa-md" style="max-width: 300px"> -->
-              <q-select
+              <!-- <q-input
                 outlined
-                v-model="endMonth"
+                v-model="options.endDate"
                 label="End Month"
                 style="width: 50%"
                 :color="q.dark.isActive ? 'blue-2' : ''"
                 debounce="1000"
-                :options="endMonthOpts"
                 options-dense
               >
-              </q-select>
+              </q-input> -->
+              <q-input v-model="endDate">
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      ref="qDateProxy"
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="endDate" mask="YYYY-MM-DD">
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Close"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
               <!-- </div> -->
             </q-item>
             <q-item>
               <q-select
-                :disable="!(fromMonth > '' && endMonth > '')"
+                :disable="!(l_options.startDate > '' && l_options.endDate > '')"
                 outlined
-                v-model="selectedTrees"
+                v-model="l_options.trees"
                 :options="treeOptsFiltered"
                 options-value="id"
                 options-label="label"
@@ -93,10 +137,10 @@
                     <q-chip
                       removable
                       dense
-                      @remove="selectedTrees.splice(index, 1)"
+                      @remove="l_options.trees.splice(index, 1)"
                       color="positive"
                       class="q-ma-xs"
-                      v-for="(val, index) in selectedTrees"
+                      v-for="(val, index) in l_options.trees"
                       :key="index"
                       >{{ val.label }}
                     </q-chip>
@@ -105,16 +149,16 @@
                 <template v-slot:append>
                   <q-icon
                     name="cancel"
-                    @click.stop="selectedTrees = []"
+                    @click.stop="l_options.trees = []"
                     class="cursor-pointer"
-                    v-if="selectedTrees.length > 0"
+                    v-if="l_options.trees && l_options.trees.length > 0"
                     style="font-size: 0.75em"
                   />
                   <q-icon
                     name="select_all"
-                    @click.stop="selectedTrees = [...treeOptsFiltered]"
+                    @click.stop="l_options.trees = [...treeOptsFiltered]"
                     class="cursor-pointer"
-                    v-if="selectedTrees.length <= 0"
+                    v-if="l_options.trees && l_options.trees.length <= 0"
                   />
                 </template>
               </q-select>
@@ -122,9 +166,9 @@
 
             <q-item>
               <q-select
-                :disable="!(fromMonth > '' && endMonth > '')"
+                :disable="!(l_options.startDate > '' && l_options.endDate > '')"
                 outlined
-                v-model="selectedStyles"
+                v-model="l_options.stats"
                 :options="statsOptsFiltered"
                 options-value="id"
                 options-label="label"
@@ -144,10 +188,10 @@
                     <q-chip
                       removable
                       dense
-                      @remove="selectedStyles.splice(index, 1)"
+                      @remove="l_options.stats.splice(index, 1)"
                       color="positive"
                       class="q-ma-xs"
-                      v-for="(val, index) in selectedStyles"
+                      v-for="(val, index) in l_options.stats"
                       :key="index"
                       >{{ val.label }}
                     </q-chip>
@@ -156,16 +200,16 @@
                 <template v-slot:append>
                   <q-icon
                     name="cancel"
-                    @click.stop="selectedStyles = []"
+                    @click.stop="l_options.stats = []"
                     class="cursor-pointer"
-                    v-if="selectedStyles.length > 0"
+                    v-if="l_options.stats && l_options.stats.length > 0"
                     style="font-size: 0.75em"
                   />
                   <q-icon
                     name="select_all"
-                    @click.stop="selectedStyles = [...statsOptsFiltered]"
+                    @click.stop="l_options.stats = [...statsOptsFiltered]"
                     class="cursor-pointer"
-                    v-if="selectedStyles.length <= 0"
+                    v-if="l_options.stats && l_options.stats.length <= 0"
                   />
                 </template>
               </q-select>
@@ -181,7 +225,7 @@
                   <q-input
                     outlined
                     label="Title"
-                    v-model="title"
+                    v-model="l_options.title"
                     style="width: 100%"
                     :color="q.dark.isActive ? 'blue-2' : ''"
                     debounce="2000"
@@ -195,7 +239,7 @@
                   <q-input
                     outlined
                     label="Axis Label"
-                    v-model="axis"
+                    v-model="l_options.axis"
                     :color="q.dark.isActive ? 'blue-2' : ''"
                     debounce="2000"
                   />
@@ -208,7 +252,7 @@
                   <q-input
                     outlined
                     label="X Axis Label"
-                    v-model="xAxis"
+                    v-model="l_options.xAxis"
                     :color="q.dark.isActive ? 'blue-2' : ''"
                     debounce="2000"
                   />
@@ -221,7 +265,7 @@
                   <q-input
                     outlined
                     label="Y Axis Label"
-                    v-model="yAxis"
+                    v-model="l_options.yAxis"
                     :color="q.dark.isActive ? 'blue-2' : ''"
                     debounce="2000"
                   />
@@ -240,11 +284,11 @@
             </q-expansion-item>
             <q-select
               outlined
-              v-model="lineTension"
+              v-model="l_options.lineTension"
               :options="[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]"
               label="Line Tension"
               options-selected-class="text-positive"
-              v-if="type === 'Line'"
+              v-if="l_options.chartType === 'Line'"
               :color="q.dark.isActive ? 'blue-2' : ''"
             >
               <q-tooltip
@@ -272,34 +316,59 @@ import {
   orderBy,
   where,
 } from '@firebase/firestore';
-import { mapActions, mapState } from 'vuex';
+import {
+  defineAsyncComponent,
+  ref,
+  reactive,
+  computed,
+  watch,
+  onMounted,
+} from 'vue';
+import { useQuasar } from 'quasar';
+import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
+function toArray(object) {
+  if (!object) {
+    return [];
+  }
+  if (Object.keys(object).length <= 0) {
+    return [];
+  }
+  return Object.keys(object).map((i) => object[i]);
+}
 export default {
   // name: 'ComponentName',
-  props: ['show', 'typeOptions', 'statsOptions'],
-  emits: ['close', 'trends-updated'],
-  data() {
-    return {
-      treeOptsFiltered: [],
-      statsOptsFiltered: [],
-      title: 'Movement Size over time',
-      type: 'Line',
-      selectedStyles: [],
-      selectedTrees: [],
-      xAxis: 'Snapshots by Date',
-      yAxis: 'Number of Members',
-      axis: 'Number of Member',
-      lineTension: 0.3,
-      endMonth: '',
-      fromMonth: '',
-      treeOpts: [],
-      styleOpts: [],
-      tab: 'data',
-      trends: {},
-    };
-  },
-  computed: {
-    ...mapState('movement', ['movement']),
-    monthOpts() {
+
+  props: ['show', 'options'],
+  emits: ['close', 'update'],
+  setup(props, { emit }) {
+    const q = useQuasar();
+    const store = useStore();
+    const route = useRoute();
+    let d = new Date();
+    const endDate = ref(
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
+        d.getDate() + 1
+      ).padStart(2, '0')}`
+    );
+    d.setFullYear(d.getFullYear() - 1);
+    const startDate = ref(
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
+        d.getDate() + 1
+      ).padStart(2, '0')}`
+    );
+
+    const lineTension = ref(0.3);
+    const typeOpts = ref(['Line', 'Bar', 'Pie', 'Polar']);
+    const l_options = ref({});
+    const statsOptsFiltered = ref([]);
+    const treeOptsFiltered = ref([]);
+    const tab = ref('data');
+
+    const movement = computed(() => store.state.movement.movement);
+    const treeOpts = computed(() => toArray(store.state.movement.trees));
+    const statsOpts = computed(() => toArray(store.state.movement.stats));
+    const monthOpts = computed(() => {
       let initialDate = new Date(2018, 0, 1, 0, 0, 0, 0);
       let now = new Date();
       return dateRange(
@@ -316,11 +385,11 @@ export default {
         var dates = [];
 
         for (var i = startYear; i <= endYear; i++) {
-          var endMonth = i != endYear ? 11 : parseInt(end[1]) - 1;
+          var endDate = i != endYear ? 11 : parseInt(end[1]) - 1;
           var startMon = i === startYear ? parseInt(start[1]) - 1 : 0;
           for (
             var j = startMon;
-            j <= endMonth;
+            j <= endDate;
             j = j > 12 ? j % 12 || 11 : j + 1
           ) {
             var month = j + 1;
@@ -330,16 +399,15 @@ export default {
         }
         return dates;
       }
-    },
-    endMonthOpts() {
-      return this.monthOpts;
-    },
-  },
-  methods: {
-    statsFilterFn(val, update) {
+    });
+    const endDateOpts = computed(() => {
+      return monthOpts;
+    });
+
+    function statsFilterFn(val, update) {
       if (val === '') {
         update(() => {
-          this.statsOptsFiltered = this.styleOpts.sort((a, b) => {
+          statsOptsFiltered.value = statsOpts.value.sort((a, b) => {
             return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
           });
 
@@ -353,17 +421,17 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase();
-        this.statsOptsFiltered = this.styleOpts
+        statsOptsFiltered.value = statsOpts.value
           .filter((v) => v.label.toLowerCase().indexOf(needle) > -1)
           .sort((a, b) => {
             return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
           });
       });
-    },
-    treesFilterFn(val, update) {
+    }
+    function treesFilterFn(val, update) {
       if (val === '') {
         update(() => {
-          this.treeOptsFiltered = this.treeOpts.sort((a, b) => {
+          treeOptsFiltered.value = treeOpts.value.sort((a, b) => {
             return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
           });
 
@@ -377,144 +445,50 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase();
-        this.treeOptsFiltered = this.treeOpts
+        treeOptsFiltered.value = treeOpts.value
           .filter((v) => v.label.toLowerCase().indexOf(needle) > -1)
           .sort((a, b) => {
             return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
           });
       });
-    },
-    async fetchSnapStyles() {
-      // console.log("fetching the style lists");
-      let styles = { treeTotal: { label: 'Total on Tree', id: 'treeTotal' } };
-      let snapsToFetch = [...this.monthOpts]
-        .filter((val, ind) => val >= this.fromMonth && val <= this.endMonth)
-        .sort();
-
-      let promises = [];
-      for (let ii in snapsToFetch) {
-        promises.push(
-          getDoc(
-            doc(
-              getFirestore(),
-              `/movements/${this.movement.id}/snapshots/${snapsToFetch[ii]}/lists/styles`
-            )
-          )
-        );
-      }
-
-      let docs = await Promise.all(promises);
-      // console.log(docs);
-      for (let ii in docs) {
-        if (docs[ii].exists) {
-          let data = docs[ii].data();
-          for (let jj in data) {
-            styles[jj] = { ...data[jj], id: jj };
-          }
-        }
-      }
-
-      this.styleOpts = Object.values(styles);
-    },
-    async fetchSnapTrees() {
-      // console.log("fetching the style lists");
-      let trees = {};
-      let snapsToFetch = [...this.monthOpts]
-        .filter((val, ind) => val >= this.fromMonth && val <= this.endMonth)
-        .sort();
-
-      let promises = [];
-      for (let ii in snapsToFetch) {
-        promises.push(
-          getDoc(
-            doc(
-              getFirestore(),
-              `/movements/${this.movement.id}/snapshots/${snapsToFetch[ii]}/lists/trees`
-            )
-          )
-        );
-      }
-
-      let docs = await Promise.all(promises);
-      // console.log(docs);
-      for (let ii in docs) {
-        if (docs[ii].exists) {
-          let data = docs[ii].data();
-          for (let jj in data) {
-            trees[jj] = { ...data[jj], id: jj };
-          }
-        }
-      }
-
-      this.treeOpts = Object.values(trees);
-    },
-    async fetchTrends() {
-      if (this.selectedTrees.length <= 0 || this.selectedStyles.length <= 0)
-        return;
-      for (let ii in this.selectedTrees) {
-        for (let jj in this.selectedStyles) {
-          this.trends[
-            `${this.selectedTrees[ii].id}-${this.selectedStyles[jj].id}`
-          ] = await this.fetchTrend({
-            styleId: this.selectedStyles[jj].id,
-            treeId: this.selectedTrees[ii].id,
-          });
-        }
-      }
-      this.$emit('trends-updated', this.trends);
-    },
-    fetchTrend(payload) {
-      if (this.trends[`${payload.treeId}-${payload.styleId}`]) return;
-      let trend = { ...payload, data: [] };
-      return getDocs(
-        query(
-          collection(
-            getFirestore(),
-            `/movements/${this.movement.id}/trend-data`
-          ),
-          orderBy('snapId', 'asc'),
-          where('styleId', '==', payload.styleId),
-          where('treeId', '==', payload.treeId)
-        )
-      ).then((querySnap) => {
-        querySnap.forEach((doc) => {
-          trend.data.push(doc.data());
-        });
-        return trend;
-      });
-    },
-  },
-  watch: {
-    endMonth: {
-      deep: true,
-      handler(newDetails, oldDetails) {
-        if (this.fromMonth > '') {
-          this.fetchSnapStyles();
-          this.fetchSnapTrees();
-        }
+    }
+    watch(
+      props.options,
+      (newVal, oldVal) => {
+        if (newVal !== oldVal) l_options.value = props.options;
       },
-    },
-    fromMonth: {
-      deep: true,
-      handler(newDetails, oldDetails) {
-        if (this.endMonth > '') {
-          this.fetchSnapStyles();
-          this.fetchSnapTrees();
-        }
+      { deep: true, immediate: true }
+    );
+    watch(
+      l_options,
+      (newVal, oldVal) => {
+        if (props.options !== l_options.value) emit('update', l_options.value);
       },
-    },
-    selectedTrees: {
-      deep: true,
-      handler() {
-        this.fetchTrends();
-      },
-    },
-    selectedStyles: {
-      deep: true,
-      handler() {
-        this.fetchTrends();
-      },
-    },
+      { deep: true }
+    );
+    watch(startDate, () => {
+      l_options.value.startDate = new Date(startDate.value).getTime();
+    });
+    watch(endDate, () => {
+      l_options.value.endDate = new Date(endDate.value).getTime();
+    });
+
+    return {
+      q,
+      tab,
+      typeOpts,
+      l_options,
+      monthOpts,
+      statsOpts,
+      statsOptsFiltered,
+      statsFilterFn,
+      treeOpts,
+      treeOptsFiltered,
+      treesFilterFn,
+      endDateOpts,
+      startDate,
+      endDate,
+    };
   },
 };
 </script>
