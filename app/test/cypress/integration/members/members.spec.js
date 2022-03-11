@@ -84,7 +84,8 @@ const path = require("path");
     });
 
     it('should have update snapshot', () => {
-      cy.dataCy('"update-snap-movement"').click()
+      cy.get('[data-cy="member-example-member"]', {timeout: 90000}).should('exist')
+      cy.dataCy('"update-snap-movement"').should('be.visible').click()
       // .contains('add-a-photo')
       cy.dataCy('"submit"').click()
       cy.checkNotify('Snapshot Updated')
@@ -403,9 +404,9 @@ const path = require("path");
       cy.dataCy('"member"').should('have.length', 3)
     });
 
-    it('should show member info', () => {
+    it.only('should show member info', () => {
       cy.dataCy('"member"').should('have.length', 3)
-      cy.dataCy('"member"').first().within(() => {
+      cy.dataCy('"member"').nextUntil('[data-cy-id="no-parent-member"]').within(() => {
         cy.dataCy('"name"').contains('Example No Parent Member').should('exist')
         cy.dataCy('"role"').contains('Example Role').should('exist')
         cy.dataCy('"mods"').within(()=> {cy.get('div').should('be.empty')})

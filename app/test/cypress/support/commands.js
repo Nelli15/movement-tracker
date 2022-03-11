@@ -5,6 +5,7 @@ import 'firebase/compat/database';
 import 'firebase/compat/firestore';
 import 'firebase/compat/functions';
 import { attachCustomCommands } from 'cypress-firebase';
+import "cypress-plugin-snapshots/commands";
 
 const fbConfig = require('./../../../../fbConfig.json')
 const TestMovement = require('./../fixtures/test-movement.json')
@@ -105,7 +106,8 @@ Cypress.Commands.add('userLogin', () => {
   cy.get('[data-cy="login-card"]', {timeout:10000})
   cy.dataCy('"signin-email"').parent().type('test@email.com')
     cy.dataCy('"signin-password"').parent().type('test1234')
-    cy.dataCy('"signin-submit"').click().wait(400)
+    cy.dataCy('"signin-submit"').click()
+    cy.testRoute('/home')
     .then(() => {
       firebase.auth().signInWithEmailAndPassword('test@email.com', 'test1234')
     })

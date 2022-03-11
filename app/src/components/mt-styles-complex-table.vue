@@ -7,7 +7,6 @@
     v-model:pagination="pagination"
     style="padding: -16px"
     wrap-cells
-    class="my-sticky-header-table"
     :style="isFullscreen ? 'height:100vh;' : ''"
     virtual-scroll
     v-model:fullscreen="isFullscreen"
@@ -16,7 +15,6 @@
     <template v-slot:top="props">
       <div
         class="row"
-        :style="'background-color:' + backgroundColor + ';color: ' + color"
         style="
           width: calc(100% + 32px);
           margin-left: -16px;
@@ -28,10 +26,7 @@
           padding-top: 12px;
           padding-bottom: 12px;
         "
-        data-cy="movement-banner"
       >
-        <div class="col-4 q-table__title">{{ movement.name }}</div>
-
         <q-space />
 
         <q-btn
@@ -153,18 +148,18 @@
             "
             :styles="styleOptions"
             @add="
-              ($event) => {
+              $event => {
                 if (permissions.settings_complex_edit) onAdd($event, props.row);
               }
             "
             @change="
-              ($event) => {
+              $event => {
                 if (permissions.settings_complex_edit)
                   onChange($event, props.row);
               }
             "
             @remove="
-              ($event) => {
+              $event => {
                 if (permissions.settings_complex_edit)
                   onRemove($event, props.row);
               }
@@ -189,7 +184,7 @@ const columns = [
     label: 'Label',
     field: 'label',
     sortable: true,
-    help: 'The name of this statistic',
+    help: 'The name of this statistic'
   },
   {
     name: 'desc',
@@ -197,22 +192,22 @@ const columns = [
     label: 'Description',
     field: 'desc',
     sortable: true,
-    help: 'A short description of what this statistic is',
+    help: 'A short description of what this statistic is'
   },
   {
     name: 'target',
     align: 'left',
     label: 'Target',
     field: 'target',
-    help: 'A goal for the number of members that match this statistic',
+    help: 'A goal for the number of members that match this statistic'
   },
   {
     name: 'condition',
     label: 'Conditions',
     field: 'condition',
     align: 'left',
-    help: 'Define a theoretical member of the Movement to search for',
-  },
+    help: 'Define a theoretical member of the Movement to search for'
+  }
 ];
 export default {
   // name: 'ComponentName',
@@ -226,7 +221,7 @@ export default {
         sortBy: 'label',
         descending: false,
         page: 1,
-        rowsPerPage: 10,
+        rowsPerPage: 10
       },
       defaultCond: {
         class: 'expression',
@@ -235,17 +230,17 @@ export default {
             class: 'condition',
             included: true,
             id: '',
-            gen: 'member',
+            gen: 'member'
           },
           {
             class: 'condition',
             included: true,
             id: '',
-            gen: 'member',
-          },
+            gen: 'member'
+          }
         ],
-        operator: 'OR',
-      },
+        operator: 'OR'
+      }
     };
   },
   created() {
@@ -257,7 +252,7 @@ export default {
           sortBy: 'label',
           descending: false,
           page: 1,
-          rowsPerPage: 10,
+          rowsPerPage: 10
         };
   },
   methods: {
@@ -270,7 +265,7 @@ export default {
             class: 'condition',
             included: true,
             id: '',
-            gen: 'member',
+            gen: 'member'
           });
         } else if ($event.type === 'expression') {
           $event.el.elements.push({
@@ -280,16 +275,16 @@ export default {
                 class: 'condition',
                 included: true,
                 id: '',
-                gen: 'member',
+                gen: 'member'
               },
               {
                 class: 'condition',
                 included: true,
                 id: '',
-                gen: 'member',
-              },
+                gen: 'member'
+              }
             ],
-            operator: 'OR',
+            operator: 'OR'
           });
         }
       }
@@ -349,7 +344,7 @@ export default {
         'condition',
         prop.condition
       );
-    },
+    }
   },
   computed: {
     ...mapGetters('movement', [
@@ -357,7 +352,7 @@ export default {
       'modOpts',
       'complexOpts',
       'backgroundColor',
-      'color',
+      'color'
     ]),
     ...mapState('movement', ['movement', 'roles', 'mods', 'permissions']),
     styleOptions() {
@@ -366,12 +361,12 @@ export default {
       return opts.sort((a, b) => {
         return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
       });
-    },
+    }
   },
   watch: {
     pagination() {
       LocalStorage.set('movementEditPagination', this.pagination);
-    },
+    }
   },
   components: {
     'mt-style-menu': defineAsyncComponent(() =>
@@ -379,8 +374,8 @@ export default {
     ),
     'mt-complex-node': defineAsyncComponent(() =>
       import('./mt-complex-node.vue')
-    ),
-  },
+    )
+  }
 };
 </script>
 

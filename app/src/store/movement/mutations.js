@@ -8,21 +8,40 @@ import {
   doc,
   updateDoc,
 } from "@firebase/firestore";
+import { startAfter } from "firebase/firestore";
 
 export function cleanMovement (state, payload) {
   state.movement = { id: '', role: { id: '', label: ''}}
   state.members = {}
+  state.memberList = {}
   state.parents = {}
-  state.shares = {}
-  state.requests = {}
-  state.invites = {}
+  state.users = {}
+  state.userRequests = {}
+  state.userInvites = {}
+  state.userRoleDefinitions = {}
+  state.roles = {}
+  state.mods = {}
+  state.complexStats = {}
+  state.calcStats = {}
   state.stats = {}
-  state.snapshots = {}
-  state.trends = {}
-  state.roleSortCriteria = []
-  state.trees = {}
   state.statTotals = {}
   state.statImports = []
+  state.snapshots = {}
+  state.trees = {}
+  state.currentTree = {}
+  state.roleSortCriteria = []
+  state.filterVisible = false
+  state.filterQuery = ''
+  state.sortKey = ''
+  state.permissions = {}
+
+  //Clean up listeners
+  if(state.listeners.length > 0) {
+  for(let listener of state.listeners) {
+    listener()
+  }
+  state.listeners = []
+}
 }
 export function cleanStyles (state, payload) {
   state.roles = {}
@@ -32,6 +51,10 @@ export function cleanStyles (state, payload) {
 }
 export function cleanSnapshots (state, payload) {
   state.snapshots = {}
+}
+
+export function addListener (state, listener) {
+  state.listeners.push(listener)
 }
 export function toggleFilterVisible (state, payload) {
   state.filterVisible = !state.filterVisible
@@ -73,8 +96,8 @@ export function addStyle (state, payload) {
   }
   if (payload.type === 'role') {
     state.roles[payload.id] = payload
-    if (!state.roleSortCriteria.find(x => x.id === payload.id)) {
-      state.roleSortCriteria.push(payload)
+    if (!state.roleSortCriteria.find(x => x === payload.id)) {
+      state.roleSortCriteria.push(payload.id)
     }
   } else if (payload.type === 'mod') {
     state.mods[payload.id] = payload
@@ -200,16 +223,28 @@ export function addRoleSortCriteria (state, payload) {
 }
 
 export function setRoleSortCriteria (state, payload) {
-  state.roleSortCriteria = payload
+  state.roleSortCriteria = []
+  for(let ii in payload) {
+    state.roleSortCriteria.push(payload[ii].id ? payload[ii].id : payload[ii])
+  }
 }
 export function setCurrentTree (state, payload) {
   state.currentTree = payload
+  if(state.currentTreeListeners.length > 0) {
+  for(let listener of state.currentTreeListeners) {
+    listener()
+  }
+  state.currentTreeListeners = []
+}
 }
 export function setSortKey(state,payload) {
   state.sortKey = payload
 }
-
+export function addCurrentTreeListener (state, listener) {
+  state.currentTreeListeners.push(listener)
+}
 export function setTree (state, payload) {
+  
   if(!payload.id) { console.error('Missing tree id'); return false}
   let tree = {
     id: payload.id,

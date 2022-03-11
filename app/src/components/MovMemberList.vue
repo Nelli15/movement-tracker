@@ -28,6 +28,7 @@
           v-if="props.row.display"
           @contextmenu.stop
           data-cy="member"
+          :data-cy-id="props.row.id"
         >
           <q-tooltip
             v-if="props.row.notes > ''"
@@ -65,15 +66,15 @@
               :class="{ 'text-underline': props.row.display.underline }"
               :style="
                 'background-color:' +
-                props.row.display.background +
-                '; color:' +
-                props.row.display.color +
-                '; ' +
-                'font-size:' +
-                size +
-                '%;border-color:' +
-                props.row.display.outline +
-                ' !important;'
+                  props.row.display.background +
+                  '; color:' +
+                  props.row.display.color +
+                  '; ' +
+                  'font-size:' +
+                  size +
+                  '%;border-color:' +
+                  props.row.display.outline +
+                  ' !important;'
               "
               style="border-width: 3px; border-style: solid; z-index: 10"
               :rounded="props.row.display.round"
@@ -153,70 +154,70 @@ export default {
             name: 'preview',
             align: 'left',
             label: 'Preview',
-            field: 'preview',
+            field: 'preview'
           },
           {
             name: 'name',
             align: 'left',
             label: 'Name',
             field: 'name',
-            sortable: true,
+            sortable: true
           },
           {
             name: 'role',
             align: 'center',
             label: 'Role',
             field: 'role',
-            sortable: true,
+            sortable: true
           },
           {
             name: 'mods',
             align: 'center',
             label: 'Modifiers',
             field: 'mods',
-            sortable: true,
+            sortable: true
           },
           {
             name: 'actions',
             label: 'Actions',
             field: 'actions',
-            align: 'right',
-          },
+            align: 'right'
+          }
         ]
       : [
           {
             name: 'preview',
             align: 'left',
             label: 'Preview',
-            field: 'preview',
+            field: 'preview'
           },
           {
             name: 'name',
             align: 'left',
             label: 'Name',
             field: 'name',
-            sortable: true,
+            sortable: true
           },
           {
             name: 'role',
             align: 'center',
             label: 'Role',
             field: 'role',
-            sortable: true,
+            sortable: true
           },
           {
             name: 'mods',
             align: 'center',
             label: 'Modifiers',
             field: 'mods',
-            sortable: true,
-          },
+            sortable: true
+          }
         ];
     const pagination = ref({
       sortBy: 'name',
       descending: false,
       page: 1,
-      rowsPerPage: 10,
+      rowsPerPage: 10
       // rowsNumber: xx if getting data from a server
     });
 
@@ -226,7 +227,7 @@ export default {
           sortBy: 'name',
           descending: false,
           page: 1,
-          rowsPerPage: 10,
+          rowsPerPage: 10
           // rowsNumber: xx if getting data from a server
         };
     watch(pagination, (newVal, oldVal) => {
@@ -241,7 +242,7 @@ export default {
 
     function membersFilterMethod(rows, terms, cols, cellValue) {
       const lowerTerms = terms ? terms.toLowerCase() : '';
-      return rows.filter((row) => {
+      return rows.filter(row => {
         if (row.id === 'root') return false;
         else if (row.name.toLowerCase().indexOf(lowerTerms) !== -1) {
           return true;
@@ -253,7 +254,7 @@ export default {
         ) {
           return true;
         } else if (
-          row.mods.some((style) =>
+          row.mods.some(style =>
             props.mods[style]
               ? props.mods[style].label.toLowerCase().indexOf(lowerTerms) !== -1
               : false
@@ -267,7 +268,7 @@ export default {
     watch(membersSelected, () => {
       membersSelectedFiltered.value = Array.from(
         membersSelected.value,
-        (x) => x.id
+        x => x.id
       );
     });
 
@@ -275,9 +276,7 @@ export default {
     // SELECT * FROM ... WHERE...LIMIT...
     function fetchFromServer(startRow, count, filter, sortBy, descending) {
       const data = filter
-        ? Object.values(props.members).filter((row) =>
-            row.name.includes(filter)
-          )
+        ? Object.values(props.members).filter(row => row.name.includes(filter))
         : Object.values(props.members).slice();
       // handle sortBy
       if (sortBy) {
@@ -300,7 +299,7 @@ export default {
         return Object.values(props.members).length;
       }
       let count = 0;
-      Object.values(props.members).forEach((treat) => {
+      Object.values(props.members).forEach(treat => {
         if (treat.name.includes(filter)) {
           ++count;
         }
@@ -350,11 +349,11 @@ export default {
       if (route.params.snapId) {
         store.dispatch('snapshot/fetchMembers', {
           movId: route.params.movId,
-          snapId: route.params.snapId,
+          snapId: route.params.snapId
         });
       } else {
         store.dispatch('movement/fetchMembers', {
-          movId: route.params.movId,
+          movId: route.params.movId
         });
       }
     });
@@ -363,7 +362,7 @@ export default {
       // get initial data from server (1st page)
       onRequest({
         pagination: pagination.value,
-        filter: filter.value,
+        filter: filter.value
       });
     });
 
@@ -381,7 +380,7 @@ export default {
       setFilterQuery,
       loading,
       isFullscreen,
-      onRequest,
+      onRequest
     };
   },
   components: {
@@ -394,8 +393,8 @@ export default {
     ),
     'mt-batch': defineAsyncComponent(() =>
       import('./../components/mt-batch.vue')
-    ),
-  },
+    )
+  }
 };
 </script>
 

@@ -23,6 +23,10 @@ module.exports = ({ environment }) => (data, context) => {
   const newRoleRef = newMovementRef
     .collection("/users")
     .doc(`${context.auth.uid}`);
+    const userRoleDefsRef = movementRef
+    .collection("/user-role-definitions")
+  const newUserRoleDefsRef = newMovementRef
+    .collection("/user-role-definitions")
   const stylesRef = movementRef.collection("/styles");
   const newStylesRef = newMovementRef.collection("/styles");
   const treesRef = movementRef.collection("/trees");
@@ -37,6 +41,7 @@ module.exports = ({ environment }) => (data, context) => {
         console.error(new Error("Movement to be Copied doesn't exist"));
         return false;
       }
+      const userRoleDefsSnap = await transaction.get(userRoleDefsRef);
       const stylesSnap = await transaction.get(stylesRef);
       const treesSnap = await transaction.get(treesRef);
       const movementData = movementDoc.data();
@@ -51,6 +56,12 @@ module.exports = ({ environment }) => (data, context) => {
         role: 'owner',
         uid: context.auth.uid
       });
+      for (var doc in userRoleDefsSnap.docs) {
+        transaction.set(
+          newUserRoleDefsRef.doc(userRoleDefsSnap.docs[doc].id),
+          userRoleDefsSnap.docs[doc].data()
+        );
+      }
       for (var doc in stylesSnap.docs) {
         transaction.set(
           newStylesRef.doc(stylesSnap.docs[doc].id),

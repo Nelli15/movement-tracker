@@ -8,7 +8,6 @@
       v-model:pagination="pagination"
       style="padding: -16px"
       wrap-cells
-      class="my-sticky-header-table"
       :style="isFullscreen ? 'height:100vh;' : ''"
       virtual-scroll
       v-model:fullscreen="isFullscreen"
@@ -17,7 +16,6 @@
       <template v-slot:top="props">
         <div
           class="row"
-          :style="'background-color:' + backgroundColor + ';color: ' + color"
           style="
             width: calc(100% + 32px);
             margin-left: -16px;
@@ -31,8 +29,6 @@
           "
           data-cy="movement-banner"
         >
-          <div class="col-4 q-table__title">{{ movement.name }}</div>
-
           <q-space />
 
           <q-btn
@@ -151,18 +147,18 @@
               "
               :styles="styleOptions"
               @add="
-                ($event) => {
+                $event => {
                   if (permissions.settings_calc_edit) onAdd($event, props.row);
                 }
               "
               @change="
-                ($event) => {
+                $event => {
                   if (permissions.settings_calc_edit)
                     onChange($event, props.row);
                 }
               "
               @remove="
-                ($event) => {
+                $event => {
                   if (permissions.settings_calc_edit)
                     onRemove($event, props.row);
                 }
@@ -205,7 +201,7 @@ const columns = [
     label: 'Label',
     field: 'label',
     sortable: true,
-    help: 'The name of this statistic',
+    help: 'The name of this statistic'
   },
   {
     name: 'desc',
@@ -213,14 +209,14 @@ const columns = [
     label: 'Description',
     field: 'desc',
     sortable: true,
-    help: 'A short description of what this statistic is',
+    help: 'A short description of what this statistic is'
   },
   {
     name: 'target',
     align: 'left',
     label: 'Target',
     field: 'target',
-    help: 'A goal for the value of this statistic',
+    help: 'A goal for the value of this statistic'
   },
   // {
   //   name: "current",
@@ -234,15 +230,15 @@ const columns = [
     label: 'Conditions',
     field: 'condition',
     align: 'left',
-    help: 'Define a theoretical member of the Movement to search for',
+    help: 'Define a theoretical member of the Movement to search for'
   },
   {
     name: 'unit',
     label: 'Unit',
     field: 'unit',
     align: 'center',
-    help: 'The unit for this statistic',
-  },
+    help: 'The unit for this statistic'
+  }
 ];
 export default {
   // name: 'ComponentName',
@@ -255,22 +251,22 @@ export default {
         sortBy: 'label',
         descending: false,
         page: 1,
-        rowsPerPage: 10,
+        rowsPerPage: 10
       },
       defaultCond: {
         class: 'expression',
         elements: [
           {
             class: 'condition',
-            id: '',
+            id: ''
           },
           {
             class: 'condition',
-            id: '',
-          },
+            id: ''
+          }
         ],
-        operator: 'plus',
-      },
+        operator: 'plus'
+      }
     };
   },
   created() {
@@ -283,7 +279,7 @@ export default {
           sortBy: 'label',
           descending: false,
           page: 1,
-          rowsPerPage: 10,
+          rowsPerPage: 10
         };
   },
   methods: {
@@ -297,16 +293,16 @@ export default {
             color: 'positive',
             textColor: 'white',
             icon: 'cloud_download',
-            message: 'Style Updated',
+            message: 'Style Updated'
           });
         })
-        .catch((err) => {
+        .catch(err => {
           this.setStyleLoading({ id, val: false });
           Notify.create({
             color: 'negative',
             textColor: 'white',
             icon: 'error',
-            message: 'Oops, Something went wrong!',
+            message: 'Oops, Something went wrong!'
           });
         });
     },
@@ -316,12 +312,12 @@ export default {
         if ($event.type === 'condition') {
           $event.el.elements.push({
             class: 'condition',
-            id: '',
+            id: ''
           });
         } else if ($event.type === 'number') {
           $event.el.elements.push({
             class: 'number',
-            value: 0,
+            value: 0
           });
         } else if ($event.type === 'expression') {
           $event.el.elements.push({
@@ -329,14 +325,14 @@ export default {
             elements: [
               {
                 class: 'condition',
-                id: '',
+                id: ''
               },
               {
                 class: 'condition',
-                id: '',
-              },
+                id: ''
+              }
             ],
-            operator: 'plus',
+            operator: 'plus'
           });
         }
       }
@@ -431,7 +427,7 @@ export default {
       }
 
       return 0;
-    },
+    }
   },
   computed: {
     ...mapGetters('movement', [
@@ -440,7 +436,7 @@ export default {
       'complexOpts',
       'calcOpts',
       'backgroundColor',
-      'color',
+      'color'
     ]),
     ...mapState('movement', [
       'movement',
@@ -448,7 +444,7 @@ export default {
       'mods',
       'totalStats',
       'permissions',
-      'stats',
+      'stats'
     ]),
     styleOptions() {
       // console.log(
@@ -463,12 +459,12 @@ export default {
         .concat({
           label: 'Tree Total',
           id: 'treeTotal',
-          desc: 'The number of Members on the tree',
+          desc: 'The number of Members on the tree'
         })
         .sort((a, b) => {
           return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
         });
-    },
+    }
     // currentVals() {
     //   let stats = {};
     //   for (var ii in this.calcOpts) {
@@ -491,7 +487,7 @@ export default {
   watch: {
     pagination() {
       LocalStorage.set('movementEditPagination', this.pagination);
-    },
+    }
   },
   components: {
     'mt-style-menu': defineAsyncComponent(() =>
@@ -499,8 +495,8 @@ export default {
     ),
     'mt-calculated-node': defineAsyncComponent(() =>
       import('./mt-calculated-node.vue')
-    ),
-  },
+    )
+  }
 };
 </script>
 

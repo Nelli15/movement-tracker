@@ -23,14 +23,14 @@ module.exports = ({ environment }) => async user => {
     .then(invitesSnap => {
       invitesSnap.forEach(inviteSnap => {
         // console.log(inviteSnap.data())
-        // add the user to the projects they have been invited too
+        // add the user to the movements they have been invited too
         batch.set(
-          inviteSnap.ref.parent.parent.collection('/app-users').doc(`/${user.uid}`),
+          inviteSnap.ref.parent.parent.collection('/users').doc(`/${user.uid}`),
           {
             uid: user.uid,
             email: userSanitized.email,
             name: userSanitized.name,
-            role: inviteSnap.data().role,
+            role: inviteSnap.data().role.id ? inviteSnap.data().role.id : inviteSnap.data().role,
             photoURL: userSanitized.photoURL
           }
         )

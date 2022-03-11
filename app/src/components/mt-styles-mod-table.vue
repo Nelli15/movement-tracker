@@ -6,7 +6,6 @@
     row-key="name"
     v-model:pagination="pagination"
     wrap-cells
-    class="my-sticky-header-table"
     :style="isFullscreen ? 'height:100vh;' : ''"
     virtual-scroll
     v-model:fullscreen="isFullscreen"
@@ -15,7 +14,6 @@
     <template v-slot:top="props">
       <div
         class="row"
-        :style="'background-color:' + backgroundColor + ';color: ' + color"
         style="
           width: calc(100% + 32px);
           margin-left: -16px;
@@ -27,10 +25,7 @@
           padding-top: 12px;
           padding-bottom: 12px;
         "
-        data-cy="movement-banner"
       >
-        <div class="col-4 q-table__title">{{ movement.name }}</div>
-
         <q-space />
 
         <q-btn
@@ -123,25 +118,25 @@
                   ? 'round'
                   : ''
                 : '') +
-              (props.row.style.underlineOverride && props.row.style.underline
-                ? ' text-underline'
-                : '')
+                (props.row.style.underlineOverride && props.row.style.underline
+                  ? ' text-underline'
+                  : '')
             "
             :style="
               'background-color:' +
-              (props.row.style.backgroundOverride
-                ? props.row.style.background
-                : 'white') +
-              '; color:' +
-              (props.row.style.colorOverride
-                ? props.row.style.color
-                : 'black') +
-              '; ' +
-              'border-color:' +
-              (props.row.style.outlineOverride
-                ? props.row.style.outline
-                : 'white') +
-              ' !important;'
+                (props.row.style.backgroundOverride
+                  ? props.row.style.background
+                  : 'white') +
+                '; color:' +
+                (props.row.style.colorOverride
+                  ? props.row.style.color
+                  : 'black') +
+                '; ' +
+                'border-color:' +
+                (props.row.style.outlineOverride
+                  ? props.row.style.outline
+                  : 'white') +
+                ' !important;'
             "
             style="border-width: 3px; border-style: solid; width: 100%"
             dense
@@ -204,7 +199,7 @@
             :style="'background-color:' + props.row.style.background + ';'"
             :disable="
               !props.row.style.backgroundOverride ||
-              !permissions.settings_mods_edit
+                !permissions.settings_mods_edit
             "
             aria-label="Change Background Color"
             data-cy="color-display"
@@ -296,7 +291,7 @@
             aria-label="Change Outline Colour"
             :disable="
               !props.row.style.outlineOverride ||
-              !permissions.settings_mods_edit
+                !permissions.settings_mods_edit
             "
             data-cy="color-display"
           >
@@ -341,8 +336,8 @@
           <q-btn
             :style="
               'text-decoration: ' +
-              (props.row.style.underline ? 'underline' : 'none') +
-              ';'
+                (props.row.style.underline ? 'underline' : 'none') +
+                ';'
             "
             label="U"
             @click="
@@ -354,7 +349,7 @@
             "
             :disable="
               !props.row.style.underlineOverride ||
-              !permissions.settings_mods_edit
+                !permissions.settings_mods_edit
             "
             aria-label="Underline"
             data-cy="underline-display"
@@ -399,9 +394,9 @@
             :disable="
               (props.row.style.shapeOverride === 'undefined' &&
                 !props.row.style.roundOverride) ||
-              (props.row.style.shapeOverride !== 'undefined' &&
-                !props.row.style.shapeOverride) ||
-              !permissions.settings_mods_edit
+                (props.row.style.shapeOverride !== 'undefined' &&
+                  !props.row.style.shapeOverride) ||
+                !permissions.settings_mods_edit
             "
           >
             <template v-slot:label>
@@ -409,7 +404,7 @@
                 data-cy="selected-shape"
                 :class="
                   props.row.style.shape +
-                  (Dark.isActive ? ' shape-dark' : ' shape-light')
+                    (Dark.isActive ? ' shape-dark' : ' shape-light')
                 "
                 v-if="props.row.style.shape"
               />
@@ -582,7 +577,7 @@ const columns = [
     label: 'Label',
     field: 'label',
     sortable: true,
-    help: 'The name of this Modifier',
+    help: 'The name of this Modifier'
   },
   {
     name: 'desc',
@@ -590,49 +585,49 @@ const columns = [
     label: 'Description',
     field: 'desc',
     sortable: true,
-    help: 'A short description of what this Modifier is',
+    help: 'A short description of what this Modifier is'
   },
   {
     name: 'target',
     align: 'left',
     label: 'Target',
     field: 'target',
-    help: 'A goal for the number of members with this Modifier',
+    help: 'A goal for the number of members with this Modifier'
   },
   {
     name: 'background',
     label: 'Background',
     field: 'background',
     align: 'center',
-    help: 'The background color members with this Modifier will have',
+    help: 'The background color members with this Modifier will have'
   },
   {
     name: 'color',
     label: 'Text',
     field: 'color',
     align: 'center',
-    help: 'The text color members with this Modifier will have',
+    help: 'The text color members with this Modifier will have'
   },
   {
     name: 'outline',
     label: 'Outline',
     field: 'outline',
     align: 'center',
-    help: 'The border color members with this Modifier will have',
+    help: 'The border color members with this Modifier will have'
   },
   {
     name: 'underline',
     label: 'Underline?',
     field: 'underline',
     align: 'center',
-    help: 'The underline color members with this Modifier will have',
+    help: 'The underline color members with this Modifier will have'
   },
   {
     name: 'rounded',
     label: 'Shape',
     field: 'rounded',
     align: 'center',
-    help: 'The shape members with this Modifier will have',
+    help: 'The shape members with this Modifier will have'
   },
   {
     name: 'icon',
@@ -640,15 +635,15 @@ const columns = [
     field: 'icon',
     align: 'center',
     sortable: true,
-    help: 'The icon assigned to this Modifier',
+    help: 'The icon assigned to this Modifier'
   },
   {
     name: 'prepend',
     label: 'Icon Location',
     field: 'prepend',
     align: 'center',
-    help: 'Place the icon before or after the members name',
-  },
+    help: 'Place the icon before or after the members name'
+  }
 ];
 export default {
   // name: 'ComponentName',
@@ -662,8 +657,8 @@ export default {
         sortBy: 'label',
         descending: false,
         page: 1,
-        rowsPerPage: 10,
-      },
+        rowsPerPage: 10
+      }
     };
   },
   created() {
@@ -676,7 +671,7 @@ export default {
           sortBy: 'label',
           descending: false,
           page: 1,
-          rowsPerPage: 10,
+          rowsPerPage: 10
         };
   },
   methods: {
@@ -704,34 +699,34 @@ export default {
             color: 'positive',
             textColor: 'white',
             icon: 'cloud_download',
-            message: 'Style Updated',
+            message: 'Style Updated'
           });
         })
-        .catch((err) => {
+        .catch(err => {
           this.setStyleLoading({ id, val: false });
           Notify.create({
             color: 'negative',
             textColor: 'white',
             icon: 'error',
-            message: 'Oops, Something went wrong!',
+            message: 'Oops, Something went wrong!'
           });
         });
-    },
+    }
   },
   computed: {
     ...mapGetters('movement', ['modOpts', 'backgroundColor', 'color']),
-    ...mapState('movement', ['movement', 'permissions', 'stats']),
+    ...mapState('movement', ['movement', 'permissions', 'stats'])
   },
   watch: {
     pagination() {
       LocalStorage.set('movementEditPagination', this.pagination);
-    },
+    }
   },
   components: {
     'mt-style-menu': defineAsyncComponent(() =>
       import('./../components/actions/mt-style-menu.vue')
-    ),
-  },
+    )
+  }
 };
 </script>
 

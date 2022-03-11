@@ -56,7 +56,7 @@
       :style="{
         top: 'calc(40vh - 115px)',
         left: 0,
-        right: 0,
+        right: 0
       }"
     >
       <q-card style="margin-left: auto; margin-right: auto">
@@ -77,7 +77,7 @@
                   label="Email"
                   lazy-rules
                   type="email"
-                  :rules="[(val) => !!val || 'Email is missing', isValidEmail]"
+                  :rules="[val => !!val || 'Email is missing', isValidEmail]"
                   :color="q.dark.isActive ? 'white' : ''"
                   class="full-width"
                   data-cy="signin-email"
@@ -88,7 +88,7 @@
                   label="Password"
                   lazy-rules
                   :type="!pwdVisible ? 'password' : 'text'"
-                  :rules="[(val) => !!val || 'Password is missing']"
+                  :rules="[val => !!val || 'Password is missing']"
                   :color="q.dark.isActive ? 'white' : ''"
                   class="full-width"
                   data-cy="signin-password"
@@ -149,7 +149,7 @@
               </div>
             </q-form>
           </q-card-section>
-          <q-inner-loading :showing="loginPending">
+          <q-inner-loading :showing="loginPending" data-cy="login-pending">
             <q-spinner-gears color="primary" size="3em" />
           </q-inner-loading>
         </q-card>
@@ -171,7 +171,7 @@ import {
   browserPopupRedirectResolver,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  fetchSignInMethodsForEmail,
+  fetchSignInMethodsForEmail
 } from '@firebase/auth';
 import { useQuasar } from 'quasar';
 import { useRoute, useRouter } from 'vue-router';
@@ -190,7 +190,7 @@ export default {
     const loginPending = ref(true);
     const login = reactive({
       email: '',
-      password: '',
+      password: ''
     });
 
     onMounted(async () => {
@@ -200,7 +200,7 @@ export default {
         1300: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-1300.jpg?alt=media&token=cbfeb245-f556-4c3d-8a75-1208181887cb',
         1400: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-1400.jpg?alt=media&token=a215e34f-fb12-44d2-82e9-4dcd19a640a6',
         2000: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-2000.jpg?alt=media&token=2fb1726f-ff41-4e2b-a2eb-b17d49c6dfe0',
-        4000: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-4000.jpg?alt=media&token=2dfbe02e-89c2-4b16-9004-55beb3403acf',
+        4000: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Flogin-background-4000.jpg?alt=media&token=2dfbe02e-89c2-4b16-9004-55beb3403acf'
       };
       const loginObjectPortrait = {
         400: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-400_x_599.jpg?alt=media&token=0d17a3bb-7bf3-47f1-952f-fe104a8715d5',
@@ -208,7 +208,7 @@ export default {
         1300: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-1300_x_1949.jpg?alt=media&token=8da7f760-ab06-40d3-91ae-eedf9ceb2e0a',
         1400: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-1400_x_2099.jpg?alt=media&token=7042b883-b804-4e89-ad01-038fdc68c125',
         2000: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-2000_x_2999.jpg?alt=media&token=1ab11297-dade-443f-807b-264aa4519ac5',
-        4000: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-4000_x_5999.jpg?alt=media&token=fa277515-17a9-4a91-898b-40f341b4759c',
+        4000: 'https://firebasestorage.googleapis.com/v0/b/tracking-tree.appspot.com/o/public%2Fbackgrounds%2Fportrait%201%2Ftyler-nix-KLLcTHE20bI-unsplash-4000_x_5999.jpg?alt=media&token=fa277515-17a9-4a91-898b-40f341b4759c'
       };
       if (loginObject) {
         login_image_url.value = loginObject['400'];
@@ -242,21 +242,23 @@ export default {
     function signInWithEmail() {
       // console.log("logging in with email and password");
       return fetchSignInMethodsForEmail(getAuth(), login.email).then(
-        (methods) => {
-          if (methods.length > 0) {
+        methods => {
+          console.log(methods);
+          if (methods.includes('password')) {
             return signInWithEmailAndPassword(
               getAuth(),
               login.email,
               login.password
             )
-              .then((userCredential) => {
+              .then(userCredential => {
                 // Signed in
                 const user = userCredential.user;
                 // console.log("Signed in with email: ", userCredential);
                 // ...
+                console.log('ready to redirect');
                 router.push('/home');
               })
-              .catch((error) => {
+              .catch(error => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.error(error);
@@ -279,10 +281,10 @@ export default {
         provider = new GithubAuthProvider();
       }
       signInWithRedirect(getAuth(), provider, browserPopupRedirectResolver)
-        .then((res) => {
+        .then(res => {
           // console.log("returned");
         })
-        .catch(function (error) {
+        .catch(function(error) {
           // An error happened.
           if (error.code === 'auth/account-exists-with-different-credential') {
             // Step 2.
@@ -292,7 +294,7 @@ export default {
             // The provider account's email address.
             var email = error.email;
             // Get sign-in methods for this email.
-            fetchSignInMethodsForEmail(getAuth(), email).then(function (
+            fetchSignInMethodsForEmail(getAuth(), email).then(function(
               methods
             ) {
               // Step 3.
@@ -304,11 +306,11 @@ export default {
                 var password = promptUserForPassword(); // TODO: implement promptUserForPassword.
                 auth
                   .signInWithEmailAndPassword(login.email, login.password)
-                  .then(function (result) {
+                  .then(function(result) {
                     // Step 4a.
                     return result.user.linkWithCredential(pendingCred);
                   })
-                  .then(function () {
+                  .then(function() {
                     // Google account successfully linked to the existing Firebase user.
                     goToApp();
                   });
@@ -324,7 +326,7 @@ export default {
               // Sign in to provider. Note: browsers usually block popup triggered asynchronously,
               // so in real scenario you should ask the user to click on a "continue" button
               // that will trigger the signInWithRedirect.
-              signInWithRedirect(provider).then(function (result) {
+              signInWithRedirect(provider).then(function(result) {
                 // Remember that the user may have signed in with an account that has a different email
                 // address than the first one. This can happen as Firebase doesn't control the provider's
                 // sign in flow and the user is free to login using whichever account they own.
@@ -333,7 +335,7 @@ export default {
                 // As we have access to the pending credential, we can directly call the link method.
                 result.user
                   .linkAndRetrieveDataWithCredential(pendingCred)
-                  .then(function (usercred) {
+                  .then(function(usercred) {
                     // Google account successfully linked to the existing Firebase user.
                     goToApp();
                   });
@@ -363,7 +365,7 @@ export default {
 
       if (process.env.DEV)
         logEvent(getAnalytics(), 'login', {
-          method: authResult.providerId,
+          method: authResult.providerId
         });
       if (
         route.query.signInSuccessUrl &&
@@ -375,8 +377,7 @@ export default {
       }
     }
     function isValidEmail(val) {
-      const emailPattern =
-        /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
+      const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
       return emailPattern.test(val) || 'Invalid email';
     }
     async function createAccountEmail() {
@@ -390,7 +391,7 @@ export default {
           // Signed in
           router.push('/home');
         })
-        .catch((error) => {
+        .catch(error => {
           const errorCode = error.code;
           const errorMessage = error.message;
           console.error(error);
@@ -402,7 +403,7 @@ export default {
             // The provider account's email address.
             var email = error.email;
             // Get sign-in methods for this email.
-            fetchSignInMethodsForEmail(getAuth(), email).then(function (
+            fetchSignInMethodsForEmail(getAuth(), email).then(function(
               methods
             ) {
               // console.log(methods);
@@ -414,11 +415,11 @@ export default {
                 // In real scenario, you should handle this asynchronously.
                 var password = promptUserForPassword(); // TODO: implement promptUserForPassword.
                 signInWithEmailAndPassword(login.email, login.password)
-                  .then(function (result) {
+                  .then(function(result) {
                     // Step 4a.
                     return result.user.linkWithCredential(pendingCred);
                   })
-                  .then(function () {
+                  .then(function() {
                     // Google account successfully linked to the existing Firebase user.
                     goToApp();
                   });
@@ -434,7 +435,7 @@ export default {
               // Sign in to provider. Note: browsers usually block popup triggered asynchronously,
               // so in real scenario you should ask the user to click on a "continue" button
               // that will trigger the signInWithRedirect.
-              signInWithRedirect(provider).then(function (result) {
+              signInWithRedirect(provider).then(function(result) {
                 // Remember that the user may have signed in with an account that has a different email
                 // address than the first one. This can happen as Firebase doesn't control the provider's
                 // sign in flow and the user is free to login using whichever account they own.
@@ -443,7 +444,7 @@ export default {
                 // As we have access to the pending credential, we can directly call the link method.
                 result.user
                   .linkAndRetrieveDataWithCredential(pendingCred)
-                  .then(function (usercred) {
+                  .then(function(usercred) {
                     // Google account successfully linked to the existing Firebase user.
                     goToApp();
                   });
@@ -464,9 +465,9 @@ export default {
       signInWithEmail,
       signInWithProvider,
       isValidEmail,
-      loginPending,
+      loginPending
     };
-  },
+  }
 };
 </script>
 

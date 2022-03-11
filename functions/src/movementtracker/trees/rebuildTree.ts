@@ -1,25 +1,13 @@
 import { FirebaseError } from "firebase-admin";
 import { ChangeJson, EventContext } from "firebase-functions/v1";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-
-interface MemberWithParentData {
-  id?: string;
-  name?: string;
-  parent?: string;
-  shadow?: [];
-  type?: "normal" | "shadow" | "subtree";
-}
-interface SubTreeParentData {
-  subTreeParent: string;
-}
-
-interface MembersObj {
-  [index: string]: MemberWithParentData | SubTreeParentData;
-}
-
-interface MembersByParent {
-  [index: string]: Partial<MemberWithParentData>[];
-}
+import {
+  MembersByParent,
+  MembersObj,
+  MemberWithParentData,
+  SubTreeParentData,
+  TreeNode,
+} from "../../models/members";
 
 function isMember(
   member: MemberWithParentData | SubTreeParentData
@@ -74,7 +62,7 @@ module.exports =
       parentKey: string | undefined
     ) => {
       // Takes a list of members and a parentKey and returns a tree of children for that parent along with all subsequent grand children
-      let children: MemberWithParentData[] = [],
+      let children: TreeNode[] = [],
         ii: string;
       if (parentKey && members[parentKey]) {
         // Loop through each of the children for the current parent
@@ -214,6 +202,46 @@ module.exports =
       }
     }
 
+    //  TODO: Filter for only members with a parent that exists in the tree, delete others
+    //loop through members
+    let treeMembers: MembersObj = parentsDoc.data();
+    let membersToDelete: { [index: string]: FieldValue } = {};
+    for (let memberId in treeMembers) {
+      const member = treeMembers[memberId];
+      let currentMember = treeMembers[memberId];
+      if (isMember(member)) {
+        // find the members that don't reach root
+        while (true) {
+          let parentId = isMember(currentMember)
+            ? currentMember.parent
+            : undefined;
+          if (!parentId) {
+            membersToDelete[memberId] = FieldValue.delete();
+            break;
+          }
+          if (parentId === "root") break;
+          currentMember = treeMembers[parentId];
+          if (!currentMember) {
+            membersToDelete[memberId] = FieldValue.delete();
+            break;
+          }
+        }
+      }
+    }
+    // save the changes
+    if (Object.keys(membersToDelete).length > 0) {
+      db.collection(environment.schema.movements)
+        .doc(
+          context.params.movId
+            ? context.params.movId
+            : context.params.movementId
+        )
+        .collection("trees")
+        .doc(context.params.treeId)
+        .collection("components")
+        .doc("parents")
+        .update(membersToDelete);
+    }
     // update the tree
     await treeStructRef.set({
       tree: await buildTree(groupMembersByParent(parentsDoc.data()), "root"),

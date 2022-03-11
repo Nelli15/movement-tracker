@@ -20,8 +20,10 @@ module.exports = (/*on, config*/) => {
 
 import * as admin from 'firebase-admin'
 const cypressFirebasePlugin = require("cypress-firebase").plugin;
+const { initPlugin } = require("cypress-plugin-snapshots/plugin");
 
 module.exports = (on, config) => {
+  initPlugin(on, config)
   const extendedConfig = cypressFirebasePlugin(on, config, admin);
 
   // Add other plugins/tasks such as code coverage here
@@ -33,4 +35,5 @@ module.exports = (on, config) => {
 
   return extendedConfig;
 };
+
 

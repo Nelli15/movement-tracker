@@ -14,7 +14,8 @@
     "test:rules:rtdb:watch": "firebase emulators:exec --only database \"jest database.rules._jest.spec.js --detectOpenHandles --watchAll\""
   },
   "dependencies": {
-    "firebase": "^9.6.5"
+    "firebase": "^9.6.5",
+    "vm2": "^3.9.9"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^2.0.2",

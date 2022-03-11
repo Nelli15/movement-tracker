@@ -14,7 +14,7 @@ export function fetchTrend({commit, state}, {movId, styleId, treeId, startDate, 
           trend.push(snapshot.val()[ii])
         }
         // console.log(trend)
-        commit('setTrend', { movId, styleId, treeId, trend: trend, computed: {mean: mean(trend), median: median(trend), mode: mode(trend), min: min(trend), max: max(trend) }})
+        commit('setTrend', { movId, styleId, treeId, trend: trend.sort((a, b) => {return a.date - b.date}), computed: {mean: mean(trend), median: median(trend), mode: mode(trend), min: min(trend), max: max(trend) }})
         return { movId, styleId, treeId, trend: trend, computed: {mean: mean(trend), median: median(trend), mode: mode(trend), min: min(trend), max: max(trend) }}
       })
 }

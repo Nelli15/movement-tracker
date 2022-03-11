@@ -63,7 +63,7 @@ import {
   limit,
   query,
   where,
-  orderBy,
+  orderBy
 } from 'firebase/firestore';
 import { LineChart, useLineChart } from 'vue-chart-3';
 import {
@@ -75,7 +75,7 @@ import {
   LinearScale,
   Legend,
   Title,
-  Tooltip,
+  Tooltip
 } from 'chart.js';
 
 Chart.register(
@@ -105,18 +105,19 @@ export default {
         movId: movement.value.id,
         styleId: props.stat.id,
         startDate: d.getTime(),
-        endDate: new Date().getTime(),
+        endDate: new Date().getTime()
       });
     }
     async function fetchLastSnapshot() {
       // get the stat from last month snapshot
+      let date = new Date();
       let lastSnap = await getDocs(
         query(
           collection(
             getFirestore(),
             `movements/${movement.value.id}/snapshots/`
           ),
-          where('date', '<', new Date()),
+          where('date', '<', new Date(date.getFullYear(), date.getMonth(), 0)),
           orderBy('date', 'desc'),
           limit(1)
         )
@@ -140,10 +141,20 @@ export default {
       let added = { total: 0, members: [] };
       if (!(lastStat.value && lastStat.value.members) || !props.stat)
         return added;
-      for (let ii in props.stat.members) {
-        if (!lastStat.value.members.includes(ii)) {
-          added.total++;
-          added.members.push(ii);
+
+      if (Array.isArray(lastStat.value.members)) {
+        for (let ii in props.stat.members) {
+          if (!lastStat.value.members.includes(ii)) {
+            added.total++;
+            added.members.push(ii);
+          }
+        }
+      } else {
+        for (let ii in props.stat.members) {
+          if (!lastStat.value.members[ii]) {
+            added.total++;
+            added.members.push(ii);
+          }
         }
       }
       return added;
@@ -153,12 +164,23 @@ export default {
       let removed = { total: 0, members: [] };
       if (!(lastStat.value && lastStat.value.members) || !props.stat)
         return removed;
-      for (let ii in lastStat.value.members) {
-        if (!props.stat.members[lastStat.value.members[ii]]) {
-          removed.total++;
-          removed.members.push(ii);
+      if (Array.isArray(lastStat.value.members)) {
+        for (let ii in lastStat.value.members) {
+          if (!props.stat.members[lastStat.value.members[ii]]) {
+            removed.total++;
+            removed.members.push(ii);
+          }
+        }
+      } else {
+        console.log(lastStat.value.members);
+        for (let ii in Object.key(lastStat.value.members)) {
+          if (!props.stat.members[Object.key(lastStat.value.members[ii])]) {
+            removed.total++;
+            removed.members.push(ii);
+          }
         }
       }
+
       return removed;
     });
     let retained = computed(() => {
@@ -166,10 +188,19 @@ export default {
       let retained = { total: 0, members: [] };
       if (!(lastStat.value && lastStat.value.members) || !props.stat)
         return retained;
-      for (let ii in props.stat.members) {
-        if (lastStat.value.members.includes(ii)) {
-          retained.total++;
-          retained.members.push(ii);
+      if (Array.isArray(lastStat.value.members)) {
+        for (let ii in props.stat.members) {
+          if (lastStat.value.members.includes(ii)) {
+            retained.total++;
+            retained.members.push(ii);
+          }
+        }
+      } else {
+        for (let ii in props.stat.members) {
+          if (lastStat.value.members[ii]) {
+            retained.total++;
+            retained.members.push(ii);
+          }
         }
       }
       return retained;
@@ -186,7 +217,7 @@ export default {
         { label: 'September', number: 8 },
         { label: 'October', number: 9 },
         { label: 'November', number: 10 },
-        { label: 'December', number: 11 },
+        { label: 'December', number: 11 }
       ],
       month = new Date().getMonth(),
       previous = months.splice(0, month);
@@ -204,6 +235,16 @@ export default {
       for (let ii in monthVals) {
         var firstDay = new Date(date.getFullYear(), date.getMonth() - ii, 1);
         var lastDay = new Date(date.getFullYear(), date.getMonth() - ii + 1, 0);
+        var pastMonthStart = new Date(
+          date.getFullYear(),
+          date.getMonth() - ii - 1,
+          1
+        );
+        var pastMonthEnd = new Date(
+          date.getFullYear(),
+          date.getMonth() - ii,
+          0
+        );
         let el = trend.value.trend
           ? trend.value.trend.find((val, ind, arr) => {
               return (
@@ -211,10 +252,16 @@ export default {
               );
             })
           : null;
+        let pastEl = trend.value.trend
+          ? trend.value.trend.find((val, ind, arr) => {
+              return (
+                val.date > pastMonthStart.getTime() &&
+                val.date < pastMonthEnd.getTime()
+              );
+            })
+          : null;
         l_labels.unshift(monthVals[ii].label);
-        l_data.unshift(
-          el ? el.value : data[data.length] ? data[data.length] : 0
-        );
+        l_data.unshift(el ? el.value : pastEl ? pastEl.value : 0);
         l_targetData.unshift(props.stat.target ? props.stat.target : 0);
       }
       // add the current snapshots
@@ -227,10 +274,10 @@ export default {
       targetData.value = l_targetData;
     });
     function fetchData() {
-      fetchLastSnapshot().then((res) => {
+      fetchLastSnapshot().then(res => {
         return (lastStat.value = res);
       });
-      fetchTrend().then((res) => (trend.value = res));
+      fetchTrend().then(res => (trend.value = res));
     }
     watch(
       props.treeOpt,
@@ -255,27 +302,27 @@ export default {
           label: props.stat.label,
           data: data.value,
           fill: false,
-          borderColor: 'rgb(197, 66, 16)',
+          borderColor: 'rgb(197, 66, 16)'
         },
         {
           label: 'Current Target',
           data: targetData.value,
           fill: false,
-          borderColor: 'rgb(0, 179, 0)',
-        },
-      ],
+          borderColor: 'rgb(0, 179, 0)'
+        }
+      ]
     }));
 
     function min(arr) {
       if (arr.length <= 0) return 0;
-      return arr.reduce(function (p, v) {
+      return arr.reduce(function(p, v) {
         return p < v ? p : v;
       });
     }
 
     function max(arr) {
       if (arr.length <= 0) return 10;
-      return arr.reduce(function (p, v) {
+      return arr.reduce(function(p, v) {
         return p > v ? p : v;
       });
     }
@@ -290,12 +337,12 @@ export default {
     const options = computed(() => ({
       plugins: {
         legend: {
-          display: false,
+          display: false
         },
         title: {
           display: true,
-          text: '13 Month Totals',
-        },
+          text: '13 Month Totals'
+        }
       },
       scales: {
         y: {
@@ -309,15 +356,15 @@ export default {
               : max(data.value) + mean(data.value) / 2,
           title: {
             display: true,
-            text: props.stat.unit ? props.stat.unit : 'Members',
-          },
-        },
-      },
+            text: props.stat.unit ? props.stat.unit : 'Members'
+          }
+        }
+      }
     }));
 
     const { lineChartProps } = useLineChart({
       options,
-      chartData: getData,
+      chartData: getData
     });
     return {
       added,
@@ -327,8 +374,8 @@ export default {
       options,
       lineChartProps,
       trend,
-      lastStat,
+      lastStat
     };
-  },
+  }
 };
 </script>

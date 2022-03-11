@@ -593,7 +593,7 @@ describe('access page tests', () => {
       })
     });
     
-    it.skip('should manage trends', () => {
+    it('should manage trends', () => {
       cy.get('[data-cy="selected-role"]', {timeout: 15000}).parent().parent().click()
       cy.get(".q-menu").within(()=>{
         
