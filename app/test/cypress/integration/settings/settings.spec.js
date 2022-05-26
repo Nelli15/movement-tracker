@@ -21,7 +21,46 @@ describe('settings page tests', () => {
   it('should be on the settings page', () => {
     cy.testRoute('/movement/').testRoute('/settings')
   })
+  it('should have a movement title', () => {
+      cy.dataCy('"mov-banner"').should('contain', 'Untitled Movement')
+    });
+  describe('Movement Settings', () => {
+    it('should change the movement name', () => {
+        cy.dataCy('"rename-movement"').contains('Movement Name').within(()=>{
+          cy.get('input').clear().type('Renamed Movement')
+      })
+      cy.checkNotify('Movement Updated')
+      cy.dataCy('mov-banner').should('contain', 'Renamed Movement')
+    });
 
+    it('should change the movement color', () => {
+        cy.get('[data-cy="change-mov-color"]', { timeout: 4000}).within(()=>{
+          cy.get('input').clear().type('#000')
+          // cy.get('button').click()
+      })
+      cy.checkNotify('Movement Updated')
+      cy.dataCy('mov-banner').should('have.css', 'background-color').and('eq', 'rgba(0, 0, 0, 0)')
+    });
+
+    it('should change the default tree', () => {
+      cy.get('[data-cy="defaultTree"]', { timeout: 4000}).within(()=>{
+         cy.contains('Default Tree').parent().within(() => {
+          cy.get('.q-select').click()
+        })
+      })
+      cy.get('.q-menu').within(() => {
+          cy.contains('Main Tree').click()
+        })
+      cy.checkNotify('Movement Updated')
+      cy.navToMovPage('members')
+      cy.testRoute('/movement').testRoute('/members')
+      cy.dataCy('"member-tabs"').within(() => {
+        cy.contains('Trees').parent().contains('Main Tree')
+      })
+    });
+  });
+
+  describe('Style Settings', () => {
   describe('roles', () => {
     it('should have a tab to open it', () => {
       cy.dataCy('"role-tab"').should('exist').and('contain', 'Roles').click().then(() => {
@@ -39,17 +78,14 @@ describe('settings page tests', () => {
 
     it('should have a create role in the context menu', () => {
       cy.dataCy('"role-tab"').click()
-      cy.dataCy('"settings-page"').rightclick()
+      cy.dataCy('"settings-page"').rightclick('bottom')
      cy.get('.q-menu').last().within(() => {
         cy.dataCy('"create-role"').click()
       })
       cy.get('[data-cy="role-item"]', {timeout:40000}).should('have.length', 2)
     });
 
-    it('should have a movement title', () => {
-      cy.dataCy('"role-tab"').click()
-      cy.dataCy('"movement-banner"').should('contain', 'Untitled Movement')
-    });
+   
 
     it('should display a role', () => {
       cy.dataCy('"role-tab"').click()
@@ -192,16 +228,11 @@ describe('settings page tests', () => {
 
     it('should have a create mod in the context menu', () => {
      cy.dataCy('"mod-tab"').click()
-      cy.dataCy('"settings-page"').rightclick()
+      cy.dataCy('"settings-page"').rightclick('bottom')
      cy.get('.q-menu').last().within(() => {
         cy.dataCy('"create-mod"').click()
       })
       cy.get('[data-cy="mod-item"]', {timeout:40000}).should('have.length', 2)
-    });
-
-    it('should have a movement title', () => {
-      cy.dataCy('"mod-tab"').click()
-      cy.dataCy('"movement-banner"').should('contain', 'Untitled Movement')
     });
 
     it('should display a modifier', () => {
@@ -406,16 +437,11 @@ describe('settings page tests', () => {
 
     it('should have a create complex in the context menu', () => {
      cy.dataCy('"complex-tab"').click()
-      cy.dataCy('"settings-page"').rightclick()
+      cy.dataCy('"settings-page"').rightclick('bottom')
      cy.get('.q-menu').last().within(() => {
         cy.dataCy('"create-complex"').click()
       })
       cy.get('[data-cy="complex-item"]', {timeout:40000}).should('have.length', 2)
-    });
-
-    it('should have a movement title', () => {
-      cy.dataCy('"complex-tab"').click()
-      cy.dataCy('"movement-banner"').should('contain', 'Untitled Movement')
     });
 
     it('should display a complex stat', () => {
@@ -485,16 +511,11 @@ describe('settings page tests', () => {
 
     it('should have a create calculated in the context menu', () => {
      cy.dataCy('"calc-tab"').click()
-      cy.dataCy('"settings-page"').rightclick()
+      cy.dataCy('"settings-page"').rightclick('bottom')
      cy.get('.q-menu').last().within(() => {
         cy.dataCy('"create-calc"').click()
       })
       cy.get('[data-cy="calc-item"]', {timeout:40000}).should('have.length', 2)
-    });
-
-    it('should have a movement title', () => {
-      cy.dataCy('"calc-tab"').click()
-      cy.dataCy('"movement-banner"').should('contain', 'Untitled Movement')
     });
 
     it('should display a calculated', () => {
@@ -557,4 +578,5 @@ describe('settings page tests', () => {
       })
     });
   });
+});
 })

@@ -5,7 +5,7 @@
       style="height: calc(100vh - 50px); max-width: 100%"
       class="print-hide"
     >
-      <div style="padding-left: 56px; min-height: 90vh">
+      <div style="min-height: 90vh">
         <MovBanner />
         <q-tabs
           v-model="tab"
@@ -46,19 +46,19 @@ export default {
   preFetch({ store, currentRoute }) {
     store.dispatch('events/fetchEvents', {
       movId: currentRoute.params.movId,
-      startDate: new Date(),
+      startDate: new Date()
     });
   },
   data() {
     return {
-      tab: 'calendar',
+      tab: 'calendar'
     };
   },
-  created: function () {
+  created: function() {
     setCurrentScreen(getAnalytics(), 'Events View');
     if (process.env.DEV)
       logEvent(getAnalytics(), 'Events_View', {
-        movement_name: this.movement.name,
+        movement_name: this.movement.name
       });
   },
   computed: {
@@ -71,9 +71,9 @@ export default {
       'complexStats',
       'calcStats',
       'roleOpts',
-      'modOpts',
+      'modOpts'
     ]),
-    ...mapState('movement', ['movement', 'roles', 'mods']),
+    ...mapState('movement', ['movement', 'roles', 'mods'])
   },
   components: {
     EventsToolbox: defineAsyncComponent(() =>
@@ -92,7 +92,7 @@ export default {
     ),
     EventsList: defineAsyncComponent(() =>
       import('./../components/EventsList.vue')
-    ),
-  },
+    )
+  }
 };
 </script>

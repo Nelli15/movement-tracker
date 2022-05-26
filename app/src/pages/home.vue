@@ -4,7 +4,6 @@
       <q-drawer
         show-if-above
         mini
-        overlay
         :width="200"
         :breakpoint="1"
         bordered
@@ -68,7 +67,7 @@
           </q-item>
         </q-list>
       </q-drawer>
-      <q-page padding style="padding-left: 66px">
+      <q-page padding>
         <q-table
           :grid="grid"
           :hide-header="grid"
@@ -129,10 +128,10 @@
 </template>
 
 <script>
-import { defineAsyncComponent, computed, ref } from "vue";
-import { create } from "../scripts/movement.js";
-import { useQuasar } from "quasar";
-import { useStore } from "vuex";
+import { defineAsyncComponent, computed, ref } from 'vue';
+import { create } from '../scripts/movement.js';
+import { useQuasar } from 'quasar';
+import { useStore } from 'vuex';
 
 export default {
   setup() {
@@ -141,99 +140,97 @@ export default {
     const toolCabinet = ref(true);
     const columns = ref([
       {
-        name: "name",
-        align: "left",
-        label: "Name",
-        field: "name",
-        sortable: true,
+        name: 'name',
+        align: 'left',
+        label: 'Name',
+        field: 'name',
+        sortable: true
       },
       {
-        name: "role",
-        align: "left",
-        label: "Permission",
-        field: "role",
-        sortable: true,
+        name: 'role',
+        align: 'left',
+        label: 'Permission',
+        field: 'role',
+        sortable: true
       },
       {
-        name: "last_modified",
-        label: "Last Modified",
-        field: "last_modified",
-        sortable: true,
-      },
+        name: 'last_modified',
+        label: 'Last Modified',
+        field: 'last_modified',
+        sortable: true
+      }
     ]);
 
     const showHidden = ref(false);
     const isFullscreen = ref(false);
     const pagination = computed({
       get() {
-        return q.localStorage.has("homePagination")
-          ? q.localStorage.getItem("homePagination")
+        return q.localStorage.has('homePagination')
+          ? q.localStorage.getItem('homePagination')
           : {
-              sortBy: "name",
+              sortBy: 'name',
               descending: false,
               page: 1,
-              rowsPerPage: 0,
+              rowsPerPage: 0
               // rowsNumber: xx if getting data from a server
             };
       },
       set(value) {
-        q.localStorage.set("homePagination", value);
-      },
+        q.localStorage.set('homePagination', value);
+      }
     });
     const grid = ref(
-      q.localStorage.has("homeMode") ? q.localStorage.getItem("homeMode") : true
+      q.localStorage.has('homeMode') ? q.localStorage.getItem('homeMode') : true
     );
-    const movementsFilter = ref("");
+    const movementsFilter = ref('');
     const movements = computed(() => store.state.movements.movements);
 
     function createMovement() {
       // console.log("createMovement");
-      store.commit("movements/addMovement", {
-        id: "tempMovement",
-        name: "Untitled Movement",
-        style: { backgroundColor: "#ffffff" },
-        last_modified: new Date(),
+      store.commit('movements/addMovement', {
+        id: 'tempMovement',
+        name: 'Untitled Movement',
+        style: { backgroundColor: '#ffffff' },
+        last_modified: new Date()
       });
       create()
-        .then((res) => {
-          store.commit("movements/removeMovement", "tempMovement");
+        .then(res => {
+          store.commit('movements/removeMovement', 'tempMovement');
           if (res) {
             q.notify({
-              color: "positive",
-              textColor: "white",
-              icon: "cloud_download",
-              message: "Movement Created",
+              color: 'positive',
+              textColor: 'white',
+              icon: 'cloud_download',
+              message: 'Movement Created'
             });
             return true;
           } else {
             q.notify({
-              color: "negative",
-              textColor: "white",
-              icon: "error",
-              message: "Oops, Something went wrong!",
+              color: 'negative',
+              textColor: 'white',
+              icon: 'error',
+              message: 'Oops, Something went wrong!'
             });
             return false;
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.error(err);
-          store.commit("movements/removeMovement", "tempMovement");
+          store.commit('movements/removeMovement', 'tempMovement');
           q.notify({
-            color: "negative",
-            textColor: "white",
-            icon: "error",
-            message: "Oops, Something went wrong!",
+            color: 'negative',
+            textColor: 'white',
+            icon: 'error',
+            message: 'Oops, Something went wrong!'
           });
           return false;
         });
     }
     const movementsArray = computed(() => {
       if (!movements.value) return [];
-      var tempArray = Object.keys(movements.value).map(
-        (i) => movements.value[i]
-      );
+      var tempArray = Object.keys(movements.value).map(i => movements.value[i]);
       if (!showHidden.value) {
-        tempArray = tempArray.filter((val) => {
+        tempArray = tempArray.filter(val => {
           return !val.hide;
         });
       }
@@ -251,17 +248,17 @@ export default {
       columns,
       showHidden,
       createMovement,
-      toolCabinet,
+      toolCabinet
     };
   },
   components: {
-    "mt-movement-card": defineAsyncComponent(() =>
-      import("../components/mt-movement-card.vue")
+    'mt-movement-card': defineAsyncComponent(() =>
+      import('../components/mt-movement-card.vue')
     ),
-    "mt-movement-row": defineAsyncComponent(() =>
-      import("../components/mt-movement-row.vue")
-    ),
-  },
+    'mt-movement-row': defineAsyncComponent(() =>
+      import('../components/mt-movement-row.vue')
+    )
+  }
 };
 </script>
 

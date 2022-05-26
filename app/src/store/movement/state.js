@@ -4,28 +4,36 @@ export default function () {
       id: '',
       role: { id: '', label: ''}
     },
+    //members related
     members: {},
     memberList: {},
+    // user related
     users: {},
     userRequests: {},
     userInvites: {},
-    roles: {},
     userRoleDefinitions: {},
+    //styles
+    roles: {},
     mods: {},
     complexStats: {},
     calcStats: {},
     stats: {},
+    statTotals: {},
+    statImports: [],
+    //snapshots
     snapshots: {},
+    // tree related
+    trees: {},
+    currentTree: {},
     roleSortCriteria: [],
     filterVisible: false,
     filterQuery: '',
-    trees: {},
-    statTotals: {},
-    statImports: [],
-    currentTree: {},
     sortKey: '',
+    //current user permissions
     permissions: {
       
-    }
+    },
+    listeners: [],
+    currentTreeListeners:[]
   }
 }

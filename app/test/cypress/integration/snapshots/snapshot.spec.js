@@ -106,7 +106,9 @@ describe('snapshot page tests', () => {
           cy.contains('Create').click()
         })
         cy.checkNotify('Member Created')
+        
       }
+      cy.get('.q-tree__node', {timeout: 90000}).should('have.length', 5)
       cy.dataCy('"update-snap-movement"').click()
       // .contains('add-a-photo')
       cy.dataCy('"submit"').click()

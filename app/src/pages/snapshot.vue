@@ -9,7 +9,7 @@
     <mt-filter-sort :tab="tab" storeModule="snapshot" />
     <q-scroll-area style="height: calc(100vh - 50px); max-width: 100%">
       <div
-        style="padding-left: 56px; min-height: calc(100vh - 50px)"
+        style="min-height: calc(100vh - 50px)"
         :style="`background: ${q.dark.isActive ? '#263238' : 'white'};`"
         data-cy="background"
       >
@@ -114,19 +114,19 @@ export default {
   preFetch({ store, redirect, currentRoute }) {
     store.dispatch('snapshot/fetchSnapshot', {
       movId: currentRoute.params.movId,
-      snapId: currentRoute.params.snapId,
+      snapId: currentRoute.params.snapId
     });
     store.dispatch('snapshot/fetchTrees', {
       movId: currentRoute.params.movId,
-      snapId: currentRoute.params.snapId,
+      snapId: currentRoute.params.snapId
     });
     store.dispatch('snapshot/fetchMemberList', {
       movId: currentRoute.params.movId,
-      snapId: currentRoute.params.snapId,
+      snapId: currentRoute.params.snapId
     });
     store.dispatch('snapshot/fetchStyles', {
       movId: currentRoute.params.movId,
-      snapId: currentRoute.params.snapId,
+      snapId: currentRoute.params.snapId
     });
   },
   setup() {
@@ -177,7 +177,7 @@ export default {
           fetchTreeData({
             movId: route.params.movId,
             snapId: route.params.snapId,
-            treeId: visibleTree.value.id,
+            treeId: visibleTree.value.id
           });
         }
       },
@@ -188,7 +188,7 @@ export default {
       (newVal, oldVal) => {
         if (
           (visibleTree.value === null && newVal > [] && newVal !== oldVal) ||
-          !newVal.find((val) => {
+          !newVal.find(val => {
             return visibleTree.value.id === val.id;
           })
         ) {
@@ -196,14 +196,14 @@ export default {
         } else if (
           newVal > [] &&
           visibleTree.value.label !==
-            newVal.find((val) => {
+            newVal.find(val => {
               return visibleTree.value.id === val.id;
             }).label
         ) {
           visibleTree.value = {
-            ...newVal.find((val) => {
+            ...newVal.find(val => {
               return visibleTree.value.id === val.id;
-            }),
+            })
           };
         }
       },
@@ -229,7 +229,7 @@ export default {
       treeSorted,
       trees,
       members,
-      snapshot,
+      snapshot
     };
   },
   components: {
@@ -256,8 +256,8 @@ export default {
     ),
     'mt-filter-sort': defineAsyncComponent(() =>
       import('./../components/mt-filter-sort.vue')
-    ),
-  },
+    )
+  }
 };
 </script>
 
@@ -271,7 +271,7 @@ export default {
       @treeSorted="sortedTree = $event"
     />
     <q-scroll-area style="height: calc(100vh - 50px); max-width: 100%">
-      <div style="padding-left: 56px; min-height: 90vh">
+      <div style="min-height: 90vh">
         <div
           :style="
             'min-height:150px;max-height:315px;background-color:white;position:relative;background-color:' +

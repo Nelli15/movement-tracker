@@ -1,4 +1,4 @@
-import { getFirestore } from "firebase-admin/firestore";
+import { getDatabase } from 'firebase-admin/database'
 module.exports = ({ environment }) => async (change, context) => {
   let db = getDatabase();
   let movId = context.params.movId;

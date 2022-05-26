@@ -2,7 +2,6 @@
   <q-drawer
     show-if-above
     mini
-    overlay
     :width="200"
     :breakpoint="1"
     bordered
@@ -29,7 +28,7 @@
             >Show Options</q-tooltip
           >
         </q-item>
-        <q-item
+        <!-- <q-item
           clickable
           v-ripple
           @click="graphsDrawer = !graphsDrawer"
@@ -238,7 +237,7 @@
               </q-item>
             </q-list>
           </q-menu>
-        </q-item>
+        </q-item> -->
       </q-list>
     </q-scroll-area>
   </q-drawer>
@@ -258,7 +257,7 @@ export default {
       graphsDrawer: false,
       statsOptionsFiltered: [],
 
-      memberOptionsFiltered: [],
+      memberOptionsFiltered: []
     };
   },
   created() {},
@@ -266,7 +265,7 @@ export default {
     ...mapGetters('auth', ['user']),
     ...mapState('movement', ['permissions', 'movement', 'snapshots']),
     selectedStats() {
-      return [...this.graphDetails.selectedStats].filter((val) =>
+      return [...this.graphDetails.selectedStats].filter(val =>
         this.graphDetails.type === 'Individual Member'
           ? val.id !== 'treeTotal' && val.id !== 'noParentTotal'
           : true
@@ -279,14 +278,14 @@ export default {
         members = { ...members, ...snap.members };
       }
       return toArray(members)
-        .map((val) => {
+        .map(val => {
           return { label: val.name, id: val.id };
         })
-        .filter((val) => val.id !== 'root')
+        .filter(val => val.id !== 'root')
         .sort((a, b) => {
           return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
         });
-    },
+    }
   },
   methods: {
     membersFilterFn(val, update) {
@@ -306,7 +305,7 @@ export default {
       update(() => {
         const needle = val.toLowerCase();
         this.memberOptionsFiltered = this.memberOptions
-          .filter((v) => v.label.toLowerCase().indexOf(needle) > -1)
+          .filter(v => v.label.toLowerCase().indexOf(needle) > -1)
           .sort((a, b) => {
             return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
           });
@@ -314,20 +313,20 @@ export default {
     },
     saveGraph() {
       saveGraph(this.$route.params.movId, this.user.uid, this.graphDetails)
-        .then((res) => {
+        .then(res => {
           return q.notify({
             color: 'positive',
             textColor: 'white',
             icon: 'cloud_download',
-            message: 'Graph Saved',
+            message: 'Graph Saved'
           });
         })
-        .catch((err) => {
+        .catch(err => {
           q.notify({
             color: 'negative',
             textColor: 'white',
             icon: 'error',
-            message: 'Oops, Something went wrong!',
+            message: 'Oops, Something went wrong!'
           });
         });
     },
@@ -342,7 +341,7 @@ export default {
           // here you have access to "ref" which
           // is the Vue reference of the QSelect
         });
-        this.statsOptionsFiltered.filter((val) =>
+        this.statsOptionsFiltered.filter(val =>
           this.graphDetails.type === 'Individual Member'
             ? val.id !== 'treeTotal'
             : true
@@ -353,17 +352,17 @@ export default {
       update(() => {
         const needle = val.toLowerCase();
         this.statsOptionsFiltered = this.statsOptions
-          .filter((v) => v.label.toLowerCase().indexOf(needle) > -1)
+          .filter(v => v.label.toLowerCase().indexOf(needle) > -1)
           .sort((a, b) => {
             return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
           });
-        this.statsOptionsFiltered.filter((val) =>
+        this.statsOptionsFiltered.filter(val =>
           this.graphDetails.type === 'Individual Member'
             ? val.id !== 'treeTotal'
             : true
         );
       });
-    },
+    }
   },
   watch: {
     optionsDrawer() {
@@ -371,8 +370,8 @@ export default {
     },
     graphsDrawer() {
       this.$emit('toggleGraphsDrawer', this.graphsDrawer);
-    },
-  },
+    }
+  }
 };
 function toArray(object) {
   if (!object) {
@@ -381,6 +380,6 @@ function toArray(object) {
   if (Object.keys(object).length <= 0) {
     return [];
   }
-  return Object.keys(object).map((i) => object[i]);
+  return Object.keys(object).map(i => object[i]);
 }
 </script>

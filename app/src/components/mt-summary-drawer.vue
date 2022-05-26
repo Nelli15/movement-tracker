@@ -22,24 +22,41 @@
       <!-- <div class="row"> -->
       <q-scroll-area style="height: 99%; max-width: 100%">
         <q-list dense>
-          <q-item v-if="totalStats" dense>
-            <q-item-section v-if="totalStats.treeTotal">
-              <q-chip
-                square
-                class="shadow-2"
-                style="background-color: white; color: black"
-              >
-                Total
-                <q-badge floating>{{ totalStats.treeTotal.total }}</q-badge>
-                <q-tooltip
-                  class="bg-accent text-grey-10"
-                  anchor="center right"
-                  self="center left"
-                  >Number of members on the Tree</q-tooltip
+          <StatSummary
+            :showIf="highlight.current === 'treeTotal'"
+            :stat="{ ...totalStats.treeTotal, id: 'treeTotal' }"
+            :treeOpt="treeOpt"
+          >
+            <q-item v-if="totalStats" dense>
+              <q-item-section v-if="totalStats.treeTotal">
+                <q-btn
+                  class="shadow-2 q-pl-sm q-mt-sm"
+                  :class="{
+                    highlight: highlight.current === 'treeTotal',
+                  }"
+                  style="
+                    background-color: white;
+                    color: black;
+                    border-style: solid;
+                    width: 100%;
+                  "
+                  no-caps
+                  dense
+                  align="left"
+                  @click="fetchHighlighted('treeTotal')"
                 >
-              </q-chip>
-            </q-item-section>
-          </q-item>
+                  Total
+                  <q-badge floating>{{ totalStats.treeTotal.total }}</q-badge>
+                  <q-tooltip
+                    class="bg-accent text-grey-10"
+                    anchor="center right"
+                    self="center left"
+                    >Number of members on the Tree</q-tooltip
+                  >
+                </q-btn>
+              </q-item-section>
+            </q-item>
+          </StatSummary>
           <q-item-label
             header
             v-if="movement && rolesFiltered.length > 0"
@@ -49,90 +66,102 @@
           >
             Roles
           </q-item-label>
-          <q-item v-for="stat in rolesFiltered" :key="stat.name">
-            <q-item-section v-if="stat.label">
-              <div>
-                <q-btn
-                  v-if="stat.style"
-                  class="shadow-2 q-pl-sm"
-                  :class="{
-                    'text-underline': stat.style.underline,
-                    [getShape(stat.style.shape, stat.style.round)]: true,
-                    highlight: highlight.current === stat.id,
-                  }"
-                  :style="
-                    'background-color:' +
-                    stat.style.background +
-                    '; color:' +
-                    stat.style.color +
-                    '; border-color:' +
-                    stat.style.outline +
-                    ' !important;' +
-                    (stat.style.background !== stat.style.outline
-                      ? 'border-width:3px !important;'
-                      : 'border-width:0px !important;')
-                  "
-                  style="border-style: solid; width: 100%"
-                  no-caps
-                  dense
-                  align="left"
-                  @click="fetchHighlighted(stat.id)"
-                >
-                  {{ stat.label }}
-                  <q-badge floating>{{ stat.total ? stat.total : 0 }}</q-badge>
-                  <q-tooltip
-                    class="bg-accent text-grey-10"
-                    anchor="center right"
-                    self="center left"
-                    v-if="stat.desc > ''"
-                    >{{ stat.desc }}</q-tooltip
-                  >
-                </q-btn>
-                <q-btn
-                  v-else-if="roles[stat.id]"
-                  class="shadow-2 q-pl-sm"
-                  :class="
-                    roles[stat.id].style.underline
-                      ? 'text-underline '
-                      : '' +
-                        getShape(
-                          roles[stat.id].style.shape,
-                          roles[stat.id].style.round
-                        )
-                  "
-                  :style="
-                    'background-color:' +
-                    roles[stat.id].style.background +
-                    ';color:' +
-                    roles[stat.id].style.color +
-                    ';border-color:' +
-                    roles[stat.id].style.outline +
-                    ' !important;' +
-                    (roles[stat.id].style.outline !==
-                    roles[stat.id].style.background
-                      ? 'border-width:3px;'
-                      : 'border-width:0px;')
-                  "
-                  style="border-style: solid; width: 100%"
-                  no-caps
-                  dense
-                  align="left"
-                  @click="fetchHighlighted(stat.id)"
-                >
-                  {{ stat.label }}
-                  <q-badge floating>{{ stat.total ? stat.total : 0 }}</q-badge>
-                  <q-tooltip
-                    class="bg-accent text-grey-10"
-                    anchor="center right"
-                    self="center left"
-                    v-if="stat.desc > ''"
-                    >{{ stat.desc }}</q-tooltip
-                  >
-                </q-btn>
-              </div>
-              <!-- </q-btn> -->
-            </q-item-section>
-          </q-item>
+          <div v-for="stat in rolesFiltered" :key="stat.name">
+            <StatSummary
+              :showIf="highlight.current === stat.id"
+              :stat="stat"
+              :treeOpt="treeOpt"
+            >
+              <q-item>
+                <q-item-section v-if="stat.label">
+                  <div>
+                    <q-btn
+                      v-if="stat.style"
+                      class="shadow-2 q-pl-sm"
+                      :class="{
+                        'text-underline': stat.style.underline,
+                        [getShape(stat.style.shape, stat.style.round)]: true,
+                        highlight: highlight.current === stat.id,
+                      }"
+                      :style="
+                        'background-color:' +
+                        stat.style.background +
+                        '; color:' +
+                        stat.style.color +
+                        '; border-color:' +
+                        stat.style.outline +
+                        ' !important;' +
+                        (stat.style.background !== stat.style.outline
+                          ? 'border-width:3px !important;'
+                          : 'border-width:0px !important;')
+                      "
+                      style="border-style: solid; width: 100%"
+                      no-caps
+                      dense
+                      align="left"
+                      @click="fetchHighlighted(stat.id)"
+                    >
+                      {{ stat.label }}
+                      <q-badge floating>{{
+                        stat.total ? stat.total : 0
+                      }}</q-badge>
+                      <q-tooltip
+                        class="bg-accent text-grey-10"
+                        anchor="center right"
+                        self="center left"
+                        v-if="stat.desc > ''"
+                        >{{ stat.desc }}</q-tooltip
+                      >
+                    </q-btn>
+                    <q-btn
+                      v-else-if="roles[stat.id]"
+                      class="shadow-2 q-pl-sm"
+                      :class="
+                        roles[stat.id].style.underline
+                          ? 'text-underline '
+                          : '' +
+                            getShape(
+                              roles[stat.id].style.shape,
+                              roles[stat.id].style.round
+                            )
+                      "
+                      :style="
+                        'background-color:' +
+                        roles[stat.id].style.background +
+                        ';color:' +
+                        roles[stat.id].style.color +
+                        ';border-color:' +
+                        roles[stat.id].style.outline +
+                        ' !important;' +
+                        (roles[stat.id].style.outline !==
+                        roles[stat.id].style.background
+                          ? 'border-width:3px;'
+                          : 'border-width:0px;')
+                      "
+                      style="border-style: solid; width: 100%"
+                      no-caps
+                      dense
+                      align="left"
+                      @click="fetchHighlighted(stat.id)"
+                    >
+                      {{ stat.label }}
+                      <q-badge floating>{{
+                        stat.total ? stat.total : 0
+                      }}</q-badge>
+                      <q-tooltip
+                        class="bg-accent text-grey-10"
+                        anchor="center right"
+                        self="center left"
+                        v-if="stat.desc > ''"
+                        >{{ stat.desc }}</q-tooltip
+                      >
+                    </q-btn>
+                  </div>
+                  <!-- </q-btn> -->
+                </q-item-section>
+              </q-item>
+            </StatSummary>
+          </div>
           <q-item-label
             header
             v-if="movement && overrideFiltered.length > 0"
@@ -141,79 +170,95 @@
             style="padding-bottom: 0px"
             >Modifiers</q-item-label
           >
-          <q-item v-for="stat in overrideFiltered" :key="stat.name">
-            <q-item-section v-if="stat.label">
-              <!-- {{stat.id}} {{ mods[stat.id] }} -->
-              <div :class="highlight.current === stat.id ? ' highlight' : ''">
-                <q-btn
-                  v-if="stat.style"
-                  class="shadow-2 q-pl-sm"
-                  :class="
-                    getModShape(stat.style) +
-                    (stat.style.underlineOverride && stat.style.underline
-                      ? ' text-underline'
-                      : '')
-                  "
-                  :style="
-                    getModColors(stat.style) +
-                    (stat.style.outlineOverride &&
-                    stat.style.outline !== stat.style.background
-                      ? 'border-width:3px;'
-                      : 'border-width:0px;')
-                  "
-                  style="width: 100%; border-style: solid"
-                  no-caps
-                  dense
-                  align="left"
-                  @click="fetchHighlighted(stat.id)"
-                >
-                  {{ stat.label }}
-                  <q-badge floating>{{ stat.total ? stat.total : 0 }}</q-badge>
-                  <q-tooltip
-                    class="bg-accent text-grey-10"
-                    anchor="center right"
-                    self="center left"
-                    v-if="stat.desc > ''"
-                    >{{ stat.desc }}</q-tooltip
-                  >
-                </q-btn>
-                <q-btn
-                  v-else-if="mods[stat.id]"
-                  class="shadow-2 q-pl-sm"
-                  :class="
-                    getModShape(mods[stat.id].style) +
-                    (mods[stat.id].style.underlineOverride &&
-                    mods[stat.id].style.underline
-                      ? ' text-underline'
-                      : '') +
-                    (highlight.current === stat.id ? ' highlight' : '') +
-                    (mods[stat.id].style.outlineOverride &&
-                    mods[stat.id].style.outline !==
-                      mods[stat.id].style.background
-                      ? 'border-width:3px;'
-                      : 'border-width:0px;')
-                  "
-                  :style="getModColors(mods[stat.id].style)"
-                  style="width: 100%; border-width: 3px; border-style: solid"
-                  no-caps
-                  dense
-                  align="left"
-                  @click="fetchHighlighted(stat.id)"
-                >
-                  {{ stat.label }}
-                  <q-badge floating>{{ stat.total ? stat.total : 0 }}</q-badge>
-                  <q-tooltip
-                    class="bg-accent text-grey-10"
-                    anchor="center right"
-                    self="center left"
-                    v-if="stat.desc > ''"
-                    >{{ stat.desc }}</q-tooltip
-                  >
-                </q-btn>
-              </div>
-              <!-- </q-btn> -->
-            </q-item-section>
-          </q-item>
+          <div v-for="stat in overrideFiltered" :key="stat.name">
+            <StatSummary
+              :showIf="highlight.current === stat.id"
+              :stat="stat"
+              :treeOpt="treeOpt"
+            >
+              <q-item>
+                <q-item-section v-if="stat.label">
+                  <!-- {{stat.id}} {{ mods[stat.id] }} -->
+                  <div>
+                    <q-btn
+                      v-if="stat.style"
+                      class="shadow-2 q-pl-sm"
+                      :class="{
+                        'text-underline':
+                          stat.style.underlineOverride && stat.style.underline,
+                        [getModShape(stat.style)]: true,
+                        highlight: highlight.current === stat.id,
+                      }"
+                      :style="
+                        getModColors(stat.style) +
+                        (stat.style.outlineOverride &&
+                        stat.style.outline !== stat.style.background
+                          ? 'border-width:3px;'
+                          : 'border-width:0px;')
+                      "
+                      style="width: 100%; border-style: solid"
+                      no-caps
+                      dense
+                      align="left"
+                      @click="fetchHighlighted(stat.id)"
+                    >
+                      {{ stat.label }}
+                      <q-badge floating>{{
+                        stat.total ? stat.total : 0
+                      }}</q-badge>
+                      <q-tooltip
+                        class="bg-accent text-grey-10"
+                        anchor="center right"
+                        self="center left"
+                        v-if="stat.desc > ''"
+                        >{{ stat.desc }}</q-tooltip
+                      >
+                    </q-btn>
+                    <q-btn
+                      v-else-if="mods[stat.id]"
+                      class="shadow-2 q-pl-sm"
+                      :class="
+                        getModShape(mods[stat.id].style) +
+                        (mods[stat.id].style.underlineOverride &&
+                        mods[stat.id].style.underline
+                          ? ' text-underline'
+                          : '') +
+                        (highlight.current === stat.id ? ' highlight' : '') +
+                        (mods[stat.id].style.outlineOverride &&
+                        mods[stat.id].style.outline !==
+                          mods[stat.id].style.background
+                          ? 'border-width:3px;'
+                          : 'border-width:0px;')
+                      "
+                      :style="getModColors(mods[stat.id].style)"
+                      style="
+                        width: 100%;
+                        border-width: 3px;
+                        border-style: solid;
+                      "
+                      no-caps
+                      dense
+                      align="left"
+                      @click="fetchHighlighted(stat.id)"
+                    >
+                      {{ stat.label }}
+                      <q-badge floating>{{
+                        stat.total ? stat.total : 0
+                      }}</q-badge>
+                      <q-tooltip
+                        class="bg-accent text-grey-10"
+                        anchor="center right"
+                        self="center left"
+                        v-if="stat.desc > ''"
+                        >{{ stat.desc }}</q-tooltip
+                      >
+                    </q-btn>
+                  </div>
+                  <!-- </q-btn> -->
+                </q-item-section>
+              </q-item>
+            </StatSummary>
+          </div>
           <q-item-label
             header
             v-if="movement && calcFiltered.length > 0"
@@ -222,33 +267,45 @@
             style="padding-bottom: 0px"
             >Complex Statistics</q-item-label
           >
-          <q-item v-for="stat in calcFiltered" :key="stat.name">
-            <q-item-section v-if="stat.label">
-              <!-- {{stat.id}} {{ mods[stat.id] }} -->
-              <!-- <div :class="highlight.current === stat.id ? ' highlight' : ''"> -->
-              <q-btn
-                class="shadow-2 q-pl-sm"
-                no-caps
-                square
-                style="width: 100%; background-color: white; color: black"
-                dense
-                align="left"
-              >
-                <!-- @click="fetchHighlighted(stat.id)" -->
-                {{ stat.label }}
-                <q-badge floating>{{ stat.total ? stat.total : 0 }}</q-badge>
-                <q-tooltip
-                  class="bg-accent text-grey-10"
-                  anchor="center right"
-                  self="center left"
-                  v-if="stat.desc > ''"
-                  >{{ stat.desc }}</q-tooltip
-                >
-              </q-btn>
-              <!-- </div> -->
-              <!-- </q-btn> -->
-            </q-item-section>
-          </q-item>
+          <div v-for="stat in calcFiltered" :key="stat.name">
+            <StatSummary
+              :showIf="highlight.current === stat.id"
+              :stat="stat"
+              :treeOpt="treeOpt"
+            >
+              <q-item>
+                <q-item-section v-if="stat.label">
+                  <!-- {{stat.id}} {{ mods[stat.id] }} -->
+                  <!-- <div :class="highlight.current === stat.id ? ' highlight' : ''"> -->
+                  <q-btn
+                    class="shadow-2 q-pl-sm"
+                    :class="{ highlight: highlight.current === stat.id }"
+                    no-caps
+                    square
+                    style="width: 100%; background-color: white; color: black"
+                    dense
+                    align="left"
+                    @click="fetchHighlighted(stat.id)"
+                  >
+                    <!-- @click="fetchHighlighted(stat.id)" -->
+                    {{ stat.label }}
+                    <q-badge floating>{{
+                      stat.total ? stat.total : 0
+                    }}</q-badge>
+                    <q-tooltip
+                      class="bg-accent text-grey-10"
+                      anchor="center right"
+                      self="center left"
+                      v-if="stat.desc > ''"
+                      >{{ stat.desc }}</q-tooltip
+                    >
+                  </q-btn>
+                  <!-- </div> -->
+                  <!-- </q-btn> -->
+                </q-item-section>
+              </q-item>
+            </StatSummary>
+          </div>
           <q-item-label
             header
             v-if="movement && calculatedFiltered.length > 0"
@@ -257,32 +314,43 @@
             style="padding-bottom: 0px"
             >Calculated Statistics</q-item-label
           >
-          <q-item v-for="stat in calculatedFiltered" :key="stat.name">
-            <q-item-section v-if="stat.label">
-              <q-btn
-                class="shadow-2 q-pl-sm"
-                no-caps
-                square
-                style="width: 100%; background-color: white; color: black"
-                dense
-                align="left"
-              >
-                {{ stat.label }}
-                <q-badge floating
-                  >{{ (stat.total ? stat.total : 0).toFixed(2)
-                  }}{{ stat.unit ? stat.unit : '' }}</q-badge
-                >
-                <q-tooltip
-                  class="bg-accent text-grey-10"
-                  anchor="center right"
-                  self="center left"
-                  v-if="stat.desc > ''"
-                  >{{ stat.desc }}</q-tooltip
-                >
-              </q-btn>
-              <!-- </q-btn> -->
-            </q-item-section>
-          </q-item>
+          <div v-for="stat in calculatedFiltered" :key="stat.name">
+            <StatSummary
+              :showIf="highlight.current === stat.id"
+              :stat="stat"
+              :treeOpt="treeOpt"
+              style="width: calc(100%-36px)"
+            >
+              <q-item>
+                <q-item-section v-if="stat.label">
+                  <q-btn
+                    class="shadow-2 q-pl-sm"
+                    :class="{ highlight: highlight.current === stat.id }"
+                    no-caps
+                    square
+                    style="width: 100%; background-color: white; color: black"
+                    dense
+                    align="left"
+                    @click="fetchHighlighted(stat.id)"
+                  >
+                    {{ stat.label }}
+                    <q-badge floating
+                      >{{ (stat.total ? stat.total : 0).toFixed(2)
+                      }}{{ stat.unit ? stat.unit : '' }}</q-badge
+                    >
+                    <q-tooltip
+                      class="bg-accent text-grey-10"
+                      anchor="center right"
+                      self="center left"
+                      v-if="stat.desc > ''"
+                      >{{ stat.desc }}</q-tooltip
+                    >
+                  </q-btn>
+                  <!-- </q-btn> -->
+                </q-item-section>
+              </q-item>
+            </StatSummary>
+          </div>
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -290,7 +358,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { useStore } from 'vuex';
 import { useQuasar } from 'quasar';
 
@@ -303,6 +371,7 @@ export default {
     mods: {},
     complexStats: {},
     calcStats: {},
+    treeOpt: {},
   },
   setup(props) {
     const q = useQuasar();
@@ -418,6 +487,9 @@ export default {
       getModShape,
       getModColors,
     };
+  },
+  components: {
+    StatSummary: defineAsyncComponent(() => import('./StatSummary.vue')),
   },
 };
 </script>

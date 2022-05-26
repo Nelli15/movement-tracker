@@ -73,7 +73,7 @@
                   <q-item-section avatar>
                     <q-icon name="swap_vert" />
                   </q-item-section>
-                  <q-item-section>{{ element.label }}</q-item-section>
+                  <q-item-section>{{ roles[element].label }}</q-item-section>
                 </q-item>
               </template>
             </draggable>
@@ -137,7 +137,7 @@ export default {
 
       fabPos.value = [
         fabPos.value[0] - ev.delta.x,
-        fabPos.value[1] + ev.delta.y,
+        fabPos.value[1] + ev.delta.y
       ];
     }
     function resetFilter() {
@@ -150,9 +150,16 @@ export default {
       () => store.state[storeModule.value].filterVisible
     );
 
+    const roles = computed(() => store.state[storeModule.value].roles);
     const roleSortCriteria = computed({
       get() {
-        return store.state[storeModule.value].roleSortCriteria;
+        return store.state[storeModule.value].roleSortCriteria
+          .filter((currentValue, index, arr) => {
+            return !!store.state[storeModule.value].roles[currentValue];
+          })
+          .filter((value, index, self) => {
+            return self.indexOf(value) === index;
+          });
       },
       set(value) {
         store.commit(`${storeModule.value}/setRoleSortCriteria`, value);
@@ -163,7 +170,7 @@ export default {
           ),
           { roleSortCriteria: value }
         );
-      },
+      }
     });
     watch(filter, () => {
       emit('filter-updated', filter.value);
@@ -186,11 +193,12 @@ export default {
       resetFilter,
       roleSortCriteria,
       props,
+      roles
     };
   },
   components: {
-    draggable,
-  },
+    draggable
+  }
 };
 </script>
 

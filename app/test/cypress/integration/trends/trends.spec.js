@@ -17,7 +17,7 @@ describe('trends page tests', () => {
   })
 
   it('should have a movement title', () => {
-    cy.dataCy('"movement-banner"').should('contain', 'Untitled Movement')
+    cy.dataCy('"mov-banner"').should('contain', 'Untitled Movement')
   });
 
   describe('toolbox', () => {
@@ -29,14 +29,14 @@ describe('trends page tests', () => {
       cy.dataCy('"graph-options-comp"').should('exist').and('be.visible')
     });
 
-    it('should save graph', () => {
+    it.skip('should save graph', () => {
       cy.dataCy('"toolbox"').within(() => {
         cy.dataCy('"save-graph"').should('contain', 'save-graph').click()
       })
       cy.dataCy('"save-graph-comp"').should('exist').and('be.visible')
     });
 
-    it('should recall saved graphs', () => {
+    it.skip('should recall saved graphs', () => {
       cy.dataCy('"toolbox"').within(() => {
         cy.dataCy('"saved-graphs"').should('contain', 'saved-graph').click()
       })
@@ -46,10 +46,51 @@ describe('trends page tests', () => {
   });
 
   it.skip('should have a graph', () => {
-    
+    //https://www.valentinog.com/blog/canvas/
   });
 
   describe('graph options drawer', () => {
+    it.skip('should change tab', () => {
+      
+    });
+    describe('Data Tab', () => {
+      it.skip('should change chart type', () => {
+        
+      });
+
+      it.skip('should change the start date', () => {
+        
+      });
+
+      it.skip('should change the end date', () => {
+        
+      });
+
+      it.skip('should select trees', () => {
+        
+      });
+
+      it.skip('should select statistics', () => {
+        
+      });
+    });
+    describe('Style Tab', () => {
+      it.skip('should change the chart title', () => {
+      
+      });
+      it.skip('should change the line tension', () => {
+        
+      });
+      it.skip('should change the line color', () => {
+        
+      });
+      it.skip('should change the horizontal axis label', () => {
+        
+      });
+      it.skip('should change the vertical axis title', () => {
+        
+      });
+    });
     
   });
 

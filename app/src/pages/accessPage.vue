@@ -93,7 +93,12 @@
           </q-tab>
         </q-tabs>
         <q-tab-panels v-model="tab">
-          <q-tab-panel name="userInvites">
+          <q-tab-panel
+            name="userInvites"
+            :style="`background: ${
+              q.dark.isActive ? 'var(--q-dark-page)' : 'white'
+            };`"
+          >
             <q-card>
               <q-card-section>
                 <form data-cy="invite-form" class="row">
@@ -237,6 +242,7 @@
                     props.row.email
                   }}</q-td>
                   <q-td key="permission" :props="props" data-cy="permission">{{
+                    userRoleDefinitions[props.row.role.id] &&
                     userRoleDefinitions[props.row.role.id].label
                   }}</q-td>
                   <q-td
@@ -380,7 +386,12 @@
             </q-table>
           </q-tab-panel>
           <!--users-->
-          <q-tab-panel name="users">
+          <q-tab-panel
+            name="users"
+            :style="`background: ${
+              q.dark.isActive ? 'var(--q-dark-page)' : 'white'
+            };`"
+          >
             <q-table
               :rows="usersFiltered"
               :columns="usersColumns"
@@ -390,7 +401,6 @@
               rows-per-page-label="Users per page:"
               dense
               v-model:pagination="usersPagination"
-              class="my-sticky-header-table"
               :style="isFullscreen ? 'height:100vh;' : ''"
               v-model:fullscreen="isFullscreen"
               data-cy="users-table"
@@ -493,7 +503,10 @@
                     }"
                     data-cy="permission"
                   >
-                    {{ props.row.role }}
+                    {{
+                      userRoleDefinitions[props.row.role] &&
+                      userRoleDefinitions[props.row.role].label
+                    }}
                     <q-tooltip
                       v-if="user.uid !== props.row.uid"
                       class="bg-info"
@@ -515,6 +528,8 @@
                         :model-value="props.row.role"
                         @update:model-value="updateRole(props.row, $event.id)"
                         :color="q.dark.isActive ? 'blue-2' : ''"
+                        option-value="id"
+                        map-options
                       />
                     </q-popup-edit>
                   </q-td>
@@ -540,7 +555,12 @@
             </q-table>
           </q-tab-panel>
           <!--Requests-->
-          <q-tab-panel name="manageUserRoles">
+          <q-tab-panel
+            name="manageUserRoles"
+            :style="`background: ${
+              q.dark.isActive ? 'var(--q-dark-page)' : 'white'
+            };`"
+          >
             <q-list v-if="currentUserRole">
               <div
                 v-if="selectedUserRole === 'owner'"
@@ -568,7 +588,7 @@
 
               <q-item data-cy="access-titles">
                 <div style="width: 100px">
-                  <b>Access</b>
+                  <b>Access & Sharing</b>
                 </div>
                 <q-space />
                 <div style="width: 100px" class="text-center">View</div>
@@ -1516,7 +1536,6 @@ export default {
     const permissions = computed(() => store.state.movement.permissions);
 
     const user = computed(() => store.state.auth.user);
-    const backgroundColor = computed(() => store.state.movement.user);
     const movement = computed(() => store.state.movement.movement);
     const isFullscreen = ref(false);
     const tab = ref('');
@@ -1617,19 +1636,28 @@ export default {
     const usersFiltered = computed(() => {
       return Object.keys(users.value).map((i) => users.value[i]);
     });
-    const usersPagination = computed({
-      get: () => {
-        q.localStorage.has('adminsTableRows')
-          ? q.localStorage.getItem('adminsTableRows')
-          : {
-              sortBy: 'name',
-              descending: false,
-              page: 1,
-              rowsPerPage: 10,
-              // rowsNumber: xx if getting data from a server
-            };
-      },
-      set: ($event) => q.localStorage.set('adminsTableRows', $event),
+    const usersPagination = ref({
+      sortBy: 'name',
+      descending: false,
+      page: 1,
+      rowsPerPage: 10,
+      // rowsNumber: xx if getting data from a server
+    });
+
+    usersPagination.value = q.localStorage.has('adminsTableRows')
+      ? q.localStorage.getItem('adminsTableRows')
+      : {
+          sortBy: 'name',
+          descending: false,
+          page: 1,
+          rowsPerPage: 10,
+          // rowsNumber: xx if getting data from a server
+        };
+    watch(usersPagination, (newVal, oldVal) => {
+      if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+        console.log(usersPagination.value);
+        q.localStorage.set('adminsTableRows', usersPagination.value);
+      }
     });
     const usersColumns = reactive([
       {
@@ -1888,21 +1916,29 @@ export default {
       },
       { name: 'actions', align: 'right', label: 'Actions', field: 'actions' },
     ]);
-    const userInvitesPagination = computed({
-      get: () => {
-        return q.localStorage.has('userInvitesPagination')
-          ? q.localStorage.getItem('userInvitesPagination')
-          : {
-              sortBy: 'name',
-              descending: false,
-              page: 1,
-              rowsPerPage: 10,
-              // rowsNumber: xx if getting data from a server
-            };
-      },
-      set: (value) => {
-        q.localStorage.set('userInvitesTableRows', value);
-      },
+
+    const userInvitesPagination = ref({
+      sortBy: 'name',
+      descending: false,
+      page: 1,
+      rowsPerPage: 10,
+      // rowsNumber: xx if getting data from a server
+    });
+
+    userInvitesPagination.value = q.localStorage.has('userInvitesTableRows')
+      ? q.localStorage.getItem('userInvitesTableRows')
+      : {
+          sortBy: 'name',
+          descending: false,
+          page: 1,
+          rowsPerPage: 10,
+          // rowsNumber: xx if getting data from a server
+        };
+    watch(userInvitesPagination, (newVal, oldVal) => {
+      if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+        console.log(userInvitesPagination.value);
+        q.localStorage.set('userInvitesTableRows', userInvitesPagination.value);
+      }
     });
     const currentUserRole = computed(() => {
       return userRoleDefinitions.value[selectedUserRole.value];

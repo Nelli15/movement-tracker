@@ -3,7 +3,6 @@
     <q-drawer
       show-if-above
       mini
-      overlay
       :width="200"
       :breakpoint="1"
       bordered
@@ -33,7 +32,7 @@
                     background-color: #0f0;
                   "
                   >{{
-                    tool.badge > "" && tool.badge !== true ? tool.badge : ""
+                    tool.badge > '' && tool.badge !== true ? tool.badge : ''
                   }}</q-badge
                 >
               </q-item-section>
@@ -75,25 +74,25 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations, mapState } from "vuex";
-import { saveAs } from "file-saver";
-import { defineAsyncComponent } from "vue";
+import { mapGetters, mapActions, mapMutations, mapState } from 'vuex';
+import { saveAs } from 'file-saver';
+import { defineAsyncComponent } from 'vue';
 
 export default {
-  name: "EventsToolBox",
+  name: 'EventsToolBox',
   props: {
     showFilter: Boolean,
     readOnly: Boolean,
-    tab: String,
+    tab: String
   },
   data() {
     return {
-      toolCabinet: true,
+      toolCabinet: true
     };
   },
   methods: {
-    ...mapActions(["changeSize", "showDrawer"]),
-    ...mapMutations("movement", ["toggleFilterVisible"]),
+    ...mapActions(['changeSize', 'showDrawer']),
+    ...mapMutations('movement', ['toggleFilterVisible']),
     exportToCSV() {
       // get all the members and their data
       let members = JSON.parse(JSON.stringify(this.members));
@@ -117,59 +116,59 @@ export default {
       }
 
       // bundle the members into a CSV file
-      let csv = "Name, Role, Modifiers, Parent, Alternate Parent, Notes\r\n";
+      let csv = 'Name, Role, Modifiers, Parent, Alternate Parent, Notes\r\n';
       for (var memberId in members) {
-        if (memberId === "root" || memberId === "No Parent") continue;
+        if (memberId === 'root' || memberId === 'No Parent') continue;
         let member = members[memberId];
         csv += '"' + member.name + '",';
         csv += '"' + member.role + '",';
-        csv += '"' + member.mods.toString().replace(/,/g, ", ") + '",';
+        csv += '"' + member.mods.toString().replace(/,/g, ', ') + '",';
         csv += '"' + member.parent + '",';
         csv += '"' + member.alt + '",';
-        csv += '"' + (member.notes ? member.notes.replace(/\r?\n/g, ", ") : "");
+        csv += '"' + (member.notes ? member.notes.replace(/\r?\n/g, ', ') : '');
         csv += '"\r\n';
       }
       // download the file
       saveAs(
-        new Blob([csv], { type: "text/plain;charset=utf-8" }),
+        new Blob([csv], { type: 'text/plain;charset=utf-8' }),
         `${this.movement.name}.csv`
       );
-    },
+    }
   },
   computed: {
-    ...mapGetters("movement", ["role"]),
-    ...mapState("movement", [
-      "members",
-      "roles",
-      "mods",
-      "movement",
-      "filterQuery",
+    ...mapGetters('movement', ['role']),
+    ...mapState('movement', [
+      'members',
+      'roles',
+      'mods',
+      'movement',
+      'filterQuery'
     ]),
     toolListFiltered() {
       const filteredTools = [];
       let toolList = [
         {
-          item: { icon: "person_add", tooltip: "Add Member" },
+          item: { icon: 'person_add', tooltip: 'Add Member' },
           hideIf: this.permissions.events_create,
           component: {
             component: defineAsyncComponent(() =>
-              import("./actions/mt-add-member.vue")
+              import('./actions/mt-add-member.vue')
             ),
             props: {},
             events: { success: () => this.$refs.newMenu.hide() },
-            isMenu: true,
-          },
+            isMenu: true
+          }
         },
         {
-          item: { icon: "event", tooltip: "Add Event" },
-          restrictTo: ["editor", "super editor", "owner"],
+          item: { icon: 'event', tooltip: 'Add Event' },
+          restrictTo: ['editor', 'super editor', 'owner'],
           component: {
-            component: defineAsyncComponent(() => import("./EventCreate.vue")),
+            component: defineAsyncComponent(() => import('./EventCreate.vue')),
             props: {},
             events: { success: () => this.$refs.newEventMenu.hide() },
-            isMenu: true,
-          },
-        },
+            isMenu: true
+          }
+        }
       ];
 
       for (var tool of toolList) {
@@ -182,7 +181,7 @@ export default {
         }
       }
       return filteredTools;
-    },
-  },
+    }
+  }
 };
 </script>

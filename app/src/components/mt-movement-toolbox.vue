@@ -3,7 +3,6 @@
     <q-drawer
       show-if-above
       mini
-      overlay
       :width="200"
       :breakpoint="1"
       bordered
@@ -47,7 +46,7 @@
               >
               <q-menu
                 :ref="
-                  (el) => {
+                  el => {
                     if (el) refs[tool['data-cy'] + '-menu'] = el;
                   }
                 "
@@ -90,7 +89,7 @@ export default {
     readOnly: Boolean,
     tab: String,
     treeOpt: {},
-    storeModule: String,
+    storeModule: String
   },
   setup(props) {
     const store = useStore();
@@ -164,11 +163,11 @@ export default {
             events: {
               success: () => {
                 refs.value['create-member-menu'].hide();
-              },
+              }
             },
-            isMenu: true,
+            isMenu: true
           },
-          'data-cy': 'create-member',
+          'data-cy': 'create-member'
         },
         {
           hideIf: !permissions.value.snapshots_update,
@@ -177,59 +176,59 @@ export default {
               import('./actions/mt-take-snapshot.vue')
             ),
             props: {},
-            isMenu: false,
+            isMenu: false
           },
           separate: true,
-          'data-cy': 'update-snap-movement',
+          'data-cy': 'update-snap-movement'
         },
         {
           item: {
             icon: 'zoom_out',
             tooltip: 'Zoom Out',
             events: { click: () => changeSize('-') },
-            styles: 'cursor: zoom-out;',
+            styles: 'cursor: zoom-out;'
           },
           readOnly: true,
-          'data-cy': 'zoom-out',
+          'data-cy': 'zoom-out'
         },
         {
           item: {
             icon: 'zoom_in',
             tooltip: 'Zoom In',
             events: { click: () => changeSize('+') },
-            styles: 'cursor: zoom-in;',
+            styles: 'cursor: zoom-in;'
           },
           readOnly: true,
-          'data-cy': 'zoom-in',
+          'data-cy': 'zoom-in'
         },
         {
           item: {
             icon: 'filter_alt',
             tooltip: 'Filter and Sort',
-            events: { click: () => toggleFilterVisible() },
+            events: { click: () => toggleFilterVisible() }
           },
           readOnly: true,
           badge: filterQuery.value > '',
           separate: true,
-          'data-cy': 'filter-members',
+          'data-cy': 'filter-members'
         },
         {
           item: {
             icon: 'equalizer',
             tooltip: 'Movement Summary',
-            events: { click: () => showDrawer('movementDetails') },
+            events: { click: () => showDrawer('movementDetails') }
           },
           readOnly: true,
-          'data-cy': 'movement-summary',
+          'data-cy': 'movement-summary'
         },
         {
           item: {
             icon: 'view_list',
             tooltip: 'Legend of Symbols',
-            events: { click: () => showDrawer('movementLegend') },
+            events: { click: () => showDrawer('movementLegend') }
           },
           readOnly: true,
-          'data-cy': 'movement-legend',
+          'data-cy': 'movement-legend'
         },
         // {
         //   item: {
@@ -245,12 +244,12 @@ export default {
           item: {
             icon: 'import_export',
             tooltip: 'Export Members to CSV',
-            events: { click: () => exportToCSV() },
+            events: { click: () => exportToCSV() }
           },
           hideIf: !permissions.value.members_export || props.readOnly,
           readOnly: true,
-          'data-cy': 'export-members',
-        },
+          'data-cy': 'export-members'
+        }
       ];
 
       for (var tool of toolList) {
@@ -265,6 +264,6 @@ export default {
       return filteredTools;
     });
     return { toolCabinet, toggleFilterVisible, toolListFiltered, refs };
-  },
+  }
 };
 </script>

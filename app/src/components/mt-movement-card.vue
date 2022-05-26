@@ -75,7 +75,7 @@
       class="shadow-3 movement-card"
       :style="'border-color:' + backgroundColor + ';'"
       style="cursor: pointer"
-      @click.stop="$router.push('/movement/' + movementProp.id + '/members')"
+      @click.stop="$router.push('/movement/' + movementProp.id)"
     >
       <q-card-section
         :style="'background-color:' + backgroundColor + ';color:' + color + ';'"
@@ -124,7 +124,7 @@
           >
             <q-tooltip class="bg-accent text-grey-10">View Snapshots</q-tooltip>
           </q-btn>
-          <!-- <q-btn
+          <q-btn
             icon="timeline"
             :to="'/movement/' + movementProp.id + '/trends'"
             dense
@@ -134,7 +134,7 @@
             @click.stop
           >
             <q-tooltip class="bg-accent text-grey-10">View Trends</q-tooltip>
-          </q-btn> -->
+          </q-btn>
           <q-btn
             icon="settings"
             :to="'/movement/' + movementProp.id + '/settings'"
@@ -177,7 +177,7 @@ import { defineAsyncComponent, computed } from 'vue';
 import { useQuasar } from 'quasar';
 export default {
   props: {
-    movementProp: {},
+    movementProp: {}
   },
   setup(props) {
     const q = useQuasar();
@@ -212,7 +212,7 @@ export default {
   components: {
     'mt-movement-context-menu': defineAsyncComponent(() =>
       import('./actions/mt-movement-context-menu')
-    ),
-  },
+    )
+  }
 };
 </script>

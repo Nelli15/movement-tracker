@@ -5,6 +5,7 @@ import 'firebase/compat/database';
 import 'firebase/compat/firestore';
 import 'firebase/compat/functions';
 import { attachCustomCommands } from 'cypress-firebase';
+// import "cypress-plugin-snapshots/commands";
 
 const fbConfig = require('./../../../../fbConfig.json')
 const TestMovement = require('./../fixtures/test-movement.json')
@@ -105,18 +106,22 @@ Cypress.Commands.add('userLogin', () => {
   cy.get('[data-cy="login-card"]', {timeout:10000})
   cy.dataCy('"signin-email"').parent().type('test@email.com')
     cy.dataCy('"signin-password"').parent().type('test1234')
-    cy.dataCy('"signin-submit"').click().wait(400)
+    cy.dataCy('"signin-submit"').click()
+    cy.testRoute('/home')
     .then(() => {
-      // return firebase.auth().fetchSignInMethodsForEmail('test@email.com').then(
-      //   (methods) => {
-      //     console.log(methods);
-      //     if (methods.length > 0) {
-            firebase.auth().signInWithEmailAndPassword('test@email.com', 'test1234')
-      //     }
-      //   }
-      // )
+      firebase.auth().signInWithEmailAndPassword('test@email.com', 'test1234')
     })
     cy.log('signin complete')
+
+  //   cy.visit('/login')
+  // cy.get('[data-cy="login-card"]', {timeout:10000})
+  // cy.dataCy('"signin-email"').parent().type('test@email.com')
+  //   cy.dataCy('"signin-password"').parent().type('test1234')
+  //   cy.dataCy('"signin-submit"').click().wait(400)
+  //   .then(() => {
+  //     firebase.auth().signInWithEmailAndPassword('test@email.com', 'test1234')
+  //   })
+  //   cy.log('signin complete')
 });
 
 Cypress.Commands.add('clearMovs', () => {

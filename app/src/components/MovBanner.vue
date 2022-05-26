@@ -8,9 +8,11 @@
   >
     <div
       :style="
-        'min-height:150px;max-height:315px;background-color:white;position:relative;background-color:' +
-        backgroundColor +
-        ';'
+        `min-height:${
+          dense ? '104px' : '150px'
+        };max-height:315px;background-color:white;position:relative;background-color:` +
+          backgroundColor +
+          ';'
       "
       class="print-hide"
     >
@@ -57,8 +59,8 @@
     <div
       :style="
         'background-color:white;position:relative;background-color:' +
-        backgroundColor +
-        ';'
+          backgroundColor +
+          ';'
       "
     ></div>
     <mt-movement-context-menu
@@ -74,7 +76,11 @@ import { defineAsyncComponent, ref, computed } from 'vue';
 import { useQuasar } from 'quasar';
 import { useStore } from 'vuex';
 export default {
-  props: ['readOnly', 'snapshot'],
+  props: {
+    readOnly: Boolean,
+    snapshot: {},
+    dense: Boolean
+  },
   setup(props) {
     const q = useQuasar();
     const store = useStore();
@@ -103,13 +109,13 @@ export default {
       permissions,
       movement,
       backgroundColor,
-      color,
+      color
     };
   },
   components: {
     'mt-movement-context-menu': defineAsyncComponent(() =>
       import('./../components/actions/mt-movement-context-menu')
-    ),
-  },
+    )
+  }
 };
 </script>

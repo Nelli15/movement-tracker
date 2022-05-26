@@ -89,7 +89,6 @@ export function modStats (state) {
 export function roleStats (state) {
   var stats = []
   for (var key in state.stats) {
-    state.stats[key].id = key
     if (state.stats[key].type === 'role') {
       let total = []
     let members = {}

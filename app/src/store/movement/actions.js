@@ -13,9 +13,6 @@ import {
   onSnapshot,
   query,
   orderBy,
-  startAt,
-  endAt,
-  Timestamp,
   where
 } from '@firebase/firestore'
 import { getAnalytics, logEvent } from '@firebase/analytics'
@@ -37,7 +34,7 @@ export async function fetchMovement ({ commit, dispatch, state }, payload) {
     }
   })
 
-  onSnapshot(
+  commit('addListener', onSnapshot(
     doc(getFirestore(), `/movements/${payload.movId}/users/${payload.uid}`),
     role => {
       if (role.exists) {
@@ -62,7 +59,7 @@ export async function fetchMovement ({ commit, dispatch, state }, payload) {
         commit('setUserRole', '')
       }
     }
-  )
+  ))
   commit(
     'setSize',
     LocalStorage.has('zoom')
@@ -74,19 +71,19 @@ export async function fetchMovement ({ commit, dispatch, state }, payload) {
 }
 
 export function fetchTrees ({ commit }, payload) {
-    onSnapshot(query(doc(getFirestore(), `/movements/${payload.movId}/lists/trees`)), doc => {
+    commit('addListener', onSnapshot(query(doc(getFirestore(), `/movements/${payload.movId}/lists/trees`)), doc => {
       let trees = doc.data()
       for (let ii in trees) {
       commit('setTree', {...trees[ii]})
       }
-  })
+  }))
 }
 
 export function fetchMemberList ({ commit }, payload) {
-  onSnapshot(doc(getFirestore(), `/movements/${payload.movId}/lists/members`), async doc => {
+  commit('addListener', onSnapshot(doc(getFirestore(), `/movements/${payload.movId}/lists/members`), async doc => {
     // console.log(doc.data())
       commit('setMemberList', { ...doc.data() })
-  })
+  }))
 }
 
 export function fetchSnapshots ({ commit, state }, payload) {
@@ -97,7 +94,7 @@ export function fetchSnapshots ({ commit, state }, payload) {
   //   ? new Date(payload.fromDate)
   //   : new Date(date.setFullYear(date.getFullYear() - 1))
 
-  onSnapshot(
+  commit('addListener', onSnapshot(
     query(
       collection(
         getFirestore(),
@@ -119,7 +116,7 @@ export function fetchSnapshots ({ commit, state }, payload) {
       commit('setSnapshot', data)
       snaps[data.id] = data
     })
-  })
+  }))
 }
 
 export async function fetchSnapshotsByList ({ commit, state }, snapsToFetch) {
@@ -147,7 +144,7 @@ commit('cleanSnapshots', {})
 }
 
 export function fetchSnapshot ({ commit }, payload) {
-  onSnapshot(
+  commit('addListener', onSnapshot(
     doc(
       getFirestore(),
       `/movements/${
@@ -159,13 +156,13 @@ export function fetchSnapshot ({ commit }, payload) {
       data.id = doc.id
       commit('setSnapshot', data)
     }
-  )
+  ))
 }
 
 export async function fetchUsers ({ commit, state }, payload) {
   const movId = payload.movId ? payload.movId : state.movement.id 
   // console.log(movementDoc)
-  onSnapshot(collection(getFirestore(), `/movements/${movId}/users`), shareSnap => {
+  commit('addListener', onSnapshot(collection(getFirestore(), `/movements/${movId}/users`), shareSnap => {
     const share = {}
     shareSnap.docChanges().map(change => {
       if (change.type !== 'removed') {
@@ -177,8 +174,8 @@ export async function fetchUsers ({ commit, state }, payload) {
         commit('removeUser', { id: change.doc.id })
       }
     })
-  })
-  onSnapshot(
+  }))
+  commit('addListener', onSnapshot(
     collection(getFirestore(), `/movements/${movId}/invites`),
     shareSnap => {
       const pendingShare = []
@@ -187,8 +184,8 @@ export async function fetchUsers ({ commit, state }, payload) {
       }
       commit('setUserInvites', pendingShare)
     }
-  )
-  onSnapshot(
+  ))
+  commit('addListener', onSnapshot(
     collection(getFirestore(), `/movements/${movId}/requests`),
     requestSnap => {
       const pendingRequests = []
@@ -199,7 +196,7 @@ export async function fetchUsers ({ commit, state }, payload) {
       }
       commit('setUserRequests', pendingRequests)
     }
-  )
+  ))
 }
 
 export function fetchStyles ({ commit, state }, payload) {
@@ -210,20 +207,21 @@ export function fetchStyles ({ commit, state }, payload) {
   ) {
     commit('cleanStyles', {})
 
-    onSnapshot(
+    commit('addListener', onSnapshot(
       doc(
         getFirestore(),
         `/movements/${payload.movId || state.movement.id}/lists/styles`
       ),
       doc => {
         let data = doc.data()
-        commit('setStats', data)
+        
         for (var statId in data) {
           data[statId].id = statId
           commit('addStyle', data[statId])
         }
+        commit('setStats', data)
       }
-    )
+    ))
   }
 }
 
@@ -264,16 +262,16 @@ export function fetchTreeData ({commit, state}, payload) {
   // if(!payload.movId || ! payload.treeId) return console.debug(payload)
   if (!payload.treeId) return
 let ref = doc(getFirestore(), `/movements/${payload.movId}/trees/${payload.treeId}`)
-  onSnapshot(
+  commit('addCurrentTreeListener', onSnapshot(
     doc(getFirestore(), `${ref.path}/components/tree`),
     async doc => {
       // console.log('tree', doc.data(), doc.exists())
       let tree = doc.get('tree')
       commit('setTree', { id: payload.treeId, tree: tree })
     }
-  )
+  ))
   // console.log(payload)
-  onSnapshot(
+  commit('addCurrentTreeListener', onSnapshot(
     query(collection(getFirestore(), `/movements/${payload.movId}/members`), where('trees', 'array-contains', payload.treeId)),
   
     async snap => {
@@ -284,8 +282,8 @@ let ref = doc(getFirestore(), `/movements/${payload.movId}/trees/${payload.treeI
       })
       
     }
-  )
-  onSnapshot(
+  ))
+  commit('addCurrentTreeListener', onSnapshot(
     doc(getFirestore(), `/movements/${payload.movId}/trees/${payload.treeId}/components/stats`),
     async docSnap => {
         const data = docSnap.data()
@@ -293,7 +291,7 @@ let ref = doc(getFirestore(), `/movements/${payload.movId}/trees/${payload.treeI
         commit('setStatImports', [payload.treeId, ...data && data.imports?data.imports:[]])
         if (data && data.imports) {
           for (let ind in data.imports) {
-            onSnapshot(
+            commit('addCurrentTreeListener', onSnapshot(
               query(collection(getFirestore(), `/movements/${payload.movId}/members`), where('trees', 'array-contains', data.imports[ind])),
               async snap => {
                 // console.log(snap)
@@ -303,38 +301,38 @@ let ref = doc(getFirestore(), `/movements/${payload.movId}/trees/${payload.treeI
                 })
                 
               }
-            )
-            onSnapshot(
+            ))
+            commit('addCurrentTreeListener', onSnapshot(
               doc(getFirestore(), `/movements/${payload.movId}/trees/${data.imports[ind]}/components/stats`),
               async doc => {
                 commit('setStatTotals', {treeId: data.imports[ind], data: {...doc.data(), id: doc.id}})
-              })
+              }))
           }
         }
         commit('setStatTotals', {treeId: payload.treeId, data: {...data, id: docSnap.id}})
     }
-  )
+  ))
 }
 
 export function fetchUserRoleDefinitions ({commit, state}, payload) {
   const movId = payload.movId ? payload.movId : state.movement.id 
-   onSnapshot(collection(getFirestore(), `/movements/${movId}/user-role-definitions`), snaps => {
+   commit('addListener', onSnapshot(collection(getFirestore(), `/movements/${movId}/user-role-definitions`), snaps => {
         snaps.forEach(doc => {
           commit('setUserRoleDefinition', {id: doc.id, ...doc.data()})
         })
-      })
+      }))
 }
 
 export function fetchMembers ({commit, state}, payload) {
   // console.log('fetchMembers', payload)
-  onSnapshot(
+  commit('addListener', onSnapshot(
         collection(getFirestore(), `/movements/${payload.movId}/members`), snap => {
           snap.forEach(doc => {
             const data = doc.data()
             commit('setMember', {...data, id: doc.id})
           })
         }
-      );
+      ))
 
       
 }

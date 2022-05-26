@@ -211,6 +211,7 @@ service cloud.firestore {
         allow create: if isOwner(movId) && role != 'owner'
         allow update: if isOwner(movId) && role != 'owner'
         allow delete: if isOwner(movId) && role != 'owner'
+        allow read: if getUserRole(movId) == role
         allow read: if getUserPermissions(movId).access_view
         allow create: if getUserPermissions(movId).access_create && role != 'owner'
         allow update: if getUserPermissions(movId).access_edit && role != 'owner' && role != getUserRole(movId)

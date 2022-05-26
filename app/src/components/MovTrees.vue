@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div
+    :style="`background: ${q.dark.isActive ? 'var(--q-dark-page)' : 'white'};`"
+  >
     <mt-batch
       :membersSelected="membersSelected"
       v-if="membersSelected.length > 0"
@@ -60,6 +62,7 @@
 </template>
 
 <script>
+import { useQuasar } from 'quasar';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import { defineAsyncComponent, ref, computed, onBeforeUpdate } from 'vue';
@@ -68,6 +71,7 @@ export default {
   props: ['treeOpt', 'readOnly', 'members', 'tree', 'storeModule'],
   emits: ['changeTree'],
   setup(props) {
+    const q = useQuasar();
     const store = useStore();
     const route = useRoute();
     const storeModule = ref(props.storeModule ? props.storeModule : 'movement');
@@ -126,6 +130,7 @@ export default {
       memberNodes.value = [];
     });
     return {
+      q,
       membersSelected,
       permissions,
       filterQuery,

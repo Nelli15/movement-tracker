@@ -7,7 +7,6 @@
     v-model:pagination="pagination"
     style="padding: -16px"
     wrap-cells
-    class="my-sticky-header-table"
     :style="isFullscreen ? 'height:100vh;' : ''"
     virtual-scroll
     v-model:fullscreen="isFullscreen"
@@ -16,7 +15,6 @@
     <template v-slot:top="props">
       <div
         class="row"
-        :style="'background-color:' + backgroundColor + ';color: ' + color"
         style="
           width: calc(100% + 32px);
           margin-left: -16px;
@@ -28,10 +26,7 @@
           padding-top: 12px;
           padding-bottom: 12px;
         "
-        data-cy="movement-banner"
       >
-        <div class="col-4 q-table__title">{{ movement.name }}</div>
-
         <q-space />
 
         <q-btn
@@ -121,13 +116,13 @@
             "
             :style="
               'background-color:' +
-              props.row.style.background +
-              '; color:' +
-              props.row.style.color +
-              '; ' +
-              'border-color:' +
-              props.row.style.outline +
-              ' !important;'
+                props.row.style.background +
+                '; color:' +
+                props.row.style.color +
+                '; ' +
+                'border-color:' +
+                props.row.style.outline +
+                ' !important;'
             "
             style="border-width: 3px; border-style: solid; width: 100%"
             dense
@@ -206,8 +201,8 @@
             :disable="!permissions.settings_roles_edit"
             :style="
               'text-decoration: ' +
-              (props.row.style.underline ? 'underline' : 'none') +
-              ';'
+                (props.row.style.underline ? 'underline' : 'none') +
+                ';'
             "
             label="U"
             @click="
@@ -233,7 +228,7 @@
                 class="q-pa-sm"
                 :class="
                   props.row.style.shape +
-                  (Dark.isActive ? ' shape-dark' : ' shape-light')
+                    (Dark.isActive ? ' shape-dark' : ' shape-light')
                 "
               />
             </template>
@@ -358,7 +353,7 @@ const columns = [
     label: 'Label',
     field: 'label',
     sortable: true,
-    help: 'The name of this Role',
+    help: 'The name of this Role'
   },
   {
     name: 'desc',
@@ -366,50 +361,50 @@ const columns = [
     label: 'Description',
     field: 'desc',
     sortable: true,
-    help: 'A short description of what this Role is',
+    help: 'A short description of what this Role is'
   },
   {
     name: 'target',
     align: 'left',
     label: 'Target',
     field: 'target',
-    help: 'A goal for the number of members with this Role',
+    help: 'A goal for the number of members with this Role'
   },
   {
     name: 'background',
     label: 'Background',
     field: 'background',
     align: 'center',
-    help: 'The background color members with this Role will have',
+    help: 'The background color members with this Role will have'
   },
   {
     name: 'color',
     label: 'Text',
     field: 'color',
     align: 'center',
-    help: 'The text color members with this Role will have',
+    help: 'The text color members with this Role will have'
   },
   {
     name: 'outline',
     label: 'Outline',
     field: 'outline',
     align: 'center',
-    help: 'The border color members with this Role will have',
+    help: 'The border color members with this Role will have'
   },
   {
     name: 'underline',
     label: 'Underline?',
     field: 'underline',
     align: 'center',
-    help: 'The underline color members with this Role will have',
+    help: 'The underline color members with this Role will have'
   },
   {
     name: 'rounded',
     label: 'Shape',
     field: 'rounded',
     align: 'center',
-    help: 'The shape members with this Role will have',
-  },
+    help: 'The shape members with this Role will have'
+  }
 ];
 export default {
   // name: 'ComponentName',
@@ -422,8 +417,8 @@ export default {
         sortBy: 'label',
         descending: false,
         page: 1,
-        rowsPerPage: 10,
-      },
+        rowsPerPage: 10
+      }
     };
   },
   created() {
@@ -436,7 +431,7 @@ export default {
           sortBy: 'label',
           descending: false,
           page: 1,
-          rowsPerPage: 10,
+          rowsPerPage: 10
         };
   },
   methods: {
@@ -464,35 +459,35 @@ export default {
             color: 'positive',
             textColor: 'white',
             icon: 'cloud_download',
-            message: 'Style Updated',
+            message: 'Style Updated'
           });
         })
-        .catch((err) => {
+        .catch(err => {
           this.setStyleLoading({ id, val: false });
           Notify.create({
             color: 'negative',
             textColor: 'white',
             icon: 'error',
-            message: 'Oops, Something went wrong!',
+            message: 'Oops, Something went wrong!'
           });
         });
-    },
+    }
   },
   computed: {
     ...mapGetters('movements', ['movements']),
     ...mapGetters('movement', ['roleOpts', 'backgroundColor', 'color']),
-    ...mapState('movement', ['movement', 'permissions', 'stats']),
+    ...mapState('movement', ['movement', 'permissions', 'stats'])
   },
   watch: {
     pagination() {
       LocalStorage.set('movementEditPagination', this.pagination);
-    },
+    }
   },
   components: {
     'mt-style-menu': defineAsyncComponent(() =>
       import('./actions/mt-style-menu.vue')
-    ),
-  },
+    )
+  }
 };
 </script>
 

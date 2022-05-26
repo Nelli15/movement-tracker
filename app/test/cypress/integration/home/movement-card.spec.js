@@ -30,7 +30,7 @@ describe('movement-card tests', () => {
   });
 
   it('should have page links', () => {
-    cy.get('.pageLink').should('have.length', 4)
+    cy.get('.pageLink').should('have.length', 5)
       // .next().should('contain', 'Snapshots')
       // .next().should('contain', 'Trends')
       // .next().should('contain', 'Settings')
@@ -125,6 +125,8 @@ describe('movement-card tests', () => {
         })
         cy.checkNotify('Movement Copied')
         cy.root().get('.movement-card', {timeout: 90000}).should('have.length', numMovs+1).and('contain', 'Copy of Untitled Movement')
+        cy.contains('Copy of Untitled Movement').click()
+        cy.testRoute('/movement').testRoute('/members')
       })
     });
 
