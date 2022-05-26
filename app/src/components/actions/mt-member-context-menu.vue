@@ -39,10 +39,16 @@
               v-close-popup="!opt.child"
             ></component>
           </q-menu>
-          <q-dialog v-else :ref="opt.label + '-menu'">
+          <q-dialog
+            v-else
+            :ref="
+              (el) => {
+                refs[opt.label + '-menu'] = el;
+              }
+            "
+          >
             <component
               v-if="opt.child"
-              :ref="opt.label"
               :is="opt.child.component"
               v-bind="opt.child.props"
               v-on="opt.child.events ? opt.child.events : {}"
@@ -87,6 +93,7 @@ export default {
     const store = useStore();
     const route = useRoute();
     const l_member = ref({});
+    const refs = ref({});
     function copyMember() {
       return copy(l_member.value.id, route.params.movId, this);
     }
@@ -120,7 +127,7 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                $refs['New-menu'][0].show();
+                refs.value['New-menu'].show();
               },
             },
           },
@@ -142,8 +149,8 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                // console.log($refs["Existing-menu"][0]);
-                $refs['Existing-menu'][0].show();
+                // console.log(refs.value["Existing-menu"][0]);
+                refs.value['Existing-menu'].show();
               },
             },
           },
@@ -171,8 +178,8 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                // console.log($refs["Existing-menu"][0]);
-                $refs['Add sub-tree'][0].show();
+                // console.log(refs.value["Existing-menu"][0]);
+                refs.value['Add sub-tree'].show();
               },
             },
           },
@@ -208,8 +215,8 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                // console.log($refs["Existing-menu"][0]);
-                $refs['Add to Tree-menu'][0].show();
+                // console.log(refs.value["Existing-menu"][0]);
+                refs.value['Add to Tree-menu'].show();
               },
             },
           },
@@ -228,7 +235,7 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                $refs['View-menu'][0].show();
+                refs.value['View-menu'].show();
               },
             },
           },
@@ -249,7 +256,7 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                $refs['Edit-menu'][0].show();
+                refs.value['Edit-menu'].show();
               },
             },
           },
@@ -277,7 +284,7 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                $refs['Move-menu'][0].show();
+                refs.value['Move-menu'].show();
               },
             },
           },
@@ -308,14 +315,14 @@ export default {
           platform: {
             mobile: {
               click: ($event) => {
-                $refs['Notes-menu'][0].show();
+                refs.value['Notes-menu'].show();
               },
             },
           },
           child: {
             component: defineAsyncComponent(() => import('./MemberNotes.vue')),
             props: { member: l_member.value },
-            events: { save: () => this.$refs['Notes-menu'].hide() },
+            events: { save: () => this.refs.value['Notes-menu'].hide() },
           },
         },
         {
@@ -403,7 +410,7 @@ export default {
       },
       { immediate: true, deep: true }
     );
-    return { q, l_member, movement, options, getClickMethod };
+    return { q, l_member, movement, options, getClickMethod, refs };
   },
 };
 </script>

@@ -31,6 +31,9 @@
                   <span v-html="link.icon"></span>
                 </q-icon>
                 {{ link.label }}
+                <q-badge color="warning" floating v-if="link.beta">
+                  Beta
+                </q-badge>
               </q-route-tab>
             </q-tabs>
             <!-- Mobile menu -->
@@ -59,6 +62,9 @@
                   <q-item-section>
                     <q-item-label>{{ link.label }}</q-item-label>
                   </q-item-section>
+                  <q-badge color="warning" floating v-if="link.beta">
+                    Beta
+                  </q-badge>
                 </q-item>
               </q-list>
             </q-btn-dropdown>
@@ -302,7 +308,8 @@ export default {
           tooltip: 'View Trends',
           to: `/movement/${movement.value.id}/trends`,
           permission: permissions.value ? permissions.value.trends_view : false,
-          'data-cy': 'trends-link'
+          'data-cy': 'trends-link',
+          beta: true
         },
         // {
         //   label: "Events",

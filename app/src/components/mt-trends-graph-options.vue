@@ -40,7 +40,6 @@
                 :color="q.dark.isActive ? 'blue-2' : ''"
               />
             </q-item>
-            <div class="q-px-md">Dates</div>
             <q-item class="q-gutter-xs">
               <q-input v-model="startDate" outlined label="Start Date">
                 <template v-slot:append>

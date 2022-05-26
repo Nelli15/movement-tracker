@@ -54,7 +54,7 @@ import {
   Title,
   Tooltip,
   ChartData,
-  ChartOptions
+  ChartOptions,
 } from 'chart.js';
 import { dom } from 'quasar';
 
@@ -92,7 +92,7 @@ export default defineComponent({
     // fetch trend for stat
     function fetchTrend({
       treeId,
-      statId
+      statId,
     }: {
       treeId: string;
       statId: string;
@@ -102,14 +102,14 @@ export default defineComponent({
         movId: movement.value.id,
         styleId: statId,
         startDate: startDate.value,
-        endDate: endDate.value
+        endDate: endDate.value,
       });
       return store.dispatch('trends/fetchTrend', {
         treeId: treeId,
         movId: movement.value.id,
         styleId: statId,
         startDate: startDate.value,
-        endDate: endDate.value
+        endDate: endDate.value,
       });
     }
     function fetchData() {
@@ -123,11 +123,11 @@ export default defineComponent({
         return;
       for (let tree of trees.value) {
         for (let stat of stats.value) {
-          fetchTrend({ treeId: tree.id, statId: stat.id }).then(res => {
+          fetchTrend({ treeId: tree.id, statId: stat.id }).then((res) => {
             console.log({ treeId: tree.id, statId: stat.id }, res);
             trends.value[`${tree.id}-${stat.id}`] = {
               ...res,
-              label: stat.label
+              label: stat.label,
             };
           });
         }
@@ -143,7 +143,7 @@ export default defineComponent({
     const chartData = computed<ChartData<'bar'>>(() => {
       let chartData: ChartData<'bar'> = {
         labels: [],
-        datasets: []
+        datasets: [],
       };
       if (Object.keys(trends.value).length <= 0) return chartData;
       let labels: string[] = [];
@@ -152,7 +152,7 @@ export default defineComponent({
         let d = new Date(trends.value[key].trend[ii].date);
         labels.push(
           `${d.toLocaleString('default', {
-            month: 'short'
+            month: 'short',
           })} ${d.getFullYear()}`
         );
       }
@@ -177,7 +177,7 @@ export default defineComponent({
               : 'No Label Provided',
           data: trendData,
           borderColor: props.options.trends[`${trendId}_borderColor`],
-          backgroundColor: props.options.trends[`${trendId}_backgroundColor`]
+          backgroundColor: props.options.trends[`${trendId}_backgroundColor`],
         });
       }
       return chartData;
@@ -193,7 +193,7 @@ export default defineComponent({
           position:
             props.options && props.options.legend && props.options.legend.pos,
           align:
-            props.options && props.options.legend && props.options.legend.align
+            props.options && props.options.legend && props.options.legend.align,
         },
         title: {
           display:
@@ -225,8 +225,8 @@ export default defineComponent({
           font:
             props.options && props.options.title
               ? props.options.title.font
-              : { weight: 'bold', size: 20 }
-        }
+              : { weight: 'bold', size: 20 },
+        },
       },
       scales: {
         y: {
@@ -256,7 +256,7 @@ export default defineComponent({
             font:
               props.options && props.options.yAxis
                 ? props.options.yAxis.font
-                : { weight: 'normal', size: 14 }
+                : { weight: 'normal', size: 14 },
           },
           grid: {
             borderColor:
@@ -270,14 +270,14 @@ export default defineComponent({
             color:
               props.options && props.options.yAxis
                 ? props.options.yAxis.gridColor
-                : ''
+                : '',
           },
           ticks: {
             color:
               props.options && props.options.xAxis
                 ? props.options.yAxis.tickLabelColor
-                : ''
-          }
+                : '',
+          },
         },
         x: {
           title: {
@@ -306,7 +306,7 @@ export default defineComponent({
             font:
               props.options && props.options.xAxis
                 ? props.options.xAxis.font
-                : { weight: 'normal', size: 14 }
+                : { weight: 'normal', size: 14 },
           },
           grid: {
             borderColor:
@@ -320,16 +320,16 @@ export default defineComponent({
             color:
               props.options && props.options.xAxis
                 ? props.options.xAxis.gridColor
-                : ''
+                : '',
           },
           ticks: {
             color:
               props.options && props.options.xAxis
                 ? props.options.xAxis.tickLabelColor
-                : ''
-          }
-        }
-      }
+                : '',
+          },
+        },
+      },
     }));
     // const { barChartProps } = useBarChart({
     //   options: chartOptions,
@@ -340,8 +340,9 @@ export default defineComponent({
       chartOptions,
       trends,
       chartCard,
-      chartHeight: chartCard.value ? dom.height(chartCard.value) : 0
+      chartHeight:
+        chartCard.value instanceof Element ? dom.height(chartCard.value) : 0,
     };
-  }
+  },
 });
 </script>

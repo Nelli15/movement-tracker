@@ -5,7 +5,7 @@ import 'firebase/compat/database';
 import 'firebase/compat/firestore';
 import 'firebase/compat/functions';
 import { attachCustomCommands } from 'cypress-firebase';
-import "cypress-plugin-snapshots/commands";
+// import "cypress-plugin-snapshots/commands";
 
 const fbConfig = require('./../../../../fbConfig.json')
 const TestMovement = require('./../fixtures/test-movement.json')

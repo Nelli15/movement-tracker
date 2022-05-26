@@ -1,4 +1,3 @@
- const { copyFileSync } = require("fs");
 const path = require("path");
  
  describe('members page tests', () => {
@@ -404,7 +403,7 @@ const path = require("path");
       cy.dataCy('"member"').should('have.length', 3)
     });
 
-    it.only('should show member info', () => {
+    it('should show member info', () => {
       cy.dataCy('"member"').should('have.length', 3)
       cy.dataCy('"member"').nextUntil('[data-cy-id="no-parent-member"]').within(() => {
         cy.dataCy('"name"').contains('Example No Parent Member').should('exist')

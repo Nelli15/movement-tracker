@@ -188,7 +188,7 @@ describe('snapshot page tests', () => {
       cy.dataCy('"member"').should('have.length', 3)
     });
 
-    it.only('should show member info', () => {
+    it('should show member info', () => {
       cy.dataCy('"member"').first().within(() => {
           cy.dataCy('"name"').contains('Example No Parent Member').should('exist')
           cy.dataCy('"role"').contains('Example Role').should('exist')

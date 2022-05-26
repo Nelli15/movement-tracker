@@ -252,7 +252,7 @@ describe('access page tests', () => {
         cy.get('[data-cy="name"]', {timeout: 10000}).should('contain', 'Anonymous')
         // cy.get('[data-cy="avatar"]', {timeout: 10000}).should('have.attr', 'src')
         cy.get('[data-cy="email"]', {timeout: 10000}).should('contain', 'test@email.com')
-        cy.get('[data-cy="permission"]', {timeout: 10000}).should('contain', 'owner')
+        cy.get('[data-cy="permission"]', {timeout: 10000}).should('contain', 'Owner')
         cy.get('[data-cy="actions"]', {timeout: 10000}).within(()=>{
         // cy.get('[data-cy="delete"]', {timeout: 10000}).should('contain', 'delete')
         })
@@ -275,7 +275,7 @@ describe('access page tests', () => {
           cy.get('[data-cy="name"]', {timeout: 10000}).should('contain', 'Test User')
           // cy.get('[data-cy="avatar"]', {timeout: 10000}).should('have.attr', 'src')
           cy.get('[data-cy="email"]', {timeout: 10000}).should('contain', 'test@user.com.au')
-          cy.get('[data-cy="permission"]', {timeout: 10000}).should('contain', 'viewer')
+          cy.get('[data-cy="permission"]', {timeout: 10000}).should('contain', 'Viewer')
           cy.get('[data-cy="actions"]', {timeout: 10000}).within(()=>{
           cy.get('[data-cy="delete"]', {timeout: 10000}).should('contain', 'delete').click()
           })
@@ -311,7 +311,7 @@ describe('access page tests', () => {
         })
 
         cy.root().get('[data-cy="user-test@user.com.au"]', {timeout: 10000}).within(() => {
-          cy.dataCy('permission').should('contain', 'editor')
+          cy.dataCy('permission').should('contain', 'Editor')
         })
     });
 

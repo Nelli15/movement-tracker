@@ -1,6 +1,6 @@
 {
-  "name": "Movement-Tracker",
-  "version": "2.2.0",
+  "name": "www",
+  "version": "4.0.3",
   "description": "An app for tracking Christian Discipleship Trees",
   "productName": "Movement Tracker",
   "cordovaId": "org.cordova.quasar.app",
@@ -13,32 +13,21 @@
     "build": "quasar build"
   },
   "dependencies": {
-    "@quasar/extras": "^1.10.2",
-    "firebase": "^8.3.2",
-    "quasar": "^1.15.10"
+    "firebase": "^9.6.11",
+    "quasar": "^2.6.6",
+    "@quasar/app-webpack": "^3.5.1",
+    "@quasar/extras": "^1.13.5"
   },
-  "devDependencies": {
-    "@quasar/app": "^1.9.6",
-    "@quasar/quasar-app-extension-testing": "^1.0.3",
-    "@quasar/quasar-app-extension-testing-quality": "^1.0.0-beta.8",
-    "@quasar/quasar-app-extension-testing-security": "^1.0.0-alpha.8",
-    "@quasar/quasar-app-extension-testing-unit-jest": "^1.0.1",
-    "@vue/eslint-config-standard": "^5.1.2",
-    "babel-eslint": "^10.1.0",
-    "babel-preset-stage-2": "^6.24.1",
-    "devtron": "^1.4.0",
-    "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-loader": "^4.0.2",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.3.1",
-    "eslint-plugin-standard": "^4.1.0",
-    "eslint-plugin-vue": "^6.2.2"
+  "devDependencies": {},
+  "overrides": {
+    "async@2.6.2": "3.2.2",
+    "node-ipc@>9.2.1 <10": "9.2.1",
+    "node-ipc@>10.1.0": "10.1.0",
+    "ejs@2.7.4": "3.1.7"
   },
   "engines": {
-    "node": ">= 12.9.0",
-    "npm": ">= 6.10.2",
+    "node": ">=16.14.2",
+    "npm": ">=8.7.0",
     "yarn": ">= 1.16.0"
   },
   "browserslist": [

@@ -63,7 +63,7 @@ import {
   limit,
   query,
   where,
-  orderBy
+  orderBy,
 } from 'firebase/firestore';
 import { LineChart, useLineChart } from 'vue-chart-3';
 import {
@@ -75,7 +75,7 @@ import {
   LinearScale,
   Legend,
   Title,
-  Tooltip
+  Tooltip,
 } from 'chart.js';
 
 Chart.register(
@@ -105,7 +105,7 @@ export default {
         movId: movement.value.id,
         styleId: props.stat.id,
         startDate: d.getTime(),
-        endDate: new Date().getTime()
+        endDate: new Date().getTime(),
       });
     }
     async function fetchLastSnapshot() {
@@ -117,7 +117,11 @@ export default {
             getFirestore(),
             `movements/${movement.value.id}/snapshots/`
           ),
-          where('date', '<', new Date(date.getFullYear(), date.getMonth(), 0)),
+          where(
+            'date',
+            '<',
+            new Date(date.getFullYear(), date.getMonth() - 1, 0)
+          ),
           orderBy('date', 'desc'),
           limit(1)
         )
@@ -217,7 +221,7 @@ export default {
         { label: 'September', number: 8 },
         { label: 'October', number: 9 },
         { label: 'November', number: 10 },
-        { label: 'December', number: 11 }
+        { label: 'December', number: 11 },
       ],
       month = new Date().getMonth(),
       previous = months.splice(0, month);
@@ -274,10 +278,10 @@ export default {
       targetData.value = l_targetData;
     });
     function fetchData() {
-      fetchLastSnapshot().then(res => {
+      fetchLastSnapshot().then((res) => {
         return (lastStat.value = res);
       });
-      fetchTrend().then(res => (trend.value = res));
+      fetchTrend().then((res) => (trend.value = res));
     }
     watch(
       props.treeOpt,
@@ -302,27 +306,27 @@ export default {
           label: props.stat.label,
           data: data.value,
           fill: false,
-          borderColor: 'rgb(197, 66, 16)'
+          borderColor: 'rgb(197, 66, 16)',
         },
         {
           label: 'Current Target',
           data: targetData.value,
           fill: false,
-          borderColor: 'rgb(0, 179, 0)'
-        }
-      ]
+          borderColor: 'rgb(0, 179, 0)',
+        },
+      ],
     }));
 
     function min(arr) {
       if (arr.length <= 0) return 0;
-      return arr.reduce(function(p, v) {
+      return arr.reduce(function (p, v) {
         return p < v ? p : v;
       });
     }
 
     function max(arr) {
       if (arr.length <= 0) return 10;
-      return arr.reduce(function(p, v) {
+      return arr.reduce(function (p, v) {
         return p > v ? p : v;
       });
     }
@@ -337,12 +341,12 @@ export default {
     const options = computed(() => ({
       plugins: {
         legend: {
-          display: false
+          display: false,
         },
         title: {
           display: true,
-          text: '13 Month Totals'
-        }
+          text: '13 Month Totals',
+        },
       },
       scales: {
         y: {
@@ -356,15 +360,15 @@ export default {
               : max(data.value) + mean(data.value) / 2,
           title: {
             display: true,
-            text: props.stat.unit ? props.stat.unit : 'Members'
-          }
-        }
-      }
+            text: props.stat.unit ? props.stat.unit : 'Members',
+          },
+        },
+      },
     }));
 
     const { lineChartProps } = useLineChart({
       options,
-      chartData: getData
+      chartData: getData,
     });
     return {
       added,
@@ -374,8 +378,8 @@ export default {
       options,
       lineChartProps,
       trend,
-      lastStat
+      lastStat,
     };
-  }
+  },
 };
 </script>
