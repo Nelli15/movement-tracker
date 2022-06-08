@@ -16,7 +16,7 @@
     "firebase": "^9.6.11",
     "quasar": "^2.6.6",
     "@quasar/app-webpack": "^3.5.1",
-    "@quasar/extras": "^1.13.5"
+    "@quasar/extras": "^1.14.0"
   },
   "devDependencies": {},
   "overrides": {
