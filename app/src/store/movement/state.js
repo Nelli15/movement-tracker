@@ -34,6 +34,7 @@ export default function () {
       
     },
     listeners: [],
-    currentTreeListeners:[]
+    currentTreeListeners:[],
+    defaultTree: undefined
   }
 }

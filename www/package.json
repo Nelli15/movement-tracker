@@ -13,10 +13,10 @@
     "build": "quasar build"
   },
   "dependencies": {
-    "firebase": "^9.6.11",
-    "quasar": "^2.6.6",
-    "@quasar/app-webpack": "^3.5.1",
-    "@quasar/extras": "^1.13.5"
+    "@quasar/app-webpack": "^3.5.3",
+    "@quasar/extras": "^1.14.0",
+    "firebase": "^9.8.1",
+    "quasar": "^2.7.1"
   },
   "devDependencies": {},
   "overrides": {

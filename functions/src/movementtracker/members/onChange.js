@@ -1,5 +1,5 @@
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-
+import { updateTimestamp } from "../../scripts/updateTimestamp";
 const membersHelpers = require("../../scripts/membersHelpers.js");
 
 module.exports = ({ environment }) => async (change, context) => {
@@ -153,6 +153,6 @@ module.exports = ({ environment }) => async (change, context) => {
     }
 
     // return once the pending processes are finished
-    return Promise.all(promises).catch(err => console.log(err));
+    return Promise.all(promises).then(() => updateTimestamp(movRef)).catch(err => console.log(err));
   }
 };

@@ -43,10 +43,10 @@ export default defineComponent({
   name: 'TrendsPage',
   preFetch({ store, currentRoute }) {
     store.dispatch('movement/fetchTrees', {
-      movId: currentRoute.params.movId
+      movId: currentRoute.params.movId,
     });
     store.dispatch('movement/fetchStyles', {
-      movId: currentRoute.params.movId
+      movId: currentRoute.params.movId,
     });
   },
   setup() {
@@ -59,7 +59,7 @@ export default defineComponent({
       startDate: d.getTime(),
       endDate: new Date().getTime(),
       stats: [],
-      trees: []
+      trees: [],
     });
     const options = ref({
       chartType: 'Line',
@@ -68,7 +68,7 @@ export default defineComponent({
         pos: 'top',
         color: q.dark.isActive ? '#FFFFFF' : '#000000',
         align: 'center',
-        font: { weight: 'bold', size: 20 }
+        font: { weight: 'bold', size: 20 },
       },
       chartBackground: '#263238',
       trends: {},
@@ -80,7 +80,7 @@ export default defineComponent({
         borderColor: '#454545',
         gridColor: '#454545',
         tickColor: '#454545',
-        tickLabelColor: '#454545'
+        tickLabelColor: '#454545',
       },
       yAxis: {
         text: 'Number of Members',
@@ -90,16 +90,16 @@ export default defineComponent({
         borderColor: '#454545',
         gridColor: '#454545',
         tickColor: '#454545',
-        tickLabelColor: '#454545'
+        tickLabelColor: '#454545',
       },
       axis: {
-        text: 'Number of Members'
+        text: 'Number of Members',
       },
       legend: {
         pos: 'top',
         align: 'center',
-        display: false
-      }
+        display: false,
+      },
     });
 
     setCurrentScreen(getAnalytics(), 'Movement_Trends');
@@ -109,29 +109,29 @@ export default defineComponent({
       optsDrawer,
       toggleGraphsDrawer,
       options,
-      data
+      data,
     };
   },
   components: {
-    'mt-trends-toolbox': defineAsyncComponent(() =>
-      import('./../components/mt-trends-toolbox.vue')
+    'mt-trends-toolbox': defineAsyncComponent(
+      () => import('./../components/mt-trends-toolbox.vue')
     ),
-    'mt-trends-saved-graphs': defineAsyncComponent(() =>
-      import('./../components/mt-trends-saved-graphs.vue')
+    'mt-trends-saved-graphs': defineAsyncComponent(
+      () => import('./../components/mt-trends-saved-graphs.vue')
     ),
-    'mt-trends-graph-options': defineAsyncComponent(() =>
-      import('./../components/mt-trends-graph-options.vue')
+    'mt-trends-graph-options': defineAsyncComponent(
+      () => import('./../components/mt-trends-graph-options.vue')
     ),
-    'mt-line-chart': defineAsyncComponent(() =>
-      import('../components/charts/mt-LineChart.vue')
+    'mt-line-chart': defineAsyncComponent(
+      () => import('../components/charts/mt-linechart.vue')
     ),
-    'mt-bar-chart': defineAsyncComponent(() =>
-      import('../components/charts/mt-BarChart.vue')
+    'mt-bar-chart': defineAsyncComponent(
+      () => import('../components/charts/mt-barchart.vue')
     ),
-    MovBanner: defineAsyncComponent(() =>
-      import('./../components/MovBanner.vue')
-    )
-  }
+    MovBanner: defineAsyncComponent(
+      () => import('./../components/MovBanner.vue')
+    ),
+  },
 });
 </script>
 
