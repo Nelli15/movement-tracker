@@ -15,6 +15,7 @@ exports.monthlySaveSnaps = functions.pubsub
   .onRun(saveSnaps(context));
 
 exports.updateSnap = functions.https.onCall(updateSnap(context));
+// exports.updateSnap = functions.https.onCall(saveSnaps(context));
 
 exports.onSnapStatChange = functions.firestore
   .document(

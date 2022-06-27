@@ -1,5 +1,5 @@
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-
+import { updateTimestamp } from "../../scripts/updateTimestamp";
 const membersHelpers = require("../../scripts/membersHelpers.js");
 
 module.exports = ({ environment }) => async (change, context) => {
@@ -7,13 +7,14 @@ module.exports = ({ environment }) => async (change, context) => {
 
   const before = change.before.exists ? change.before.data() : null;
   const after = change.after.exists ? change.after.data() : null;
+    
   if (change.before.exists) {
     before.id = change.before.exists ? change.before.id : null;
   }
   if (change.after.exists) {
     after.id = change.after.exists ? change.after.id : null;
   }
-
+const movRef = change.after.ref.parent.parent
   let stylesRef = change.after.ref.parent.parent
     .collection("lists")
     .doc("styles");
@@ -122,6 +123,6 @@ module.exports = ({ environment }) => async (change, context) => {
           .set(member, { merge: true })
       ]);
     }
-    return Promise.all(promises).catch(err => console.error(err));
+    return Promise.all(promises).then(() => updateTimestamp(movRef)).catch(err => console.error(err));
   }
 };

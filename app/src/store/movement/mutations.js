@@ -8,7 +8,6 @@ import {
   doc,
   updateDoc,
 } from "@firebase/firestore";
-import { startAfter } from "firebase/firestore";
 
 export function cleanMovement (state, payload) {
   state.movement = { id: '', role: { id: '', label: ''}}
@@ -34,6 +33,7 @@ export function cleanMovement (state, payload) {
   state.filterQuery = ''
   state.sortKey = ''
   state.permissions = {}
+  state.defaultTree = undefined
 
   //Clean up listeners
   if(state.listeners.length > 0) {
@@ -64,6 +64,7 @@ export function setFilterQuery (state, payload) {
 }
 export function setMovement (state, payload) {
   state.movement = payload
+  state.defaultTree = payload.defaultTree ? payload.defaultTree : null
 }
 export function setUserRole (state, payload) {
   state.movement.role = payload

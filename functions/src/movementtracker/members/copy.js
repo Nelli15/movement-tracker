@@ -1,4 +1,5 @@
 import { getFirestore } from "firebase-admin/firestore";
+import { updateTimestamp } from "../../scripts/updateTimestamp";
 
 module.exports = ({ environment }) => async (data, context) => {
   // context.app will be undefined if the request doesn't include a valid
@@ -49,6 +50,7 @@ module.exports = ({ environment }) => async (data, context) => {
     .commit()
     .then(() => {
       console.log("Batch successfully committed!");
+      return updateTimestamp(movRef)
     })
     .catch(error => {
       console.log("Batch failed: ", error);

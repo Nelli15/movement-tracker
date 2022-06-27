@@ -1,5 +1,6 @@
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 const _delete = require("../../scripts/delete.js");
+import { updateTimestamp } from "../../scripts/updateTimestamp";
 
 module.exports = ({ environment }) => async (change, context) => {
    const db = getFirestore();
@@ -46,5 +47,5 @@ module.exports = ({ environment }) => async (change, context) => {
       );
     }
   }
-  return Promise.all(promises).catch(err => console.log(err));
+  return Promise.all(promises).then(() => updateTimestamp(movRef)).catch(err => console.log(err));
 };

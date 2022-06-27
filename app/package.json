@@ -11,7 +11,6 @@
     "dev:emulated": "firebase emulators:exec --only auth,functions,firestore,database --ui \"quasar dev\"",
     "dev:pwa:emulated": "firebase emulators:exec --only auth,functions,firestore,database --ui \"quasar dev -m pwa\"",
     "start:emulators": "firebase emulators:start --only auth,functions,firestore,database",
-    "start:emulators-import": "firebase emulators:start --only auth,functions,firestore,pubsub --import ./firestoreData",
     "test:e2e": "cross-env FIRESTORE_EMULATOR_HOST=\"localhost:8080\" FIREBASE_AUTH_EMULATOR_HOST=\"localhost:9099\" FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:9000\" E2E_TEST=true start-test \"quasar dev\" http-get://localhost:5000 \"cypress open\"",
     "test:e2e:ci": "cross-env E2E_TEST=true start-test \"quasar dev\" http-get://localhost:5000 \"cypress run\"",
     "test:e2e:emulated": "firebase emulators:exec --only auth,functions,firestore,database --ui \"npm run test:e2e\"",

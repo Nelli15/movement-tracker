@@ -5,9 +5,9 @@
     <q-scroll-area style="height: calc(100vh - 50px); max-width: 100%">
       <div
         style="min-height: calc(100vh - 50px)"
-        :style="
-          `background: ${q.dark.isActive ? 'var(--q-dark-page)' : 'white'};`
-        "
+        :style="`background: ${
+          q.dark.isActive ? 'var(--q-dark-page)' : 'white'
+        };`"
         data-cy="background"
       >
         <MovBanner />
@@ -78,9 +78,9 @@
           <q-tab-panel
             name="trees"
             class="q-px-none"
-            :style="
-              `background: ${q.dark.isActive ? 'var(--q-dark-page)' : 'white'};`
-            "
+            :style="`background: ${
+              q.dark.isActive ? 'var(--q-dark-page)' : 'white'
+            };`"
           >
             <MovTrees
               :treeOpt="visibleTree"
@@ -121,7 +121,7 @@ import {
   ref,
   computed,
   watch,
-  defineComponent
+  defineComponent,
 } from 'vue';
 import { useQuasar } from 'quasar';
 import { useStore } from 'vuex';
@@ -140,10 +140,25 @@ export default defineComponent({
     const route = useRoute();
     const tab = ref('trees');
     const visibleTree = ref<null | Tree>(null);
-    if (store.state.movement.movement.defaultTree) {
-      visibleTree.value =
-        store.state.movement.trees[store.state.movement.movement.defaultTree];
+    async function setVisibleTreeOnLoad() {
+      if (
+        store.state.movement.defaultTree === undefined ||
+        Object.keys(store.state.movement.trees).length === 0
+      ) {
+        setTimeout(() => {
+          setVisibleTreeOnLoad();
+        }, 100);
+      } else {
+        // default tree has been loaded from server
+        if (store.state.movement.defaultTree === null) return; // default tree value doesn't exist
+        visibleTree.value = store.state.movement.trees[
+          store.state.movement.defaultTree
+        ]
+          ? store.state.movement.trees[store.state.movement.defaultTree]
+          : store.state.movement.trees[0];
+      }
     }
+    setVisibleTreeOnLoad();
     const mods = computed(() => store.state.movement.mods);
     const roles = computed(() => store.state.movement.roles);
     const trees = computed(() => store.state.movement.trees);
@@ -173,6 +188,7 @@ export default defineComponent({
     function setCurrentTree(e: Tree | null) {
       return store.commit('movement/setCurrentTree', e);
     }
+
     watch(
       visibleTree,
       (newVal, oldVal) => {
@@ -185,7 +201,7 @@ export default defineComponent({
             movId: Array.isArray(route.params.movId)
               ? route.params.movId[0]
               : route.params.movId,
-            treeId: visibleTree.value ? visibleTree.value.id : null
+            treeId: visibleTree.value ? visibleTree.value.id : null,
           });
         }
       },
@@ -214,7 +230,7 @@ export default defineComponent({
           visibleTree.value = {
             ...newVal.find((val: Tree) => {
               return visibleTree.value && visibleTree.value.id === val.id;
-            })
+            }),
           };
         }
       },
@@ -239,46 +255,46 @@ export default defineComponent({
       treeOpts,
       treeSorted,
       trees,
-      members
+      members,
     };
   },
 
   preFetch({ store, currentRoute }) {
     store.dispatch('movement/fetchTrees', {
-      movId: currentRoute.params.movId
+      movId: currentRoute.params.movId,
     });
     store.dispatch('movement/fetchMemberList', {
-      movId: currentRoute.params.movId
+      movId: currentRoute.params.movId,
     });
     store.dispatch('movement/fetchStyles', {
-      movId: currentRoute.params.movId
+      movId: currentRoute.params.movId,
     });
   },
   components: {
-    'mt-summary-drawer': defineAsyncComponent(() =>
-      import('./../components/mt-summary-drawer.vue')
+    'mt-summary-drawer': defineAsyncComponent(
+      () => import('./../components/mt-summary-drawer.vue')
     ),
-    'mt-legend-drawer': defineAsyncComponent(() =>
-      import('./../components/mt-legend-drawer.vue')
+    'mt-legend-drawer': defineAsyncComponent(
+      () => import('./../components/mt-legend-drawer.vue')
     ),
-    'mt-movement-toolbox': defineAsyncComponent(() =>
-      import('./../components/mt-movement-toolbox.vue')
+    'mt-movement-toolbox': defineAsyncComponent(
+      () => import('./../components/mt-movement-toolbox.vue')
     ),
-    MovBanner: defineAsyncComponent(() =>
-      import('./../components/MovBanner.vue')
+    MovBanner: defineAsyncComponent(
+      () => import('./../components/MovBanner.vue')
     ),
-    MovBGContextMenu: defineAsyncComponent(() =>
-      import('../components/actions/MovBGContextMenu.vue')
+    MovBGContextMenu: defineAsyncComponent(
+      () => import('../components/actions/MovBGContextMenu.vue')
     ),
-    MovTrees: defineAsyncComponent(() =>
-      import('./../components/MovTrees.vue')
+    MovTrees: defineAsyncComponent(
+      () => import('./../components/MovTrees.vue')
     ),
-    MovMemberList: defineAsyncComponent(() =>
-      import('./../components/MovMemberList.vue')
+    MovMemberList: defineAsyncComponent(
+      () => import('./../components/MovMemberList.vue')
     ),
-    'mt-filter-sort': defineAsyncComponent(() =>
-      import('./../components/mt-filter-sort.vue')
-    )
-  }
+    'mt-filter-sort': defineAsyncComponent(
+      () => import('./../components/mt-filter-sort.vue')
+    ),
+  },
 });
 </script>
