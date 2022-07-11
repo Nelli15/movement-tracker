@@ -15,7 +15,7 @@
   "dependencies": {
     "@quasar/app-webpack": "^3.5.4",
     "@quasar/extras": "^1.14.0",
-    "firebase": "^9.8.2",
+    "firebase": "^9.8.3",
     "quasar": "^2.7.3"
   },
   "devDependencies": {},
