@@ -6,6 +6,7 @@
   "author": "Nick Ellis <ellis.nick96@gmail.com>",
   "productName": "Movement Tracker",
   "scripts": {
+    "build": "quasar build -m pwa",
     "start:emulators": "firebase emulators:start --only auth,functions,firestore,database",
     "start:emulators-import": "firebase emulators:start --only auth,functions,firestore,pubsub --import ./server_data",
     "test:rules:fire": "firebase emulators:exec --only firestore \"jest firestore.rules._jest.spec.js --detectOpenHandles\"",
