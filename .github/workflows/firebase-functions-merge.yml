@@ -1,0 +1,17 @@
+name: Deploy to Firebase Functions on Merge
+on:
+  push:
+    branches:
+      - main
+jobs:
+  main:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@master
+      - name: Deploy functions to Firebase
+        uses: chrissank/deploy-firebase-functions@1.0.0
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          TARGET: default
