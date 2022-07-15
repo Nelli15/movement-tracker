@@ -8,6 +8,7 @@ jobs:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
     steps:
+      - run: ls
       - run: cd app
       - uses: actions/checkout@v2
       - run: npm ci && npm run build
