@@ -6,9 +6,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - env: firebase: ${{secret.firebase}}
       - run: npm ci && npm run build
         working-directory: ./app
+        env: 
+          firebase: ${{secret.firebase}}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
