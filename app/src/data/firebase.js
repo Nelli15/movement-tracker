@@ -29,7 +29,7 @@ let firebaseApp
 // if (location.hostname === 'localhost') {
 //   firebaseApp = initializeApp(require('./../../../fbConfig-test.json'));
 // } else{
-  firebaseApp = initializeApp(env.firebase);
+  firebaseApp = initializeApp(require('./../../../fbConfig.json'));
 // }
 // const appCheckSiteKey = '6Lf2kcMbAAAAAMXGC0d4_EMUmT9Dzq2fxIJPu7rm'
 // const appCheck = initializeAppCheck(firebaseApp, { isTokenAutoRefreshEnabled: true, provider: ReCaptchaV3Provider })

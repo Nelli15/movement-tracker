@@ -8,8 +8,6 @@ jobs:
       - uses: actions/checkout@v2
       - run: npm ci && npm run build
         working-directory: ./app
-        env: 
-          firebase: ${{secrets.firebase}}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

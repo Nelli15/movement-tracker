@@ -68,7 +68,6 @@ node_modules/
 **/dist/**
 functions/serviceAccount.json
 serviceAccount.json
-fbConfig.json
 /server_data/**
 serviceAccount-test.json
 fbConfig-test.json
