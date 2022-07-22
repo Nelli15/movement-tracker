@@ -10,10 +10,6 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-      - name: install node v12
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16
       - name: Install npm packages
         run: npm ci
         working-directory: ./functions
