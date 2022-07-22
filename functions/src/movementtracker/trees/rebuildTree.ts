@@ -203,6 +203,7 @@ module.exports =
     }
 
     //  TODO: Filter for only members with a parent that exists in the tree, delete others
+
     //loop through members
     let treeMembers: MembersObj = parentsDoc.data();
     let membersToDelete: { [index: string]: FieldValue } = {};
@@ -241,6 +242,22 @@ module.exports =
         .collection("components")
         .doc("parents")
         .update(membersToDelete);
+      // update the member doc trees field
+      for (let id in membersToDelete) {
+        // membersToDelete[id]
+        let memberUpdateVal: { [index: string]: FieldValue } = {
+          [`trees.${context.params.treeId}`]: FieldValue.delete(),
+        };
+        db.collection(environment.schema.movements)
+          .doc(
+            context.params.movId
+              ? context.params.movId
+              : context.params.movementId
+          )
+          .collection("members")
+          .doc(id)
+          .update(memberUpdateVal);
+      }
     }
     // update the tree
     await treeStructRef.set({
