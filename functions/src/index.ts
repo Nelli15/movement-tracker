@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions";
+// import * as functions from "firebase-functions";
 
 import { initializeApp, applicationDefault } from "firebase-admin/app";
 
