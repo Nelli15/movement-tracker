@@ -18,7 +18,7 @@ jobs:
         run: npm install
         working-directory: ./functions
       - name: build TS
-        run: npm install typescript && yarn run build
+        run: npm i typescript --save-dev && npx tsc
         working-directory: ./functions
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
