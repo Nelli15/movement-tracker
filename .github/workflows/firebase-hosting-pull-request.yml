@@ -12,6 +12,7 @@ jobs:
           node-version: 16
       - run: npm i --location=global firebase-tools
       - run: npm i --location=global typescript
+      - run: npm i --location=global jest
       - run: npm ci && npm run build
         working-directory: ./functions
       # - run: npm ci && npm run test:e2e:ci:emulated
