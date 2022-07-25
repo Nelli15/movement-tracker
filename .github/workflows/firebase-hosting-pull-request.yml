@@ -19,8 +19,7 @@ jobs:
         working-directory: ./app
       # - run: npm run test:e2e:ci:emulated
       #   working-directory: ./app
-      - run: npm run test:jest:emulated
-        working-directory: ./app
+      - run: npm run test:rules:rtdb && npm run test:rules:fire
       - run: npm run build && npm run test
         working-directory: ./functions
       - run: npm run build

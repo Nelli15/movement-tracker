@@ -16,7 +16,6 @@
     "test:e2e:emulated": "firebase emulators:exec --only auth,functions,firestore,database --ui \"npm run test:e2e\"",
     "test:e2e:ci:emulated": "firebase emulators:exec --only auth,functions,firestore,database --ui \"npm run test:e2e:ci\"",
     "test:jest": "jest --watchAll --verbose=false",
-    "test:jest:emulated": "firebase emulators:exec --only auth,functions,firestore,database \"jest\"",
     "test:jest:emulated:dev": "firebase emulators:exec --only auth,functions,firestore,database \"jest --watchAll\""
   },
   "dependencies": {
