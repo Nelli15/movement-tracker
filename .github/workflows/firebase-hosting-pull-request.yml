@@ -1,12 +1,32 @@
 name: Deploy to Firebase Hosting on PR
 'on': pull_request
 jobs:
-  build_and_preview:
+  build_test_deploy:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npm ci && npm run build
+      - name: install node v18
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18
+      - name: install global tools
+        run: npm i --location=global firebase-tools && npm i --location=global typescript && npm i --location=global jest
+      - name: functions install packages and build
+        run: npm ci && npm run build
+        working-directory: ./functions
+      - name: app install packages
+        run: npm ci
+        working-directory: ./app
+      - name: root install packages
+        run: npm ci
+      # - run: npm run test:e2e:ci:emulated
+      #   working-directory: ./app
+      - name: test security rules
+        run: npm run test:rules:rtdb && npm run test:rules:fire
+      - run: npm run build && npm run test
+        working-directory: ./functions
+      - run: npm run build
         working-directory: ./app
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
