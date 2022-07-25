@@ -15,8 +15,7 @@
   },
   "dependencies": {
     "firebase": "^9.8.4",
-    "vm2": "^3.9.9",
-    "tsc": "^2.0.4"
+    "vm2": "^3.9.9"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^2.0.2",
