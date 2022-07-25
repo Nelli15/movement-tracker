@@ -135,7 +135,7 @@ beforeAll(async () => {
 afterAll(async () => {
   // Delete all the FirebaseApp instances created during testing.
   // Note: this does not affect or clear any data.
-  await testEnv.cleanup();
+  // await testEnv.cleanup();
 
   // Write the coverage report to a file
   const coverageFile = 'firestore-coverage.html';
