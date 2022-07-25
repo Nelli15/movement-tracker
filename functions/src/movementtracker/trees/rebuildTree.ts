@@ -1,6 +1,11 @@
 import { FirebaseError } from "firebase-admin";
-import { ChangeJson, EventContext } from "firebase-functions/v1";
-import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { Change, EventContext } from "firebase-functions/v1";
+import {
+  getFirestore,
+  FieldValue,
+  DocumentSnapshot,
+  DocumentData,
+} from "firebase-admin/firestore";
 import {
   MembersByParent,
   MembersObj,
@@ -17,12 +22,20 @@ function isMember(
 
 module.exports =
   ({ environment }: { environment: any }) =>
-  async (change: ChangeJson, context: EventContext) => {
+  async (change: Change<DocumentSnapshot>, context: EventContext) => {
     const db = getFirestore();
     if (!change.after.exists) return;
 
-    let beforeData = change.before.exists ? change.before.data() : {};
-    let afterData = change.after.data();
+    let beforeData = change.before.exists
+      ? change.before.data() !== undefined
+        ? (change.before.data() as DocumentData)
+        : {}
+      : {};
+    let afterData = change.after.exists
+      ? change.after.data() !== undefined
+        ? (change.after.data() as DocumentData)
+        : {}
+      : {};
     const treeDocRef = db
       .collection(environment.schema.movements)
       .doc(
@@ -205,7 +218,10 @@ module.exports =
     //  TODO: Filter for only members with a parent that exists in the tree, delete others
 
     //loop through members
-    let treeMembers: MembersObj = parentsDoc.data();
+    let treeMembers: MembersObj =
+      parentsDoc.data() !== undefined
+        ? (parentsDoc.data() as DocumentData)
+        : {};
     let membersToDelete: { [index: string]: FieldValue } = {};
     for (let memberId in treeMembers) {
       const member = treeMembers[memberId];
@@ -261,7 +277,14 @@ module.exports =
     }
     // update the tree
     await treeStructRef.set({
-      tree: await buildTree(groupMembersByParent(parentsDoc.data()), "root"),
+      tree: await buildTree(
+        groupMembersByParent(
+          parentsDoc.data() !== undefined
+            ? (parentsDoc.data() as DocumentData)
+            : {}
+        ),
+        "root"
+      ),
     });
 
     // update the tree doc with a new updateId
@@ -270,19 +293,24 @@ module.exports =
 
     // trigger update of other trees.
     let trees = treeDoc.get("importedBy") ? treeDoc.get("importedBy") : [];
+    let promises = [];
     for (let tree of trees) {
       // get doc of tree to update
       // add an update number to the subtree on the tree parents doc
-      db.collection(environment.schema.movements)
-        .doc(
-          context.params.movId
-            ? context.params.movId
-            : context.params.movementId
-        )
-        .collection("trees")
-        .doc(tree)
-        .collection("components")
-        .doc("parents")
-        .update({ [context.params.treeId.updateId]: newUpdateId });
+      promises.push(
+        db
+          .collection(environment.schema.movements)
+          .doc(
+            context.params.movId
+              ? context.params.movId
+              : context.params.movementId
+          )
+          .collection("trees")
+          .doc(tree)
+          .collection("components")
+          .doc("parents")
+          .update({ [context.params.treeId.updateId]: newUpdateId })
+      );
     }
+    return Promise.all(promises);
   };

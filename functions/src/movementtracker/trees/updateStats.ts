@@ -1,5 +1,5 @@
-import { getFirestore } from "firebase-admin/firestore";
-import { ChangeJson, EventContext } from "firebase-functions/v1";
+import { DocumentSnapshot, getFirestore } from "firebase-admin/firestore";
+import { Change, EventContext } from "firebase-functions";
 import { MembersObj } from "../../models/members";
 import { StatsObj, StylesObj } from "../../models/styles";
 import {
@@ -10,25 +10,25 @@ import {
 
 module.exports =
   ({ environment }: { environment: any }) =>
-  async (change: ChangeJson, context: EventContext) => {
+  async (change: Change<DocumentSnapshot>, context: EventContext) => {
     const db = getFirestore();
 
     const before = change.before.exists ? change.before.data() : null;
     const after = change.after.exists ? change.after.data() : null;
 
-    if (change.before.exists) {
+    if (change.before.exists && before !== null && before !== undefined) {
       before.id = change.before.exists ? change.before.id : null;
     }
-    if (change.after.exists) {
+    if (change.after.exists && after !== null && after !== undefined) {
       after.id = change.after.exists ? change.after.id : null;
     }
 
-    let stylesDoc = await change.after.ref.parent.parent.parent.parent
-      .collection("lists")
+    let stylesDoc = await change.after.ref.parent
+      .parent!.parent.parent!.collection("lists")
       .doc("styles")
       .get();
 
-    let styles: StylesObj = stylesDoc.data() ? stylesDoc.data() : {};
+    let styles: StylesObj = stylesDoc.data() ? stylesDoc.data()! : {};
     let stats: StatsObj = {};
     for (var key in styles) {
       if (!key) {
