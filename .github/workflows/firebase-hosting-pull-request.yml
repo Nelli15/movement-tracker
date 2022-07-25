@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npm ci && npm run test:ci:emulated
+      - run: npm ci && npm run test:e2e:ci:emulated
         working-directory: ./app
   security_test:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
