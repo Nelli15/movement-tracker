@@ -14,7 +14,7 @@ jobs:
       - run: npm i --location=global typescript
       - run: npm ci && npm run build
         working-directory: ./functions
-      - run: npm run test:e2e:ci:emulated
+      - run: npm ci && npm run test:e2e:ci:emulated
         working-directory: ./app
       - run: npm run test:jest:emulated
         working-directory: ./app
