@@ -9,9 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@master
-      - name: Deploy functions to Firebase
-        uses: chrissank/deploy-firebase-functions@1.0.0
+        uses: actions/checkout@v2
+      - name: install node v12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - run: npm i --location=global typescript
+      - name: Install npm packages
+        run: npm ci
+        working-directory: ./functions
+      - run: tsc
+        working-directory: ./functions
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          TARGET: default
