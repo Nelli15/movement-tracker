@@ -1,7 +1,7 @@
 name: Deploy to Firebase Hosting on PR
 'on': pull_request
 jobs:
-  E2E_test:
+  build_test_deploy:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
     steps:
@@ -11,39 +11,14 @@ jobs:
         with:
           node-version: 16
       - run: npm i --location=global firebase-tools
+      - run: npm i --location=global typescript
       - run: npm ci && npm run test:e2e:ci:emulated
         working-directory: ./app
-  security_test:
-    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: install node v16
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16
-      - run: npm i --location=global firebase-tools
-      - run: npm ci && npm run test:jest:emulated
+      - run: npm run test:jest:emulated
         working-directory: ./app
-  functions_test: 
-    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: install node v16
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16
-      - run: npm i --location=global typescript
-      - run: npm i --location=global firebase-tools
-      - run: npm ci && npm run build && npm run test
+      - run: npm run build && npm run test
         working-directory: ./functions
-  build_and_preview:
-    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - run: npm ci && npm run build
+      - run: npm run build
         working-directory: ./app
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
