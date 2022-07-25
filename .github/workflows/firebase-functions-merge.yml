@@ -14,11 +14,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
-      - run: npm i --g typescript
+      - run: npm i --location=global typescript
       - name: Install npm packages
         run: npm install
         working-directory: ./functions
       - run: tsc
+        working-directory: ./functions
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
