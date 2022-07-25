@@ -16,7 +16,7 @@ jobs:
           node-version: 16
       - run: npm i --location=global typescript
       - name: Install npm packages
-        run: npm install
+        run: npm ci
         working-directory: ./functions
       - run: tsc
         working-directory: ./functions
