@@ -20,7 +20,10 @@ jobs:
       - name: tsc
         uses: icrawl/action-tsc@v1
         with:
-          project: functions
+          project: ./functions
+      - name: build TS
+        run: npm run build
+        working-directory: ./functions
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
