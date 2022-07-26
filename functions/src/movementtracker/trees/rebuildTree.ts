@@ -225,28 +225,33 @@ module.exports =
     let membersToDelete: { [index: string]: FieldValue } = {};
     for (let memberId in treeMembers) {
       const member = treeMembers[memberId];
-      let currentMember = treeMembers[memberId];
-      if (isMember(member)) {
-        // find the members that don't reach root
-        while (true) {
-          let parentId = isMember(currentMember)
-            ? currentMember.parent
-            : undefined;
-          // if the current member has no parent field then delete them from the tree
-          if (parentId == undefined) {
-            membersToDelete[memberId] = FieldValue.delete();
-            break;
-          }
-          // if the current member is a root member then check next member
-          if (parentId === "root") break;
-          // if the current member has a parent that isn't in the tree delete them from the tree
-          currentMember = treeMembers[parentId];
-          if (!currentMember) {
-            membersToDelete[memberId] = FieldValue.delete();
-            break;
-          }
+      let currentMember: Partial<MemberWithParentData> = treeMembers[memberId];
+      //  if (currentMember.parent == undefined) {
+      console.log(`${memberId}-${currentMember.parent}`);
+      // membersToDelete[memberId] = FieldValue.delete();
+      // break;
+      //  }
+      // if (isMember(member)) {
+      // find the members that don't reach root
+      while (true) {
+        let parentId = currentMember.parent;
+
+        // if the current member has no parent field then delete them from the tree
+        if (parentId == undefined) {
+          console.log(`found one ${memberId}`);
+          membersToDelete[memberId] = FieldValue.delete();
+          break;
+        }
+        // if the current member is a root member then check next member
+        if (parentId === "root") break;
+        // if the current member has a parent that isn't in the tree delete them from the tree
+        currentMember = treeMembers[parentId];
+        if (!currentMember) {
+          membersToDelete[memberId] = FieldValue.delete();
+          break;
         }
       }
+      // }
     }
     // save the changes
     if (Object.keys(membersToDelete).length > 0) {
