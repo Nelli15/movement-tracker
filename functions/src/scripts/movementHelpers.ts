@@ -36,7 +36,7 @@ export function isComplex(style: Style): style is ComplexStyle {
 export function isSubTreeParentData(
   subTreeParent: MemberWithParentData | SubTreeParentData
 ): subTreeParent is SubTreeParentData {
-  return !Array.isArray(subTreeParent as SubTreeParentData);
+  return !!Array.isArray(subTreeParent as SubTreeParentData);
 }
 
 function isMember(
@@ -133,6 +133,7 @@ export function calcComplexStats(
   const stylesToUpdate: StatsObj = {};
   for (var statId in styles) {
     let style = styles[statId];
+
     if (style.type === "complex" && isComplex(style)) {
       let stat: Stat = {
         id: statId,
@@ -146,12 +147,12 @@ export function calcComplexStats(
         if (
           style.condition &&
           isMember(member) &&
-          evalExpression(style.condition, member.id, membersWithOrigin) &&
+          evalExpression(style.condition, memberId, membersWithOrigin) &&
           isStat(stylesToUpdate[statId])
         ) {
           // member passed all of the conditions add to total
           stat.total++;
-          stat.members[member.id] = true;
+          stat.members[memberId] = true;
         }
       }
       stylesToUpdate[statId] = stat;
@@ -230,13 +231,11 @@ function evalCondition(
     // condition applies to the member
     // merge the styles to an array to easily search for them
     const styles = Array.isArray(member.styles) ? member.styles : [];
-    //   member && member.mods ? [...member.mods] : [];
-    // styles.push(member.role);
-
     if (cond.included && styles.includes(cond.id)) {
       // condition expects style to be included
       // condition met continue to member condition
       return true;
+      // deepcode ignore DuplicateIfBody: <please specify a reason of ignoring this>
     } else if (!cond.included && !styles.includes(cond.id)) {
       // condition expects style to NOT be included
       // condition met continue to member condition
@@ -246,8 +245,6 @@ function evalCondition(
     if (member.parent !== "root" && member.id !== "id") {
       const parent = members[member.parent];
       if (isSubTreeParentData(parent)) return false;
-      // if(!parent) console.log(member)
-      // console.log(parent, members)
       const parentStyles = parent.styles;
       // [...parent.mods];
 
@@ -256,6 +253,7 @@ function evalCondition(
         // condition expects style to be included
         // condition met continue to member condition
         return true;
+        // deepcode ignore DuplicateIfBody: <please specify a reason of ignoring this>
       } else if (!cond.included && !parentStyles.includes(cond.id)) {
         // condition expects style to NOT be included
         // condition met continue to member condition
