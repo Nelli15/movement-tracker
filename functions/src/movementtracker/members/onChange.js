@@ -21,7 +21,7 @@ module.exports = ({ environment }) => async (change, context) => {
     after.id = change.after.exists ? change.after.id : null;
   }
 
-  // check if this is the update caused by the update of the display and return
+  // check if this is the update caused by the update of the display values and return
   if (
     before &&
     after &&

@@ -41,11 +41,13 @@ module.exports =
     // get all the members in the tree to check for changes
     let members: MembersObj = {};
     let subTrees: MembersObj = {};
+    // loop through the tree to get all members
     for (let ind in after) {
-      // console.log(after[ind]);
       if (!after[ind].subTreeParent && ind !== "id") {
+        //member is not a subtree add them to the member list
         members[ind] = { ...after[ind], id: ind };
       } else {
+        // member is a subtree add to the subtree list
         subTrees[ind] = { id: ind, subTreeParent: after[ind].subTreeParent };
       }
     }
@@ -53,7 +55,7 @@ module.exports =
     // calculate totals
     stats.treeTotal = {
       id: "treeTotal",
-      total: Object.keys(members).length - 1,
+      total: Object.keys(members).length,
       members: {},
     };
     // console.log(stats);
