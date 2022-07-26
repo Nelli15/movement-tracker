@@ -215,8 +215,8 @@ module.exports =
       }
     }
 
-    //  TODO: Filter for only members with a parent that exists in the tree, delete others
-
+    // Filter for only members with a parent that exists in the tree, delete others
+    // fix for #24
     //loop through members
     let treeMembers: MembersObj =
       parentsDoc.data() !== undefined
