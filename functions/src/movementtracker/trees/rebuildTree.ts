@@ -215,8 +215,8 @@ module.exports =
       }
     }
 
-    //  TODO: Filter for only members with a parent that exists in the tree, delete others
-
+    // Filter for only members with a parent that exists in the tree, delete others
+    // fix for #24
     //loop through members
     let treeMembers: MembersObj =
       parentsDoc.data() !== undefined
@@ -232,11 +232,14 @@ module.exports =
           let parentId = isMember(currentMember)
             ? currentMember.parent
             : undefined;
-          if (!parentId) {
+          // if the current member has no parent field then delete them from the tree
+          if (parentId == undefined) {
             membersToDelete[memberId] = FieldValue.delete();
             break;
           }
+          // if the current member is a root member then check next member
           if (parentId === "root") break;
+          // if the current member has a parent that isn't in the tree delete them from the tree
           currentMember = treeMembers[parentId];
           if (!currentMember) {
             membersToDelete[memberId] = FieldValue.delete();
@@ -262,7 +265,7 @@ module.exports =
       for (let id in membersToDelete) {
         // membersToDelete[id]
         let memberUpdateVal: { [index: string]: FieldValue } = {
-          [`trees.${context.params.treeId}`]: FieldValue.delete(),
+          trees: FieldValue.arrayRemove(context.params.treeId),
         };
         db.collection(environment.schema.movements)
           .doc(
