@@ -9,7 +9,8 @@
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "test": "jest --watchAll --verbose=false",
+    "test": "jest --verbose=false",
+    "test:dev": "jest --watchAll --verbose=false",
     "test:converter": "firebase emulators:exec --only firestore,database --import=./../server_data \"jest converter._jest.spec.js\"",
     "emulateSnapshot": "firebase emulators:start --only firestore,database,auth,functions --import=./../server_data "
   },
