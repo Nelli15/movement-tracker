@@ -109,10 +109,9 @@
 </template>
 
 <script lang="ts">
-import { getAnalytics, setCurrentScreen } from 'firebase/analytics';
 import { useStore } from 'vuex';
 import { addStyle } from '../scripts/styles.js';
-import { defineComponent, defineAsyncComponent, computed } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRoute } from 'vue-router';
 export default defineComponent({
@@ -131,21 +130,21 @@ export default defineComponent({
             color: 'positive',
             textColor: 'white',
             icon: 'cloud_download',
-            message: 'Style Added'
+            message: 'Style Added',
           });
           return true;
         })
-        .catch(err => {
+        .catch((err) => {
           q.notify({
             color: 'negative',
             textColor: 'white',
             icon: 'error',
-            message: 'Oops, Something went wrong!'
+            message: 'Oops, Something went wrong!',
           });
         });
     }
     return { q, movement, permissions, l_addStyle };
   },
-  components: {}
+  components: {},
 });
 </script>
