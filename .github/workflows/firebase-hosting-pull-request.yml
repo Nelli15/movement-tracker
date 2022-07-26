@@ -1,6 +1,27 @@
 name: Deploy to Firebase Hosting on PR
 'on': pull_request
 jobs:
+  E2E_test:
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci && npm run test:ci:emulated
+        working-directory: ./app
+  security_test:
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci && npm run test:jest:emulated
+        working-directory: ./app
+  functions_test: 
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci && npm run build && npm run test
+        working-directory: ./functions
   build_and_preview:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
